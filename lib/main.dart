@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:e_commerce_app_flutter/theme.dart';
@@ -14,10 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: theme(),
-      // home: SplashScreen(),
-      // We use routeName so that we dont need to remember the name
-      initialRoute: null,
-      routes: null,
+      home: SplashScreen(),
     );
   }
 }
