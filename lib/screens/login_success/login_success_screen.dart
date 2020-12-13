@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'components/body.dart';
+
 class LoginSuccessScreen extends StatelessWidget {
   static const String routeName = "/login_success";
   @override
@@ -7,7 +9,9 @@ class LoginSuccessScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Login Success"),
+        leading: SizedBox(),
       ),
+      body: Body(),
     );
   }
 }
