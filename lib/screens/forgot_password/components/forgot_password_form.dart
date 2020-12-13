@@ -1,6 +1,6 @@
 import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
-import 'package:e_commerce_app_flutter/components/form_error.dart';
+
 import 'package:e_commerce_app_flutter/components/no_account_text.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +13,8 @@ class ForgotPasswordForm extends StatefulWidget {
 }
 
 class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
-  List<String> errors = [];
   String email;
-  final _formKey=GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -33,45 +32,35 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
               ),
             ),
             onChanged: (value) {
-              if (value.isNotEmpty && errors.contains(kEmailNullError)) {
-                setState(() {
-                  errors.remove(kEmailNullError);
-                });
-              } else if (emailValidatorRegExp.hasMatch(value) &&
-                  errors.contains(kInvalidEmailError)) {
-                setState(() {
-                  errors.remove(kInvalidEmailError);
-                });
+              if (value.isNotEmpty) {
+                return kEmailNullError;
+              } else if (emailValidatorRegExp.hasMatch(value)) {
+                return kInvalidEmailError;
               }
               return null;
             },
             validator: (value) {
-              if (value.isEmpty && !errors.contains(kEmailNullError)) {
-                setState(() {
-                  errors.add(kEmailNullError);
-                });
-              } else if (!emailValidatorRegExp.hasMatch(value) &&
-                  !errors.contains(kInvalidEmailError)) {
-                setState(() {
-                  errors.add(kInvalidEmailError);
-                });
+              if (value.isEmpty) {
+                return kEmailNullError;
+              } else if (!emailValidatorRegExp.hasMatch(value)) {
+                return kInvalidEmailError;
               }
               return null;
             },
             onSaved: (newValue) => email = newValue,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
           SizedBox(height: getProportionateScreenHeight(30)),
-          FormError(errors: errors),
-          SizedBox(height:SizeConfig.screenHeight*0.1),
+          SizedBox(height: SizeConfig.screenHeight * 0.1),
           DefaultButton(
             text: "Continue",
             press: () {
-              if(_formKey.currentState.validate()) {
+              if (_formKey.currentState.validate()) {
                 // TODO: add code to trigger the Forgot Password task
               }
             },
           ),
-          SizedBox(height:SizeConfig.screenHeight*0.1),
+          SizedBox(height: SizeConfig.screenHeight * 0.1),
           NoAccountText(),
           SizedBox(height: getProportionateScreenHeight(30)),
         ],
