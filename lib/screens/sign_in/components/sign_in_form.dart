@@ -1,8 +1,8 @@
 import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
+import 'package:e_commerce_app_flutter/screens/login_success/login_success_screen.dart';
 
 import '../../../components/custom_suffix_icon.dart';
 import '../../../components/default_button.dart';
-import '../../../components/form_error.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
@@ -15,7 +15,7 @@ class SignInForm extends StatefulWidget {
 
 class _SignInFormState extends State<SignInForm> {
   final _formkey = GlobalKey<FormState>();
-  final List<String> errors = [];
+
   String email;
   String password;
   bool remember = false;
@@ -56,13 +56,12 @@ class _SignInFormState extends State<SignInForm> {
             ],
           ),
           SizedBox(height: getProportionateScreenHeight(30)),
-          FormError(errors: errors),
-          SizedBox(height: getProportionateScreenHeight(30)),
           DefaultButton(
             text: "Continue",
             press: () {
               if (_formkey.currentState.validate()) {
                 _formkey.currentState.save();
+                Navigator.pushNamed(context, LoginSuccessScreen.routeName);
               }
             },
           ),
@@ -83,30 +82,23 @@ class _SignInFormState extends State<SignInForm> {
         ),
       ),
       onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(kPassNullError)) {
-          setState(() {
-            errors.remove(kPassNullError);
-          });
-        } else if (value.length >= 8 && errors.contains(kShortPassError)) {
-          setState(() {
-            errors.remove(kShortPassError);
-          });
+        if (value.isNotEmpty) {
+          return kPassNullError;
+        } else if (value.length >= 8) {
+          return kShortPassError;
         }
         return null;
       },
       validator: (value) {
-        if (value.isEmpty && !errors.contains(kPassNullError)) {
-          setState(() {
-            errors.add(kPassNullError);
-          });
-        } else if (value.length < 8 && !errors.contains(kShortPassError)) {
-          setState(() {
-            errors.add(kShortPassError);
-          });
+        if (value.isEmpty) {
+          return kPassNullError;
+        } else if (value.length < 8) {
+          return kShortPassError;
         }
         return null;
       },
       onSaved: (newValue) => password = newValue,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 
@@ -122,32 +114,23 @@ class _SignInFormState extends State<SignInForm> {
         ),
       ),
       onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(kEmailNullError)) {
-          setState(() {
-            errors.remove(kEmailNullError);
-          });
-        } else if (emailValidatorRegExp.hasMatch(value) &&
-            errors.contains(kInvalidEmailError)) {
-          setState(() {
-            errors.remove(kInvalidEmailError);
-          });
+        if (value.isNotEmpty) {
+          return kEmailNullError;
+        } else if (emailValidatorRegExp.hasMatch(value)) {
+          return kInvalidEmailError;
         }
         return null;
       },
       validator: (value) {
-        if (value.isEmpty && !errors.contains(kEmailNullError)) {
-          setState(() {
-            errors.add(kEmailNullError);
-          });
-        } else if (!emailValidatorRegExp.hasMatch(value) &&
-            !errors.contains(kInvalidEmailError)) {
-          setState(() {
-            errors.add(kInvalidEmailError);
-          });
+        if (value.isEmpty) {
+          return kEmailNullError;
+        } else if (!emailValidatorRegExp.hasMatch(value)) {
+          return kInvalidEmailError;
         }
         return null;
       },
       onSaved: (newValue) => email = newValue,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }
