@@ -1,7 +1,7 @@
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../../constants.dart';
-import 'otp_form.dart';
 
 class Body extends StatelessWidget {
   @override
@@ -25,7 +25,7 @@ class Body extends StatelessWidget {
               ),
               buildTimer(),
               SizedBox(height: SizeConfig.screenHeight * 0.1),
-              OtpForm(),
+              buildPinCodeTextField(context),
               SizedBox(height: SizeConfig.screenHeight * 0.1),
               GestureDetector(
                 onTap: () {
@@ -43,6 +43,32 @@ class Body extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  PinCodeTextField buildPinCodeTextField(BuildContext context) {
+    return PinCodeTextField(
+      appContext: context,
+      length: 4,
+      obscureText: true,
+      animationType: AnimationType.fade,
+      animationDuration: Duration(milliseconds: 300),
+      keyboardType: TextInputType.number,
+      textStyle: TextStyle(fontSize: 24),
+      pinTheme: PinTheme(
+        shape: PinCodeFieldShape.box,
+        borderRadius: BorderRadius.circular(5),
+        fieldHeight: 60,
+        fieldWidth: 50,
+        selectedColor: kPrimaryColor,
+        inactiveColor: kTextColor,
+        activeColor: kTextColor,
+      ),
+      cursorColor: Colors.black,
+      onChanged: (String value) {},
+      onSubmitted: (value) {
+        print("Submitted OTP: $value");
+      },
     );
   }
 

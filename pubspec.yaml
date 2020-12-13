@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.0
   flutter_svg: ^0.19.2+1
+  pin_code_fields: ^6.0.1
   provider: ^4.3.2+3
 
 dev_dependencies:
@@ -75,6 +76,5 @@ flutter:
           weight: 700
         - asset: assets/fonts/muli/Muli-Light.ttf
           weight: 300
-
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
