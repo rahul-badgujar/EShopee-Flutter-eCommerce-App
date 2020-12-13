@@ -21,35 +21,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
       key: _formKey,
       child: Column(
         children: [
-          TextFormField(
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              hintText: "Enter your email",
-              labelText: "Email",
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              suffixIcon: CustomSuffixIcon(
-                svgIcon: "assets/icons/Mail.svg",
-              ),
-            ),
-            onChanged: (value) {
-              if (value.isNotEmpty) {
-                return kEmailNullError;
-              } else if (emailValidatorRegExp.hasMatch(value)) {
-                return kInvalidEmailError;
-              }
-              return null;
-            },
-            validator: (value) {
-              if (value.isEmpty) {
-                return kEmailNullError;
-              } else if (!emailValidatorRegExp.hasMatch(value)) {
-                return kInvalidEmailError;
-              }
-              return null;
-            },
-            onSaved: (newValue) => email = newValue,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-          ),
+          buildEmailFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
           SizedBox(height: SizeConfig.screenHeight * 0.1),
           DefaultButton(
@@ -65,6 +37,40 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
           SizedBox(height: getProportionateScreenHeight(30)),
         ],
       ),
+    );
+  }
+
+  TextFormField buildEmailFormField() {
+    return TextFormField(
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        hintText: "Enter your email",
+        labelText: "Email",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: CustomSuffixIcon(
+          svgIcon: "assets/icons/Mail.svg",
+        ),
+      ),
+      onChanged: (value) {
+        email = value;
+        if (value.isNotEmpty) {
+          return kEmailNullError;
+        } else if (emailValidatorRegExp.hasMatch(value)) {
+          return kInvalidEmailError;
+        }
+        return null;
+      },
+      validator: (value) {
+        email = value;
+        if (value.isEmpty) {
+          return kEmailNullError;
+        } else if (!emailValidatorRegExp.hasMatch(value)) {
+          return kInvalidEmailError;
+        }
+        return null;
+      },
+      onSaved: (newValue) => email = newValue,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }
