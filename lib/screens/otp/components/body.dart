@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -24,8 +25,8 @@ class Body extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               buildTimer(),
-              SizedBox(height: SizeConfig.screenHeight * 0.1),
-              buildPinCodeTextField(context),
+              SizedBox(height: SizeConfig.screenHeight * 0.2),
+              OtpForm(),
               SizedBox(height: SizeConfig.screenHeight * 0.1),
               GestureDetector(
                 onTap: () {
@@ -46,32 +47,6 @@ class Body extends StatelessWidget {
     );
   }
 
-  PinCodeTextField buildPinCodeTextField(BuildContext context) {
-    return PinCodeTextField(
-      appContext: context,
-      length: 4,
-      obscureText: true,
-      animationType: AnimationType.fade,
-      animationDuration: Duration(milliseconds: 300),
-      keyboardType: TextInputType.number,
-      textStyle: TextStyle(fontSize: 24),
-      pinTheme: PinTheme(
-        shape: PinCodeFieldShape.box,
-        borderRadius: BorderRadius.circular(5),
-        fieldHeight: 60,
-        fieldWidth: 50,
-        selectedColor: kPrimaryColor,
-        inactiveColor: kTextColor,
-        activeColor: kTextColor,
-      ),
-      cursorColor: Colors.black,
-      onChanged: (String value) {},
-      onSubmitted: (value) {
-        print("Submitted OTP: $value");
-      },
-    );
-  }
-
   Widget buildTimer() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -85,6 +60,60 @@ class Body extends StatelessWidget {
             style: TextStyle(color: kPrimaryColor),
           ),
           onEnd: () {},
+        ),
+      ],
+    );
+  }
+}
+
+class OtpForm extends StatefulWidget {
+  const OtpForm({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _OtpFormState createState() => _OtpFormState();
+}
+
+class _OtpFormState extends State<OtpForm> {
+  String enteredOtp;
+  final _formKey = GlobalKey<FormState>();
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        PinCodeTextField(
+          key: _formKey,
+          appContext: context,
+          length: 4,
+          obscureText: true,
+          animationType: AnimationType.fade,
+          animationDuration: Duration(milliseconds: 300),
+          keyboardType: TextInputType.number,
+          textStyle: TextStyle(fontSize: 24),
+          pinTheme: PinTheme(
+            shape: PinCodeFieldShape.box,
+            borderRadius: BorderRadius.circular(5),
+            fieldHeight: 60,
+            fieldWidth: 50,
+            selectedColor: kPrimaryColor,
+            inactiveColor: kTextColor,
+            activeColor: kTextColor,
+          ),
+          cursorColor: Colors.black,
+          onChanged: (String value) {
+            enteredOtp = value;
+          },
+          onSubmitted: (value) {
+            print("Submitted OTP: $value");
+          },
+        ),
+        SizedBox(height: SizeConfig.screenHeight * 0.1),
+        DefaultButton(
+          text: "Continue",
+          press: () {
+            print("Entered OTP is $enteredOtp");
+          },
         ),
       ],
     );
