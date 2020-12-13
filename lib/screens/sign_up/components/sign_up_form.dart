@@ -1,4 +1,5 @@
 import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
+import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +28,16 @@ class _SignUpFormState extends State<SignUpForm> {
             SizedBox(height: getProportionateScreenHeight(30)),
             buildPasswordFormField(),
             SizedBox(height: getProportionateScreenHeight(30)),
-            buildConfirmPasswordFormField()
+            buildConfirmPasswordFormField(),
+            SizedBox(height: getProportionateScreenHeight(40)),
+            DefaultButton(
+              text: "Continue",
+              press: () {
+                if (_formKey.currentState.validate()) {
+                  // goto complete profile page
+                }
+              },
+            ),
           ],
         ),
       ),
