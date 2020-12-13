@@ -82,6 +82,7 @@ class _SignInFormState extends State<SignInForm> {
         ),
       ),
       onChanged: (value) {
+        password = value;
         if (value.isNotEmpty) {
           return kPassNullError;
         } else if (value.length >= 8) {
@@ -90,6 +91,7 @@ class _SignInFormState extends State<SignInForm> {
         return null;
       },
       validator: (value) {
+        password = value;
         if (value.isEmpty) {
           return kPassNullError;
         } else if (value.length < 8) {
@@ -114,6 +116,7 @@ class _SignInFormState extends State<SignInForm> {
         ),
       ),
       onChanged: (value) {
+        email = value;
         if (value.isNotEmpty) {
           return kEmailNullError;
         } else if (emailValidatorRegExp.hasMatch(value)) {
@@ -122,6 +125,7 @@ class _SignInFormState extends State<SignInForm> {
         return null;
       },
       validator: (value) {
+        email = value;
         if (value.isEmpty) {
           return kEmailNullError;
         } else if (!emailValidatorRegExp.hasMatch(value)) {

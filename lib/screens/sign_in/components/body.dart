@@ -1,3 +1,5 @@
+import 'package:e_commerce_app_flutter/constants.dart';
+
 import '../../../components/social_card.dart';
 
 import 'sign_in_form.dart';
@@ -26,11 +28,7 @@ class _BodyState extends State<Body> {
                 SizedBox(height: SizeConfig.screenHeight * 0.04),
                 Text(
                   "Welcome Back",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: getProportionateScreenWidth(28),
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: headingStyle,
                 ),
                 Text(
                   "Sign in with your email and password \nor continue with social media",
