@@ -1,3 +1,5 @@
+import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
+
 import '../../../components/custom_suffix_icon.dart';
 import '../../../components/default_button.dart';
 import '../../../components/form_error.dart';
@@ -17,6 +19,7 @@ class _SignInFormState extends State<SignInForm> {
   String email;
   String password;
   bool remember = false;
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -40,10 +43,14 @@ class _SignInFormState extends State<SignInForm> {
               ),
               Text("Remember me"),
               Spacer(),
-              Text(
-                "Forgot Password",
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(
+                    context, ForgotPasswordScreen.routeName),
+                child: Text(
+                  "Forgot Password",
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
               )
             ],
