@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'components/body.dart';
+
 class CompleteProfileScreen extends StatelessWidget {
   static const String routeName = "/complete_profile";
   @override
@@ -8,6 +10,7 @@ class CompleteProfileScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Complete Profile"),
       ),
+      body: Body(),
     );
   }
 }
