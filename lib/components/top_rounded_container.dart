@@ -18,12 +18,13 @@ class TopRoundedContainer extends StatelessWidget {
         horizontal: getProportionateScreenWidth(20),
         vertical: getProportionateScreenWidth(20),
       ),
-      width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: color,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(40),
-          topRight: Radius.circular(40),
+          topLeft: Radius.circular(48),
+          topRight: Radius.circular(48),
+          bottomRight: Radius.circular(24),
+          bottomLeft: Radius.circular(24),
         ),
       ),
       child: child,

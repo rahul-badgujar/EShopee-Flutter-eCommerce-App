@@ -7,6 +7,8 @@ import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'color_dots_panel.dart';
+
 class Body extends StatelessWidget {
   final Product product;
 
@@ -27,12 +29,37 @@ class Body extends StatelessWidget {
             Stack(
               children: [
                 TopRoundedContainer(
-                  child: ProductDescription(product: product),
+                  child: Column(
+                    children: [
+                      ProductDescription(product: product),
+                      ColorDotsPanel(product: product),
+                    ],
+                  ),
                 ),
                 Positioned(
                   top: 0,
                   right: 0,
                   child: buildFavouriteButton(),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: IconButton(
+                    icon: Icon(Icons.add_circle_rounded),
+                    onPressed: () {},
+                    color: kPrimaryColor,
+                    iconSize: getProportionateScreenWidth(60),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: IconButton(
+                    icon: Icon(Icons.remove_circle_rounded),
+                    onPressed: () {},
+                    color: kPrimaryColor,
+                    iconSize: getProportionateScreenWidth(60),
+                  ),
                 ),
               ],
             ),
