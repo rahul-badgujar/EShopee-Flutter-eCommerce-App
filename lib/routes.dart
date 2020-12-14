@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/screens/cart/cart_screen.dart';
 import 'package:e_commerce_app_flutter/screens/complete_profile/complete_profile_screen.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
@@ -19,4 +20,5 @@ final Map<String, WidgetBuilder> routes = {
   OtpScreen.routeName: (context) => OtpScreen(),
   HomeScreen.routeName: (context) => HomeScreen(),
   ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
+  CartScreen.routeName: (context) => CartScreen(),
 };

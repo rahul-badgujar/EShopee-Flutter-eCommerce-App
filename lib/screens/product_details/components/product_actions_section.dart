@@ -1,6 +1,7 @@
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/components/top_rounded_container.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/screens/cart/cart_screen.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/components/product_description.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -76,7 +77,9 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
         SizedBox(height: getProportionateScreenHeight(10)),
         DefaultButton(
           text: "Add $itemsToAdd items to Cart",
-          press: () {},
+          press: () {
+            Navigator.pushNamed(context, CartScreen.routeName);
+          },
         ),
       ],
     );
