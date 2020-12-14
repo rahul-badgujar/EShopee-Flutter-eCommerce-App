@@ -1,4 +1,6 @@
 import 'package:e_commerce_app_flutter/routes.dart';
+import 'package:e_commerce_app_flutter/screens/home/home_screen.dart';
+import 'package:e_commerce_app_flutter/size_config.dart';
 
 import 'screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
