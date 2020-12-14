@@ -5,6 +5,7 @@ import 'package:e_commerce_app_flutter/screens/otp/otp_screen.dart';
 import 'package:e_commerce_app_flutter/screens/sign_in/sign_in_screen.dart';
 import 'package:e_commerce_app_flutter/screens/sign_up/sign_up_screen.dart';
 import 'package:e_commerce_app_flutter/screens/splash/splash_screen.dart';
+import 'package:e_commerce_app_flutter/screens/home/home_screen.dart';
 import 'package:flutter/widgets.dart';
 
 final Map<String, WidgetBuilder> routes = {
@@ -15,4 +16,5 @@ final Map<String, WidgetBuilder> routes = {
   SignUpScreen.routeName: (context) => SignUpScreen(),
   CompleteProfileScreen.routeName: (context) => CompleteProfileScreen(),
   OtpScreen.routeName: (context) => OtpScreen(),
+  HomeScreen.routeName: (context) => HomeScreen(),
 };
