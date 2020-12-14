@@ -35,7 +35,10 @@ class ProductCard extends StatelessWidget {
                     color: kSecondaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: Image.asset(product.images[0]),
+                  child: Hero(
+                    tag: product.title,
+                    child: Image.asset(product.images[0]),
+                  ),
                 ),
               ),
               Column(
