@@ -23,15 +23,22 @@ class _ColorDotsPanelState extends State<ColorDotsPanel> {
   Widget build(BuildContext context) {
     return TopRoundedContainer(
       color: Color(0xFFF6F7F9),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
         children: [
-          ...List.generate(
-            widget.product.colors.length,
-            (index) => ColorDot(
-              color: widget.product.colors[index],
-              isSelected: selectedColor == index,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ...List.generate(
+                widget.product.colors.length,
+                (index) => ColorDot(
+                  color: widget.product.colors[index],
+                  isSelected: selectedColor == index,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: getProportionateScreenHeight(24),
           ),
         ],
       ),
