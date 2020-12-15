@@ -38,14 +38,16 @@ class _SignUpFormState extends State<SignUpForm> {
               press: () async {
                 if (_formKey.currentState.validate()) {
                   // goto complete profile page
-                  String signUpStatus =
-                      await context.read<AuthentificationService>().signUp(
-                            email: email,
-                            password: password,
-                          );
+                  final AuthentificationService authService =
+                      context.read<AuthentificationService>();
+                  String signUpStatus = await authService.signUp(
+                    email: email,
+                    password: password,
+                  );
                   if (signUpStatus ==
                       AuthentificationService.SIGN_UP_SUCCESS_MSG) {
-                    print("Sign Up succesfull, try Sign In now");
+                    print("Sign Up succesfull, try signing in");
+
                     Navigator.push(
                         context,
                         MaterialPageRoute(

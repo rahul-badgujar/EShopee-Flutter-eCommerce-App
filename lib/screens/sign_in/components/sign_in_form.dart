@@ -1,4 +1,5 @@
 import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
+import 'package:e_commerce_app_flutter/screens/home/home_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 
 import 'package:provider/provider.dart';
@@ -68,14 +69,21 @@ class _SignInFormState extends State<SignInForm> {
             press: () async {
               if (_formkey.currentState.validate()) {
                 _formkey.currentState.save();
-                String signInStatus =
-                    await context.read<AuthentificationService>().signIn(
-                          email: email.trim(),
-                          password: password.trim(),
-                        );
+                final AuthentificationService authService =
+                    context.read<AuthentificationService>();
+                String signInStatus = await authService.signIn(
+                  email: email.trim(),
+                  password: password.trim(),
+                );
                 if (signInStatus ==
                     AuthentificationService.SIGN_IN_SUCCESS_MSG) {
-                  print("Signed In Successfully");
+                  if (authService.isCurrentUserVerified() == false) {
+                    print(
+                        "Verification Email sent. Please verify Email Address to continue");
+                    await authService.sendVerificationEmailToCurrentUser();
+                  } else {
+                    print("Signed In succesfully");
+                  }
                 } else if (signInStatus ==
                     AuthentificationService.NO_USER_FOUND) {
                   print("User not registered");

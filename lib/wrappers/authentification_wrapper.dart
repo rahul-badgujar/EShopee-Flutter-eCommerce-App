@@ -10,7 +10,9 @@ class AuthentificationWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
     if (firebaseUser != null) {
-      return HomeScreen();
+      if (firebaseUser.emailVerified == true) {
+        return HomeScreen();
+      }
     }
     return SignInScreen();
   }
