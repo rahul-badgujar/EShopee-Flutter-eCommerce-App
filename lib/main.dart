@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/routes.dart';
 
 import 'screens/splash/splash_screen.dart';
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: appName,
       debugShowCheckedModeBanner: false,
       theme: theme(),
       initialRoute: SplashScreen.routeName,
