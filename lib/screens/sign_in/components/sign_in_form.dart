@@ -1,5 +1,4 @@
 import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
-import 'package:e_commerce_app_flutter/screens/home/home_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 
 import 'package:provider/provider.dart';
@@ -77,7 +76,7 @@ class _SignInFormState extends State<SignInForm> {
                 );
                 if (signInStatus ==
                     AuthentificationService.SIGN_IN_SUCCESS_MSG) {
-                  if (authService.isCurrentUserVerified() == false) {
+                  if (authService.currentUserVerified == false) {
                     print(
                         "Verification Email sent. Please verify Email Address to continue");
                     await authService.sendVerificationEmailToCurrentUser();

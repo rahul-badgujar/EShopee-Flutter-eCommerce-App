@@ -1,4 +1,3 @@
-import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:flutter/material.dart';
 
 import '../../size_config.dart';

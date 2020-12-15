@@ -38,11 +38,11 @@ class AuthentificationService {
     await _firebaseAuth.signOut();
   }
 
-  bool isCurrentUserVerified() {
-    return _firebaseAuth.currentUser.emailVerified;
-  }
+  bool get currentUserVerified => _firebaseAuth.currentUser.emailVerified;
 
   Future<void> sendVerificationEmailToCurrentUser() async {
     await _firebaseAuth.currentUser.sendEmailVerification();
   }
+
+  User get currentUser => _firebaseAuth.currentUser;
 }

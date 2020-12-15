@@ -1,5 +1,4 @@
 import 'package:e_commerce_app_flutter/components/rounded_icon_button.dart';
-import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/screens/cart/cart_screen.dart';
 import 'package:flutter/material.dart';
 import '../components/search_field.dart';
