@@ -1,5 +1,6 @@
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
-import 'package:e_commerce_app_flutter/services/authentification/authentification_wrapper.dart';
+import 'package:e_commerce_app_flutter/wrappers/authentification_wrapper.dart';
+import 'package:e_commerce_app_flutter/wrappers/welcome_screen_wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +25,6 @@ class App extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: theme(),
         home: AuthentificationWrapper(),
-        /* initialRoute: SplashScreen.routeName,
-        routes: routes, */
       ),
     );
   }

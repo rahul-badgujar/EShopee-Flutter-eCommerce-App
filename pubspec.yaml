@@ -29,6 +29,7 @@ dependencies:
   flutter_svg: ^0.19.2+1
   pin_code_fields: ^6.0.1
   provider: ^4.3.2+3
+  shared_preferences: ^0.5.12+4
 
 dev_dependencies:
   flutter_test:
