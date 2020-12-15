@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthentificationService {
-  static const SIGN_IN_SUCCESS_MSG = "Signed In";
-  static const SIGN_UP_SUCCESS_MSG = "Signed Up";
+  static const String SIGN_IN_SUCCESS_MSG = "Signed In";
+  static const String SIGN_UP_SUCCESS_MSG = "Signed Up";
+  static const String NO_USER_FOUND = "user-not-found";
+  static const String WRONG_PASSWORD = "wrong-password";
+  static const String EMAIL_ALREADY_IN_USE = "email-already-in-use";
+  static const String WEAK_PASSWORD = "weak-password";
 
   final FirebaseAuth _firebaseAuth;
 
@@ -16,7 +20,7 @@ class AuthentificationService {
           email: email, password: password);
       return SIGN_IN_SUCCESS_MSG;
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      return e.code;
     }
   }
 
@@ -26,7 +30,7 @@ class AuthentificationService {
           email: email, password: password);
       return SIGN_UP_SUCCESS_MSG;
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      return e.code;
     }
   }
 

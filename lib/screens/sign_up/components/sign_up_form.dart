@@ -1,8 +1,10 @@
 import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
-import 'package:e_commerce_app_flutter/screens/complete_profile/complete_profile_screen.dart';
+import 'package:e_commerce_app_flutter/screens/sign_in/sign_in_screen.dart';
+import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants.dart';
 
@@ -33,14 +35,26 @@ class _SignUpFormState extends State<SignUpForm> {
             SizedBox(height: getProportionateScreenHeight(40)),
             DefaultButton(
               text: "Continue",
-              press: () {
+              press: () async {
                 if (_formKey.currentState.validate()) {
                   // goto complete profile page
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CompleteProfileScreen(),
-                      ));
+                  String signUpStatus =
+                      await context.read<AuthentificationService>().signUp(
+                            email: email,
+                            password: password,
+                          );
+                  if (signUpStatus ==
+                      AuthentificationService.SIGN_UP_SUCCESS_MSG) {
+                    print("Sign Up succesfull, try Sign In now");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SignInScreen(),
+                        ));
+                  } else if (signUpStatus ==
+                      AuthentificationService.EMAIL_ALREADY_IN_USE) {
+                    print("Email already in use, try different email");
+                  }
                 }
               },
             ),

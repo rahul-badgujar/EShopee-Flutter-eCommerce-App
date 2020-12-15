@@ -1,5 +1,6 @@
 import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../components/custom_suffix_icon.dart';
@@ -64,13 +65,24 @@ class _SignInFormState extends State<SignInForm> {
           SizedBox(height: getProportionateScreenHeight(30)),
           DefaultButton(
             text: "Continue",
-            press: () {
+            press: () async {
               if (_formkey.currentState.validate()) {
                 _formkey.currentState.save();
-                context.read<AuthentificationService>().signIn(
-                      email: email.trim(),
-                      password: password.trim(),
-                    );
+                String signInStatus =
+                    await context.read<AuthentificationService>().signIn(
+                          email: email.trim(),
+                          password: password.trim(),
+                        );
+                if (signInStatus ==
+                    AuthentificationService.SIGN_IN_SUCCESS_MSG) {
+                  print("Signed In Successfully");
+                } else if (signInStatus ==
+                    AuthentificationService.NO_USER_FOUND) {
+                  print("User not registered");
+                } else if (signInStatus ==
+                    AuthentificationService.WRONG_PASSWORD) {
+                  print("Wrong password");
+                }
               }
             },
           ),
