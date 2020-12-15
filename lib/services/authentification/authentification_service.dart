@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
 class AuthentificationService {
   static const String SIGN_IN_SUCCESS_MSG = "Signed In";
@@ -45,4 +46,8 @@ class AuthentificationService {
   }
 
   User get currentUser => _firebaseAuth.currentUser;
+
+  void updateCurrentUserDisplayName(String updatedDisplayName) {
+    currentUser.updateProfile(displayName: updatedDisplayName);
+  }
 }

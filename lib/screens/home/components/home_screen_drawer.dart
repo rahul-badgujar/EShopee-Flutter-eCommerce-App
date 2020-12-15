@@ -1,8 +1,9 @@
-import 'package:e_commerce_app_flutter/screens/complete_profile/complete_profile_screen.dart';
+import 'package:e_commerce_app_flutter/screens/otp/otp_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../change_display_name/change_display_name_screen.dart';
 
 class HomeScreenDrawer extends StatelessWidget {
   const HomeScreenDrawer({
@@ -20,19 +21,66 @@ class HomeScreenDrawer extends StatelessWidget {
             accountEmail: Text(currentUser.email ?? "No Email"),
             accountName: Text(currentUser.displayName ?? "No Name"),
           ),
-          ListTile(
+          ExpansionTile(
             leading: Icon(Icons.person),
             title: Text(
               "Edit Profile",
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CompleteProfileScreen(),
-                  ));
-            },
+            children: [
+              ListTile(
+                title: Text(
+                  "Change Display Name",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChangeDisplayNameScreen(),
+                      ));
+                },
+              ),
+              ListTile(
+                title: Text(
+                  "Change Phone Number",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OtpScreen(),
+                      ));
+                },
+              ),
+              ListTile(
+                title: Text(
+                  "Change Email",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                  ),
+                ),
+                onTap: () {},
+              ),
+              ListTile(
+                title: Text(
+                  "Change Password",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                  ),
+                ),
+                onTap: () {},
+              ),
+            ],
           ),
           ListTile(
             leading: Icon(Icons.logout),
