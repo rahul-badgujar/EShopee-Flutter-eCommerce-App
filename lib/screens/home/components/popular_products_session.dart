@@ -28,12 +28,12 @@ class PopularProductsSection extends StatelessWidget {
               (index) => ProductCard(
                 product: demoProducts[index],
                 press: () {
-                  Navigator.pushNamed(
-                    context,
-                    ProductDetailsScreen.routeName,
-                    arguments:
-                        ProductDetailsArugments(product: demoProducts[index]),
-                  );
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetailsScreen(product: demoProducts[index]),
+                      ));
                 },
               ),
             ),

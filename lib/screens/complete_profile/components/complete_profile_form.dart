@@ -36,7 +36,8 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
             press: () {
               if (_formKey.currentState.validate()) {
                 // goto OTP Screen
-                Navigator.pushNamed(context, OtpScreen.routeName);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => OtpScreen()));
               }
             },
           ),

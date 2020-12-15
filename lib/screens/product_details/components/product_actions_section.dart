@@ -78,7 +78,11 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
         DefaultButton(
           text: "Add $itemsToAdd items to Cart",
           press: () {
-            Navigator.pushNamed(context, CartScreen.routeName);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartScreen(),
+                ));
           },
         ),
       ],

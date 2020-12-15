@@ -45,8 +45,13 @@ class _SignInFormState extends State<SignInForm> {
               Text("Remember me"),
               Spacer(),
               GestureDetector(
-                onTap: () => Navigator.pushNamed(
-                    context, ForgotPasswordScreen.routeName),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ForgotPasswordScreen(),
+                      ));
+                },
                 child: Text(
                   "Forgot Password",
                   style: TextStyle(
