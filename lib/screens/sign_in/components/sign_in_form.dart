@@ -1,5 +1,6 @@
 import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
-import 'package:e_commerce_app_flutter/screens/login_success/login_success_screen.dart';
+import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:provider/provider.dart';
 
 import '../../../components/custom_suffix_icon.dart';
 import '../../../components/default_button.dart';
@@ -61,7 +62,10 @@ class _SignInFormState extends State<SignInForm> {
             press: () {
               if (_formkey.currentState.validate()) {
                 _formkey.currentState.save();
-                Navigator.pushNamed(context, LoginSuccessScreen.routeName);
+                context.read<AuthentificationService>().signIn(
+                      email: email.trim(),
+                      password: password.trim(),
+                    );
               }
             },
           ),
