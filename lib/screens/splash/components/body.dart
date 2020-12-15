@@ -31,56 +31,59 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SizedBox(
-        width: double.infinity,
-        child: Column(
-          children: [
-            Expanded(
-              flex: 3,
-              child: PageView.builder(
-                itemCount: splashData.length,
-                itemBuilder: (context, index) {
-                  return SplashContent(
-                    text: splashData[index]["text"],
-                    image: splashData[index]["image"],
-                  );
-                },
-                onPageChanged: (value) {
-                  setState(() {
-                    currentPage = value;
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: getProportionateScreenWidth(20),
-                ),
-                child: Column(
-                  children: [
-                    Spacer(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                          splashData.length, (index) => buildDot(index: index)),
-                    ),
-                    Spacer(
-                      flex: 3,
-                    ),
-                    DefaultButton(
-                      text: "Continue",
-                      press: () {
-                        Navigator.pushNamed(context, SignInScreen.routeName);
-                      },
-                    ),
-                    Spacer(),
-                  ],
+      child: SingleChildScrollView(
+        child: SizedBox(
+          width: double.infinity,
+          height: SizeConfig.screenHeight * 0.95,
+          child: Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: PageView.builder(
+                  itemCount: splashData.length,
+                  itemBuilder: (context, index) {
+                    return SplashContent(
+                      text: splashData[index]["text"],
+                      image: splashData[index]["image"],
+                    );
+                  },
+                  onPageChanged: (value) {
+                    setState(() {
+                      currentPage = value;
+                    });
+                  },
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: getProportionateScreenWidth(20),
+                  ),
+                  child: Column(
+                    children: [
+                      Spacer(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(splashData.length,
+                            (index) => buildDot(index: index)),
+                      ),
+                      Spacer(
+                        flex: 3,
+                      ),
+                      DefaultButton(
+                        text: "Continue",
+                        press: () {
+                          Navigator.pushNamed(context, SignInScreen.routeName);
+                        },
+                      ),
+                      Spacer(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
