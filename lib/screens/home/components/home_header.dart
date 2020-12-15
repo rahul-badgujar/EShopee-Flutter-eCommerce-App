@@ -1,3 +1,5 @@
+import 'package:e_commerce_app_flutter/components/rounded_icon_button.dart';
+import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/screens/cart/cart_screen.dart';
 import 'package:flutter/material.dart';
 import '../components/search_field.dart';
@@ -13,7 +15,13 @@ class HomeHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SearchField(),
+        RoundedIconButton(
+            iconData: Icons.menu,
+            press: () {
+              Scaffold.of(context).openDrawer();
+            }),
+        Expanded(child: SearchField()),
+        SizedBox(width: 5),
         IconButtonWithCounter(
           svgSrc: "assets/icons/Cart Icon.svg",
           numOfItems: 0,
@@ -25,6 +33,7 @@ class HomeHeader extends StatelessWidget {
                 ));
           },
         ),
+        SizedBox(width: 5),
         IconButtonWithCounter(
           svgSrc: "assets/icons/Bell.svg",
           numOfItems: 3,

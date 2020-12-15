@@ -1,7 +1,9 @@
+import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:flutter/material.dart';
 
 import '../../size_config.dart';
 import 'components/body.dart';
+import 'components/home_screen_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = "/home";
@@ -10,6 +12,7 @@ class HomeScreen extends StatelessWidget {
     SizeConfig().init(context);
     return Scaffold(
       body: Body(),
+      drawer: HomeScreenDrawer(),
     );
   }
 }
