@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/screens/change_display_picture/change_display_picture_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_email/change_email_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_password/change_password_screen.dart';
@@ -17,22 +18,31 @@ class HomeScreenDrawer extends StatelessWidget {
       child: ListView(
         children: [
           UserAccountsDrawerHeader(
+            margin: EdgeInsets.zero,
+            decoration: BoxDecoration(
+              color: kTextColor.withOpacity(0.15),
+            ),
             accountEmail: Text(
               AuthentificationService().currentUser.email ?? "No Email",
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 15,
+                color: Colors.black,
               ),
             ),
             accountName: Text(
               AuthentificationService().currentUser.displayName ?? "No Name",
               style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
               ),
             ),
             currentAccountPicture: CircleAvatar(
               backgroundImage:
-                  NetworkImage(AuthentificationService().currentUser.photoURL),
+                  AuthentificationService().currentUser.photoURL == null
+                      ? null
+                      : NetworkImage(
+                          AuthentificationService().currentUser.photoURL),
             ),
           ),
           buildEditAccountExpansionTile(context),

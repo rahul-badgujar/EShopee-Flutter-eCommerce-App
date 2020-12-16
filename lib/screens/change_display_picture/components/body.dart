@@ -28,7 +28,7 @@ class _BodyState extends State<Body> {
           child: Column(
             children: [
               Text(
-                "Change Display Picture",
+                "Change Avatar",
                 style: headingStyle,
               ),
               SizedBox(height: getProportionateScreenHeight(40)),
@@ -110,5 +110,6 @@ class _BodyState extends State<Body> {
     setState(() {
       AuthentificationService().uploadDisplayPictureForCurrentUser(downloadUrl);
     });
+    Navigator.pop(context);
   }
 }
