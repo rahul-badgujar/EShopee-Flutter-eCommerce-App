@@ -55,6 +55,8 @@ class _SignUpFormState extends State<SignUpForm> {
                   } else if (signUpStatus ==
                       AuthentificationService.EMAIL_ALREADY_IN_USE) {
                     print("Email already in use, try different email");
+                  } else {
+                    print("Exception result: $signUpStatus");
                   }
                 }
               },

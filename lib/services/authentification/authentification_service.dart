@@ -10,6 +10,7 @@ class AuthentificationService {
   static const String EMAIL_ALREADY_IN_USE = "email-already-in-use";
   static const String WEAK_PASSWORD = "weak-password";
   static const String USER_NOT_VERIFIED = "User not verified";
+  static const String PASSWORD_RESET_EMAIL_SENT = "Password reset email sent";
 
   FirebaseAuth _firebaseAuth;
 
@@ -74,8 +75,15 @@ class AuthentificationService {
     currentUser.updateProfile(displayName: updatedDisplayName);
   }
 
-  Future<void> resetPasswordForEmail(String email) async {
+  Future<String> resetPasswordForEmail(String email) async {
     assert(email != null);
-    await firebaseAuth.sendPasswordResetEmail(email: email);
+    try {
+      await firebaseAuth.sendPasswordResetEmail(email: email);
+      return PASSWORD_RESET_EMAIL_SENT;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        return NO_USER_FOUND;
+      }
+    }
   }
 }

@@ -85,6 +85,8 @@ class _SignInFormState extends State<SignInForm> {
                 } else if (signInStatus ==
                     AuthentificationService.WRONG_PASSWORD) {
                   print("Wrong password");
+                } else {
+                  print("Exception result: $signInStatus");
                 }
               }
             },

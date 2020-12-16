@@ -38,10 +38,18 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
                 // TODO: add code to trigger the Forgot Password task
                 _formKey.currentState.save();
                 final String emailInput = emailFieldController.text.trim();
-                await AuthentificationService()
+                String resultStatus = await AuthentificationService()
                     .resetPasswordForEmail(emailInput);
-                print("Verification Email sent...");
-                Navigator.pop(context);
+                if (resultStatus ==
+                    AuthentificationService.PASSWORD_RESET_EMAIL_SENT) {
+                  print("Verification Email sent...");
+                  Navigator.pop(context);
+                } else if (resultStatus ==
+                    AuthentificationService.NO_USER_FOUND) {
+                  print("No such user exist");
+                } else {
+                  print("Exception result: $resultStatus");
+                }
               }
             },
           ),
