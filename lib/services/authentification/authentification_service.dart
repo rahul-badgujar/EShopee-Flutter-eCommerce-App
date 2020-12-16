@@ -149,4 +149,8 @@ class AuthentificationService {
       return false;
     }
   }
+
+  Future<void> uploadDisplayPictureForCurrentUser(String url) async {
+    await currentUser.updateProfile(photoURL: url);
+  }
 }

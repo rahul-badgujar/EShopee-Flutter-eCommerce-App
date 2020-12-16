@@ -31,14 +31,8 @@ class HomeScreenDrawer extends StatelessWidget {
               ),
             ),
             currentAccountPicture: CircleAvatar(
-              child: AuthentificationService().currentUser.photoURL == null
-                  ? Icon(
-                      Icons.person_rounded,
-                      color: Colors.white,
-                      size: 36,
-                    )
-                  : Image.network(
-                      AuthentificationService().currentUser.photoURL),
+              backgroundImage:
+                  NetworkImage(AuthentificationService().currentUser.photoURL),
             ),
           ),
           buildEditAccountExpansionTile(context),

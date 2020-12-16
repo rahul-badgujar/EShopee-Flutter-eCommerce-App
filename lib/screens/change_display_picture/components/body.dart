@@ -4,6 +4,7 @@ import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -14,8 +15,8 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  bool isImageLoaded = false;
   File chosenImage;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -52,7 +53,9 @@ class _BodyState extends State<Body> {
       maxRadius: 80,
       backgroundColor: kTextColor.withOpacity(0.15),
       backgroundImage: chosenImage == null
-          ? null
+          ? ((AuthentificationService().currentUser.photoURL == null)
+              ? null
+              : NetworkImage(AuthentificationService().currentUser.photoURL))
           : MemoryImage(chosenImage.readAsBytesSync()),
     );
   }
@@ -81,16 +84,31 @@ class _BodyState extends State<Body> {
   }
 
   Widget buildActionButton() {
-    return isImageLoaded
+    return chosenImage == null
         ? DefaultButton(
-            text: "Upload Picture",
-            press: () {},
-          )
-        : DefaultButton(
             text: "Chose Picture",
             press: () {
               getImageFromUser();
             },
+          )
+        : DefaultButton(
+            text: "Upload Picture",
+            press: () {
+              uploadImageToFirestorage();
+            },
           );
+  }
+
+  Future<void> uploadImageToFirestorage() async {
+    final Reference firestorageRef = FirebaseStorage.instance.ref();
+    final String currentUserUid = AuthentificationService().currentUser.uid;
+    final snapshot = await firestorageRef
+        .child("user/display_picture/$currentUserUid")
+        .putFile(chosenImage);
+    final downloadUrl = await snapshot.ref.getDownloadURL();
+    print("Image uploaded at $downloadUrl");
+    setState(() {
+      AuthentificationService().uploadDisplayPictureForCurrentUser(downloadUrl);
+    });
   }
 }
