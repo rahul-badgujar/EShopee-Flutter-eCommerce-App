@@ -1,8 +1,8 @@
+import 'package:e_commerce_app_flutter/screens/change_display_picture/change_display_picture_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_email/change_email_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_password/change_password_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_phone/change_phone_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../change_display_name/change_display_name_screen.dart';
 
@@ -13,23 +13,32 @@ class HomeScreenDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User currentUser = AuthentificationService().currentUser;
     return Drawer(
       child: ListView(
         children: [
           UserAccountsDrawerHeader(
             accountEmail: Text(
-              currentUser.email ?? "No Email",
+              AuthentificationService().currentUser.email ?? "No Email",
               style: TextStyle(
                 fontSize: 16,
               ),
             ),
             accountName: Text(
-              currentUser.displayName ?? "No Name",
+              AuthentificationService().currentUser.displayName ?? "No Name",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
               ),
+            ),
+            currentAccountPicture: CircleAvatar(
+              child: AuthentificationService().currentUser.photoURL == null
+                  ? Icon(
+                      Icons.person_rounded,
+                      color: Colors.white,
+                      size: 36,
+                    )
+                  : Image.network(
+                      AuthentificationService().currentUser.photoURL),
             ),
           ),
           buildEditAccountExpansionTile(context),
@@ -56,6 +65,22 @@ class HomeScreenDrawer extends StatelessWidget {
         style: TextStyle(fontSize: 16, color: Colors.black),
       ),
       children: [
+        ListTile(
+          title: Text(
+            "Change Display Picture",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 15,
+            ),
+          ),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChangeDisplayPictureScreen(),
+                ));
+          },
+        ),
         ListTile(
           title: Text(
             "Change Display Name",
