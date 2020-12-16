@@ -73,4 +73,9 @@ class AuthentificationService {
   void updateCurrentUserDisplayName(String updatedDisplayName) {
     currentUser.updateProfile(displayName: updatedDisplayName);
   }
+
+  Future<void> resetPasswordForEmail(String email) async {
+    assert(email != null);
+    await firebaseAuth.sendPasswordResetEmail(email: email);
+  }
 }

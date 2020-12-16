@@ -2,6 +2,7 @@ import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 
 import 'package:e_commerce_app_flutter/components/no_account_text.dart';
+import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -13,8 +14,14 @@ class ForgotPasswordForm extends StatefulWidget {
 }
 
 class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
-  String email;
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController emailFieldController = TextEditingController();
+  @override
+  void dispose() {
+    emailFieldController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -26,9 +33,15 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
           SizedBox(height: SizeConfig.screenHeight * 0.1),
           DefaultButton(
             text: "Continue",
-            press: () {
+            press: () async {
               if (_formKey.currentState.validate()) {
                 // TODO: add code to trigger the Forgot Password task
+                _formKey.currentState.save();
+                final String emailInput = emailFieldController.text.trim();
+                await AuthentificationService()
+                    .resetPasswordForEmail(emailInput);
+                print("Verification Email sent...");
+                Navigator.pop(context);
               }
             },
           ),
@@ -42,6 +55,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
 
   TextFormField buildEmailFormField() {
     return TextFormField(
+      controller: emailFieldController,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         hintText: "Enter your email",
@@ -51,17 +65,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
           svgIcon: "assets/icons/Mail.svg",
         ),
       ),
-      onChanged: (value) {
-        email = value;
-        if (value.isNotEmpty) {
-          return kEmailNullError;
-        } else if (emailValidatorRegExp.hasMatch(value)) {
-          return kInvalidEmailError;
-        }
-        return null;
-      },
       validator: (value) {
-        email = value;
         if (value.isEmpty) {
           return kEmailNullError;
         } else if (!emailValidatorRegExp.hasMatch(value)) {
@@ -69,7 +73,6 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
         }
         return null;
       },
-      onSaved: (newValue) => email = newValue,
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
