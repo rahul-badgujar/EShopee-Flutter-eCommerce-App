@@ -1,6 +1,6 @@
+import 'package:e_commerce_app_flutter/screens/change_email/change_email_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_password/change_password_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_phone/change_phone_screen.dart';
-import 'package:e_commerce_app_flutter/screens/complete_profile/complete_profile_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +100,7 @@ class HomeScreenDrawer extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CompleteProfileScreen(),
+                  builder: (context) => ChangeEmailScreen(),
                 ));
           },
         ),

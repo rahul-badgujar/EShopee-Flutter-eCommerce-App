@@ -17,6 +17,7 @@ class AuthentificationService {
   static const String USER_MISMATCH = "user-mismatch";
   static const String INVALID_CREDENTIALS = "invalid-credential";
   static const String INVALID_EMAIL = "invalid-email";
+  static const String EMAIL_UPDATE_SUCCESSFULL = "Email update successful";
 
   FirebaseAuth _firebaseAuth;
 
@@ -94,7 +95,7 @@ class AuthentificationService {
     }
   }
 
-  Future<String> changePassword(
+  Future<String> changePasswordForCurrentUser(
       {String oldPassword, @required String newPassword}) async {
     try {
       bool isOldPasswordProvidedCorrect = true;
@@ -104,7 +105,27 @@ class AuthentificationService {
       }
       if (isOldPasswordProvidedCorrect) {
         await firebaseAuth.currentUser.updatePassword(newPassword);
+
         return PASSWORD_UPDATE_SUCCESSFULL;
+      } else {
+        return WRONG_PASSWORD;
+      }
+    } on FirebaseAuthException catch (e) {
+      return e.code;
+    }
+  }
+
+  Future<String> changeEmailForCurrentUser(
+      {String password, String newEmail}) async {
+    try {
+      bool isPasswordProvidedCorrect = true;
+      if (password != null) {
+        isPasswordProvidedCorrect = await verifyCurrentUserPassword(password);
+      }
+      if (isPasswordProvidedCorrect) {
+        await currentUser.verifyBeforeUpdateEmail(newEmail);
+
+        return EMAIL_UPDATE_SUCCESSFULL;
       } else {
         return WRONG_PASSWORD;
       }

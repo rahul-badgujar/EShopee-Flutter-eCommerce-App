@@ -1,6 +1,5 @@
 import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
-import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +54,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
                     print("Current password provided is wrong");
                   } else {
                     final String updationStatus =
-                        await authService.changePassword(
+                        await authService.changePasswordForCurrentUser(
                             newPassword: newPasswordController.text);
                     if (updationStatus ==
                         AuthentificationService.PASSWORD_UPDATE_SUCCESSFULL) {
