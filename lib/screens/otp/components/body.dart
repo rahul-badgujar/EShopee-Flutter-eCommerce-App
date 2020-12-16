@@ -85,7 +85,7 @@ class _OtpFormState extends State<OtpForm> {
         PinCodeTextField(
           key: _formKey,
           appContext: context,
-          length: 4,
+          length: 6,
           obscureText: true,
           animationType: AnimationType.fade,
           animationDuration: Duration(milliseconds: 300),
@@ -112,7 +112,7 @@ class _OtpFormState extends State<OtpForm> {
         DefaultButton(
           text: "Continue",
           press: () {
-            print("Entered OTP is $enteredOtp");
+            Navigator.pop(context, {"status": "RESULT_OK", "otp": enteredOtp});
           },
         ),
       ],

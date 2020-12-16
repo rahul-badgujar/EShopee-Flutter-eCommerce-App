@@ -4,7 +4,6 @@ import 'package:e_commerce_app_flutter/screens/sign_in/sign_in_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../constants.dart';
 
@@ -39,7 +38,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 if (_formKey.currentState.validate()) {
                   // goto complete profile page
                   final AuthentificationService authService =
-                      context.read<AuthentificationService>();
+                      AuthentificationService();
                   String signUpStatus = await authService.signUp(
                     email: email,
                     password: password,

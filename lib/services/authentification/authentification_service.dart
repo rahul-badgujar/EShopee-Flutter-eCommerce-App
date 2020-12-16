@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 
 class AuthentificationService {
   static const String SIGN_IN_SUCCESS_MSG = "Signed In";
@@ -9,15 +10,28 @@ class AuthentificationService {
   static const String EMAIL_ALREADY_IN_USE = "email-already-in-use";
   static const String WEAK_PASSWORD = "weak-password";
 
-  final FirebaseAuth _firebaseAuth;
+  FirebaseAuth _firebaseAuth;
 
-  AuthentificationService(this._firebaseAuth);
+  AuthentificationService._privateConstructor();
+  static AuthentificationService _instance =
+      AuthentificationService._privateConstructor();
 
-  Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
+  FirebaseAuth get firebaseAuth {
+    if (_firebaseAuth == null) {
+      _firebaseAuth = FirebaseAuth.instance;
+    }
+    return _firebaseAuth;
+  }
+
+  factory AuthentificationService() {
+    return _instance;
+  }
+
+  Stream<User> get authStateChanges => firebaseAuth.authStateChanges();
 
   Future<String> signIn({String email, String password}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      await firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
       return SIGN_IN_SUCCESS_MSG;
     } on FirebaseAuthException catch (e) {
@@ -27,7 +41,7 @@ class AuthentificationService {
 
   Future<String> signUp({String email, String password}) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
+      await firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
       return SIGN_UP_SUCCESS_MSG;
     } on FirebaseAuthException catch (e) {
@@ -36,16 +50,16 @@ class AuthentificationService {
   }
 
   Future<void> signOut() async {
-    await _firebaseAuth.signOut();
+    await firebaseAuth.signOut();
   }
 
-  bool get currentUserVerified => _firebaseAuth.currentUser.emailVerified;
+  bool get currentUserVerified => firebaseAuth.currentUser.emailVerified;
 
   Future<void> sendVerificationEmailToCurrentUser() async {
-    await _firebaseAuth.currentUser.sendEmailVerification();
+    await firebaseAuth.currentUser.sendEmailVerification();
   }
 
-  User get currentUser => _firebaseAuth.currentUser;
+  User get currentUser => firebaseAuth.currentUser;
 
   void updateCurrentUserDisplayName(String updatedDisplayName) {
     currentUser.updateProfile(displayName: updatedDisplayName);

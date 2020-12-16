@@ -1,8 +1,6 @@
 import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 
-import 'package:provider/provider.dart';
-
 import '../../../components/custom_suffix_icon.dart';
 import '../../../components/default_button.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +67,7 @@ class _SignInFormState extends State<SignInForm> {
               if (_formkey.currentState.validate()) {
                 _formkey.currentState.save();
                 final AuthentificationService authService =
-                    context.read<AuthentificationService>();
+                    AuthentificationService();
                 String signInStatus = await authService.signIn(
                   email: email.trim(),
                   password: password.trim(),

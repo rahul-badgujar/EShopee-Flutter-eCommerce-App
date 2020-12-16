@@ -1,8 +1,8 @@
-import 'package:e_commerce_app_flutter/screens/otp/otp_screen.dart';
+import 'package:e_commerce_app_flutter/screens/change_phone/change_phone_screen.dart';
+import 'package:e_commerce_app_flutter/screens/complete_profile/complete_profile_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../change_display_name/change_display_name_screen.dart';
 
 class HomeScreenDrawer extends StatelessWidget {
@@ -12,8 +12,7 @@ class HomeScreenDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User currentUser =
-        context.watch<AuthentificationService>().currentUser;
+    final User currentUser = AuthentificationService().currentUser;
     return Drawer(
       child: ListView(
         children: [
@@ -56,7 +55,7 @@ class HomeScreenDrawer extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => OtpScreen(),
+                        builder: (context) => ChangePhoneScreen(),
                       ));
                 },
               ),
@@ -68,7 +67,13 @@ class HomeScreenDrawer extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CompleteProfileScreen(),
+                      ));
+                },
               ),
               ListTile(
                 title: Text(
@@ -89,7 +94,7 @@ class HomeScreenDrawer extends StatelessWidget {
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
             onTap: () {
-              context.read<AuthentificationService>().signOut();
+              AuthentificationService().signOut();
             },
           ),
         ],

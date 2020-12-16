@@ -38,8 +38,7 @@ class _BodyState extends State<Body> {
                   press: () {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      context
-                          .read<AuthentificationService>()
+                      AuthentificationService()
                           .updateCurrentUserDisplayName(fieldController.text);
                       print(
                           "Display Name updated to ${fieldController.text} ...");

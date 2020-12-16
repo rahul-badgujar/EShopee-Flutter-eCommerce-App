@@ -4,7 +4,6 @@ import 'package:e_commerce_app_flutter/services/authentification/authentificatio
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../../constants.dart';
 
 class CompleteProfileForm extends StatefulWidget {
@@ -25,7 +24,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
 
   @override
   void initState() {
-    currentUser = context.read<AuthentificationService>().currentUser;
+    currentUser = AuthentificationService().currentUser;
     super.initState();
   }
 
@@ -65,6 +64,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
     print("Fill profile details for ${currentUser.email}");
     emailEditController.text = currentUser.email;
     displayNameEditController.text = currentUser.displayName;
+    phoneNumberEditController.text = currentUser.phoneNumber;
     return form;
   }
 
