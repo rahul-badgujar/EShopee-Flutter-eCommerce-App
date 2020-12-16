@@ -2,7 +2,6 @@ import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class Body extends StatefulWidget {
   @override

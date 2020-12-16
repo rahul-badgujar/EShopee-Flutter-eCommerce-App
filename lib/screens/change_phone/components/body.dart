@@ -45,35 +45,43 @@ class _BodyState extends State<Body> {
                           "Update Phone request for ${authService.currentUser.email} ...");
                       try {
                         print("Calling verifyPhoneNumber()");
+                        final verificationCompleteCallback =
+                            (credential) async {
+                          print("Inside verificationCompleted()");
+                        };
+                        final verificationFailedCallback = (exception) {
+                          print("Inside verificationFailed()");
+                          if (exception.code == 'invalid-phone-number') {
+                            print('The provided phone number is not valid.');
+                          } else {
+                            print(
+                                "Exception received in verificationFailed: ${exception.code}");
+                          }
+                        };
+                        final codeSentCallback =
+                            (verificationId, resendToken) async {
+                          print(
+                              "Inside codeSent() -> verificationId: $verificationId");
+                          PhoneAuthCredential phoneAuthCredential =
+                              PhoneAuthProvider.credential(
+                            verificationId: verificationId,
+                            smsCode: "666666",
+                          );
+                          await authService.currentUser
+                              .updatePhoneNumber(phoneAuthCredential);
+                        };
+                        final codeAutoRetrivalTimeoutCallback =
+                            (verificationId) {
+                          print(
+                              "Inside codeAutoRetrievalTimeout() -> verificationId: $verificationId");
+                        };
                         authService.verifyPhoneNumber(
                           phoneNumber: fieldController.text,
-                          verificationCompleted: (credential) async {
-                            print("Inside verificationCompleted()");
-                          },
-                          verificationFailed: (exception) {
-                            print("Inside verificationFailed()");
-                            if (exception.code == 'invalid-phone-number') {
-                              print('The provided phone number is not valid.');
-                            } else {
-                              print(
-                                  "Exception received in verificationFailed: ${exception.code}");
-                            }
-                          },
-                          codeSent: (verificationId, resendToken) async {
-                            print(
-                                "Inside codeSent() -> verificationId: $verificationId");
-                            PhoneAuthCredential phoneAuthCredential =
-                                PhoneAuthProvider.credential(
-                              verificationId: verificationId,
-                              smsCode: "666666",
-                            );
-                            await authService.currentUser
-                                .updatePhoneNumber(phoneAuthCredential);
-                          },
-                          codeAutoRetrievalTimeout: (verificationId) {
-                            print(
-                                "Inside codeAutoRetrievalTimeout() -> verificationId: $verificationId");
-                          },
+                          verificationCompleted: verificationCompleteCallback,
+                          verificationFailed: verificationFailedCallback,
+                          codeSent: codeSentCallback,
+                          codeAutoRetrievalTimeout:
+                              codeAutoRetrivalTimeoutCallback,
                         );
                       } catch (e) {
                         print("Exception: $e");

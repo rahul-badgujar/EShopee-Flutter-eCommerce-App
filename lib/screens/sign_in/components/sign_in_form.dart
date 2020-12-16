@@ -74,13 +74,11 @@ class _SignInFormState extends State<SignInForm> {
                 );
                 if (signInStatus ==
                     AuthentificationService.SIGN_IN_SUCCESS_MSG) {
-                  if (authService.currentUserVerified == false) {
-                    print(
-                        "Verification Email sent. Please verify Email Address to continue");
-                    await authService.sendVerificationEmailToCurrentUser();
-                  } else {
-                    print("Signed In succesfully");
-                  }
+                  print("Signed In succesfully");
+                } else if (signInStatus ==
+                    AuthentificationService.USER_NOT_VERIFIED) {
+                  print(
+                      "Verification Email sent. Please verify Email Address to continue");
                 } else if (signInStatus ==
                     AuthentificationService.NO_USER_FOUND) {
                   print("User not registered");

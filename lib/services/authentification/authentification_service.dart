@@ -9,6 +9,7 @@ class AuthentificationService {
   static const String WRONG_PASSWORD = "wrong-password";
   static const String EMAIL_ALREADY_IN_USE = "email-already-in-use";
   static const String WEAK_PASSWORD = "weak-password";
+  static const String USER_NOT_VERIFIED = "User not verified";
 
   FirebaseAuth _firebaseAuth;
 
@@ -31,9 +32,14 @@ class AuthentificationService {
 
   Future<String> signIn({String email, String password}) async {
     try {
-      await firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
-      return SIGN_IN_SUCCESS_MSG;
+      final UserCredential userCredential = await firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: password);
+      if (userCredential.user.emailVerified) {
+        return SIGN_IN_SUCCESS_MSG;
+      } else {
+        await userCredential.user.sendEmailVerification();
+        return USER_NOT_VERIFIED;
+      }
     } on FirebaseAuthException catch (e) {
       return e.code;
     }
@@ -41,8 +47,11 @@ class AuthentificationService {
 
   Future<String> signUp({String email, String password}) async {
     try {
-      await firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      final UserCredential userCredential = await firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      if (userCredential.user.emailVerified == false) {
+        await userCredential.user.sendEmailVerification();
+      }
       return SIGN_UP_SUCCESS_MSG;
     } on FirebaseAuthException catch (e) {
       return e.code;
