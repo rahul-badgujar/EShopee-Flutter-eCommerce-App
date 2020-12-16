@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
 class AuthentificationService {
   static const String SIGN_IN_SUCCESS_MSG = "Signed In";
@@ -11,6 +12,11 @@ class AuthentificationService {
   static const String WEAK_PASSWORD = "weak-password";
   static const String USER_NOT_VERIFIED = "User not verified";
   static const String PASSWORD_RESET_EMAIL_SENT = "Password reset email sent";
+  static const String PASSWORD_UPDATE_SUCCESSFULL =
+      "Password update successfull";
+  static const String USER_MISMATCH = "user-mismatch";
+  static const String INVALID_CREDENTIALS = "invalid-credential";
+  static const String INVALID_EMAIL = "invalid-email";
 
   FirebaseAuth _firebaseAuth;
 
@@ -76,14 +82,50 @@ class AuthentificationService {
   }
 
   Future<String> resetPasswordForEmail(String email) async {
-    assert(email != null);
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);
       return PASSWORD_RESET_EMAIL_SENT;
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
         return NO_USER_FOUND;
+      } else {
+        return e.code;
       }
+    }
+  }
+
+  Future<String> changePassword(
+      {String oldPassword, @required String newPassword}) async {
+    try {
+      bool isOldPasswordProvidedCorrect = true;
+      if (oldPassword != null) {
+        isOldPasswordProvidedCorrect =
+            await verifyCurrentUserPassword(oldPassword);
+      }
+      if (isOldPasswordProvidedCorrect) {
+        await firebaseAuth.currentUser.updatePassword(newPassword);
+        return PASSWORD_UPDATE_SUCCESSFULL;
+      } else {
+        return WRONG_PASSWORD;
+      }
+    } on FirebaseAuthException catch (e) {
+      return e.code;
+    }
+  }
+
+  Future<bool> verifyCurrentUserPassword(String password) async {
+    try {
+      final AuthCredential authCredential = EmailAuthProvider.credential(
+        email: currentUser.email,
+        password: password,
+      );
+
+      final authCredentials =
+          await currentUser.reauthenticateWithCredential(authCredential);
+      return authCredentials != null;
+    } on FirebaseAuthException catch (e) {
+      print(e.code);
+      return false;
     }
   }
 }

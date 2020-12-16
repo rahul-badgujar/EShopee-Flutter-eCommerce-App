@@ -35,7 +35,6 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
             text: "Continue",
             press: () async {
               if (_formKey.currentState.validate()) {
-                // TODO: add code to trigger the Forgot Password task
                 _formKey.currentState.save();
                 final String emailInput = emailFieldController.text.trim();
                 String resultStatus = await AuthentificationService()
