@@ -59,14 +59,21 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
                         AuthentificationService.EMAIL_UPDATE_SUCCESSFULL) {
                       print(
                           "Email updation action triggered, verify email to change");
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              "Verification Email sent, Please verify new email")));
                     } else if (updationStatus ==
                         AuthentificationService.WRONG_PASSWORD) {
                       print("Wrong password...");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Wrong Password")));
                     } else {
                       print("Exception result: $updationStatus");
                     }
                   } else {
                     print("Entered password is wrong...");
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Something went wrong")));
                   }
                 }
               },

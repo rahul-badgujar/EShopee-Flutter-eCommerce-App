@@ -49,6 +49,8 @@ class _ChangeDisplayNameFormState extends State<ChangeDisplayNameForm> {
                     newDisplayNameController.text);
                 print(
                     "Display Name updated to ${newDisplayNameController.text} ...");
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Updated Display Name")));
               }
             },
           ),

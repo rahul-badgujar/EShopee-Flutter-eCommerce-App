@@ -42,12 +42,17 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
                 if (resultStatus ==
                     AuthentificationService.PASSWORD_RESET_EMAIL_SENT) {
                   print("Verification Email sent...");
-                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Verification Email sent")));
                 } else if (resultStatus ==
                     AuthentificationService.NO_USER_FOUND) {
                   print("No such user exist");
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("No user exist with given email")));
                 } else {
                   print("Exception result: $resultStatus");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Something went wrong")));
                 }
               }
             },

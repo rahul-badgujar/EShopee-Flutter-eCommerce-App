@@ -46,7 +46,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   if (signUpStatus ==
                       AuthentificationService.SIGN_UP_SUCCESS_MSG) {
                     print("Sign Up succesfull, try signing in");
-
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            "Signed Up succesfully, Please Sign In to continue")));
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -55,8 +57,13 @@ class _SignUpFormState extends State<SignUpForm> {
                   } else if (signUpStatus ==
                       AuthentificationService.EMAIL_ALREADY_IN_USE) {
                     print("Email already in use, try different email");
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content:
+                            Text("Email already in use, try different email")));
                   } else {
                     print("Exception result: $signUpStatus");
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Something went wrong")));
                   }
                 }
               },

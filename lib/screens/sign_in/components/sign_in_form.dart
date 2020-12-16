@@ -75,18 +75,29 @@ class _SignInFormState extends State<SignInForm> {
                 if (signInStatus ==
                     AuthentificationService.SIGN_IN_SUCCESS_MSG) {
                   print("Signed In succesfully");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Signed In succesfully")));
                 } else if (signInStatus ==
                     AuthentificationService.USER_NOT_VERIFIED) {
                   print(
                       "Verification Email sent. Please verify Email Address to continue");
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          "Please verify email first, Verification email sent")));
                 } else if (signInStatus ==
                     AuthentificationService.NO_USER_FOUND) {
                   print("User not registered");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("No such user found")));
                 } else if (signInStatus ==
                     AuthentificationService.WRONG_PASSWORD) {
                   print("Wrong password");
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text("Wrong password")));
                 } else {
                   print("Exception result: $signInStatus");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Something went wrong")));
                 }
               }
             },

@@ -73,6 +73,9 @@ class _BodyState extends State<Body> {
         await imgPicker.getImage(source: ImageSource.gallery);
     if (imagePicked == null) {
       print("Image picked invalid");
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Invalid Image")));
       return;
     }
     chosenImage = File(imagePicked.path);
@@ -100,6 +103,8 @@ class _BodyState extends State<Body> {
   }
 
   Future<void> uploadImageToFirestorage() async {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Updating Display Picture, Please wait")));
     final Reference firestorageRef = FirebaseStorage.instance.ref();
     final String currentUserUid = AuthentificationService().currentUser.uid;
     final snapshot = await firestorageRef
@@ -110,6 +115,7 @@ class _BodyState extends State<Body> {
     setState(() {
       AuthentificationService().uploadDisplayPictureForCurrentUser(downloadUrl);
     });
+
     Navigator.pop(context);
   }
 }
