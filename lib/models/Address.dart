@@ -38,8 +38,9 @@ class Address extends Model {
     this.phone,
   }) : super(id);
 
-  factory Address.fromMap(Map<String, dynamic> map) {
+  factory Address.fromMap(Map<String, dynamic> map, {String id}) {
     return Address(
+      id: id,
       title: map[TITLE_KEY],
       receiver: map[RECEIVER_KEY],
       addresLine1: map[ADDRESS_LINE_1_KEY],
@@ -56,6 +57,7 @@ class Address extends Model {
   @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      id: id,
       TITLE_KEY: title,
       RECEIVER_KEY: receiver,
       ADDRESS_LINE_1_KEY: addresLine1,

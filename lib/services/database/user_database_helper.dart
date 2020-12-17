@@ -27,7 +27,8 @@ class UserDatabaseHelper {
         .collection(ADDRESSES_COLLECTION_NAME)
         .get();
     final List<Address> addresses =
-        snapshot.docs.map((e) => Address.fromMap(e.data())).toList();
+        snapshot.docs.map((e) => Address.fromMap(e.data(), id: e.id)).toList();
+
     return addresses;
   }
 }
