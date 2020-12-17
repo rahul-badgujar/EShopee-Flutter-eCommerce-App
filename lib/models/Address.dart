@@ -56,8 +56,7 @@ class Address extends Model {
 
   @override
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      id: id,
+    final map = <String, dynamic>{
       TITLE_KEY: title,
       RECEIVER_KEY: receiver,
       ADDRESS_LINE_1_KEY: addresLine1,
@@ -69,6 +68,8 @@ class Address extends Model {
       PINCODE_KEY: pincode,
       PHONE_KEY: phone,
     };
+    if (id != null) map['id'] = id;
+    return map;
   }
 
   @override

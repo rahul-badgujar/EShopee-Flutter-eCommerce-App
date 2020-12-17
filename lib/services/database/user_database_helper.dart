@@ -3,6 +3,9 @@ import 'package:e_commerce_app_flutter/models/Address.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 
 class UserDatabaseHelper {
+  static const String NEW_ADDRESS_ADDED_SUCCESSFULLY =
+      "New address added successfully";
+
   static const String USERS_COLLECTION_NAME = "users";
   static const String ADDRESSES_COLLECTION_NAME = "addresses";
   UserDatabaseHelper._privateConstructor();
@@ -30,5 +33,19 @@ class UserDatabaseHelper {
         snapshot.docs.map((e) => Address.fromMap(e.data(), id: e.id)).toList();
 
     return addresses;
+  }
+
+  Future<String> addAddressForCurrentUser(Address address) async {
+    String uid = AuthentificationService().currentUser.uid;
+    final addressesCollectionReference = await firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(ADDRESSES_COLLECTION_NAME);
+    try {
+      await addressesCollectionReference.add(address.toMap());
+      return NEW_ADDRESS_ADDED_SUCCESSFULLY;
+    } on Exception catch (e) {
+      return e.toString();
+    }
   }
 }

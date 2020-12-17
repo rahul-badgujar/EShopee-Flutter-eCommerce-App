@@ -1,6 +1,7 @@
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
+import 'package:e_commerce_app_flutter/screens/add_new_address/add_new_address_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,14 @@ class Body extends StatelessWidget {
               SizedBox(height: getProportionateScreenHeight(20)),
               DefaultButton(
                 text: "Add New Address",
-                press: () async {},
+                press: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddNewAddressScreen(),
+                    ),
+                  );
+                },
               ),
               SizedBox(height: getProportionateScreenHeight(30)),
               FutureBuilder(
