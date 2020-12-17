@@ -36,6 +36,7 @@ class Body extends StatelessWidget {
                 },
               ),
               SizedBox(height: getProportionateScreenHeight(30)),
+              // TODO: Fix -> after deleting address, this page should is not refreshing and showing deleted addresses
               FutureBuilder(
                 future: UserDatabaseHelper().getAddressesListForCurrentUser(),
                 builder: (context, snapshot) {

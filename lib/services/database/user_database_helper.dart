@@ -5,6 +5,8 @@ import 'package:e_commerce_app_flutter/services/authentification/authentificatio
 class UserDatabaseHelper {
   static const String NEW_ADDRESS_ADDED_SUCCESSFULLY =
       "New address added successfully";
+  static const String ADDRESS_DELETED_SUCCESSFULLY =
+      "Address deleted successfully";
 
   static const String USERS_COLLECTION_NAME = "users";
   static const String ADDRESSES_COLLECTION_NAME = "addresses";
@@ -37,13 +39,29 @@ class UserDatabaseHelper {
 
   Future<String> addAddressForCurrentUser(Address address) async {
     String uid = AuthentificationService().currentUser.uid;
-    final addressesCollectionReference = await firestore
-        .collection(USERS_COLLECTION_NAME)
-        .doc(uid)
-        .collection(ADDRESSES_COLLECTION_NAME);
+
     try {
+      final addressesCollectionReference = firestore
+          .collection(USERS_COLLECTION_NAME)
+          .doc(uid)
+          .collection(ADDRESSES_COLLECTION_NAME);
       await addressesCollectionReference.add(address.toMap());
       return NEW_ADDRESS_ADDED_SUCCESSFULLY;
+    } on Exception catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<String> deleteAddressForCurrentUser(String id) async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final addressDocReference = firestore
+          .collection(USERS_COLLECTION_NAME)
+          .doc(uid)
+          .collection(ADDRESSES_COLLECTION_NAME)
+          .doc(id);
+      await addressDocReference.delete();
+      return ADDRESS_DELETED_SUCCESSFULLY;
     } on Exception catch (e) {
       return e.toString();
     }

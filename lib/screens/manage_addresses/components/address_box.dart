@@ -1,8 +1,6 @@
-import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
+import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:flutter/material.dart';
-
-import '../../../size_config.dart';
 
 class AddressBox extends StatelessWidget {
   const AddressBox({
@@ -109,12 +107,28 @@ class AddressBox extends StatelessWidget {
                     fontSize: 18,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  deleteButtonCallback(context);
+                },
               )
             ],
           ),
         ],
       ),
     );
+  }
+
+  Future<void> deleteButtonCallback(BuildContext context) async {
+    String status =
+        await UserDatabaseHelper().deleteAddressForCurrentUser(address.id);
+    if (status == UserDatabaseHelper.ADDRESS_DELETED_SUCCESSFULLY) {
+      print("Address deleted successfully");
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Address deleted successfully")));
+    } else {
+      print("Result Exception: $status");
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Something went wrong...")));
+    }
   }
 }
