@@ -8,59 +8,61 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import '../provider_models/body_model.dart';
 
-class Body extends StatefulWidget {
-  @override
-  _BodyState createState() => _BodyState();
-}
-
-class _BodyState extends State<Body> {
-  File chosenImage;
-
+class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding:
-            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            children: [
-              Text(
-                "Change Avatar",
-                style: headingStyle,
-              ),
-              SizedBox(height: getProportionateScreenHeight(40)),
-              GestureDetector(
-                child: buildDisplayPictureAvatar(),
-                onTap: () {
-                  getImageFromUser();
-                },
-              ),
-              SizedBox(height: getProportionateScreenHeight(80)),
-              buildActionButton(),
-            ],
+    return ChangeNotifierProvider<BodyState>(
+      create: (context) => BodyState(),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+          child: SizedBox(
+            width: double.infinity,
+            child: Consumer<BodyState>(
+              builder: (context, bodyState, child) {
+                return Column(
+                  children: [
+                    Text(
+                      "Change Avatar",
+                      style: headingStyle,
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(40)),
+                    GestureDetector(
+                      child: buildDisplayPictureAvatar(context, bodyState),
+                      onTap: () {
+                        getImageFromUser(context, bodyState);
+                      },
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(80)),
+                    buildActionButton(context, bodyState),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget buildDisplayPictureAvatar() {
+  Widget buildDisplayPictureAvatar(BuildContext context, BodyState bodyState) {
     return CircleAvatar(
       minRadius: 30,
       maxRadius: 80,
       backgroundColor: kTextColor.withOpacity(0.15),
-      backgroundImage: chosenImage == null
+      backgroundImage: bodyState.chosenImage == null
           ? ((AuthentificationService().currentUser.photoURL == null)
               ? null
               : NetworkImage(AuthentificationService().currentUser.photoURL))
-          : MemoryImage(chosenImage.readAsBytesSync()),
+          : MemoryImage(bodyState.chosenImage.readAsBytesSync()),
     );
   }
 
-  void getImageFromUser() async {
+  void getImageFromUser(BuildContext context, BodyState bodyState) async {
     final PermissionStatus photoPermissionStatus =
         await Permission.photos.request();
     if (!photoPermissionStatus.isGranted) {
@@ -78,52 +80,50 @@ class _BodyState extends State<Body> {
           .showSnackBar(SnackBar(content: Text("Invalid Image")));
       return;
     }
-    chosenImage = File(imagePicked.path);
-    if (chosenImage == null) {
+    bodyState.setChosenImage = File(imagePicked.path);
+    if (bodyState.chosenImage == null) {
       print("Image chosen is not valid");
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Invalid Image")));
-    } else if (chosenImage.lengthSync() >
+    } else if (bodyState.chosenImage.lengthSync() >
         (500 * 1024)) // Display Picture max allowed size 500kB
     {
-      chosenImage = null;
+      bodyState.setChosenImage = null;
       print("Max picture size is 500kB, try another picture");
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Max picture size is 500kB, try another picture")));
-    } else {
-      setState(() {});
     }
   }
 
-  Widget buildActionButton() {
-    return chosenImage == null
+  Widget buildActionButton(BuildContext context, BodyState bodyState) {
+    return bodyState.chosenImage == null
         ? DefaultButton(
             text: "Chose Picture",
             press: () {
-              getImageFromUser();
+              getImageFromUser(context, bodyState);
             },
           )
         : DefaultButton(
             text: "Upload Picture",
             press: () {
-              uploadImageToFirestorage();
+              uploadImageToFirestorage(context, bodyState);
             },
           );
   }
 
-  Future<void> uploadImageToFirestorage() async {
+  Future<void> uploadImageToFirestorage(
+      BuildContext context, BodyState bodyState) async {
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Updating Display Picture, Please wait")));
     final Reference firestorageRef = FirebaseStorage.instance.ref();
     final String currentUserUid = AuthentificationService().currentUser.uid;
     final snapshot = await firestorageRef
         .child("user/display_picture/$currentUserUid")
-        .putFile(chosenImage);
+        .putFile(bodyState.chosenImage);
     final downloadUrl = await snapshot.ref.getDownloadURL();
     print("Image uploaded at $downloadUrl");
-    setState(() {
-      AuthentificationService().uploadDisplayPictureForCurrentUser(downloadUrl);
-    });
+
+    AuthentificationService().uploadDisplayPictureForCurrentUser(downloadUrl);
 
     Navigator.pop(context);
   }
