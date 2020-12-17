@@ -83,4 +83,13 @@ class UserDatabaseHelper {
       return e.toString();
     }
   }
+
+  Stream<QuerySnapshot> get currentUserAddressesStream {
+    String uid = AuthentificationService().currentUser.uid;
+    return firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(ADDRESSES_COLLECTION_NAME)
+        .snapshots();
+  }
 }

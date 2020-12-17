@@ -122,16 +122,42 @@ class AddressBox extends StatelessWidget {
   }
 
   Future<void> deleteButtonCallback(BuildContext context) async {
-    String status =
-        await UserDatabaseHelper().deleteAddressForCurrentUser(address.id);
-    if (status == UserDatabaseHelper.ADDRESS_DELETED_SUCCESSFULLY) {
-      print("Address deleted successfully");
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Address deleted successfully")));
-    } else {
-      print("Result Exception: $status");
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Something went wrong...")));
+    final confirmDeletion = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Confirmation"),
+          content: Text("Are you sure you want to delete this Address ?"),
+          actions: [
+            FlatButton(
+              child: Text("Yes"),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            ),
+            FlatButton(
+              child: Text("No"),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmDeletion) {
+      String status =
+          await UserDatabaseHelper().deleteAddressForCurrentUser(address.id);
+      if (status == UserDatabaseHelper.ADDRESS_DELETED_SUCCESSFULLY) {
+        print("Address deleted successfully");
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Address deleted successfully")));
+      } else {
+        print("Result Exception: $status");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Something went wrong...")));
+      }
     }
   }
 
