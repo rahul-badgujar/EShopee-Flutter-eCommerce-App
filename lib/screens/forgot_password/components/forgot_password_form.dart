@@ -32,30 +32,8 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
           SizedBox(height: getProportionateScreenHeight(30)),
           SizedBox(height: SizeConfig.screenHeight * 0.1),
           DefaultButton(
-            text: "Continue",
-            press: () async {
-              if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
-                final String emailInput = emailFieldController.text.trim();
-                String resultStatus = await AuthentificationService()
-                    .resetPasswordForEmail(emailInput);
-                if (resultStatus ==
-                    AuthentificationService.PASSWORD_RESET_EMAIL_SENT) {
-                  print("Verification Email sent...");
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Verification Email sent")));
-                } else if (resultStatus ==
-                    AuthentificationService.NO_USER_FOUND) {
-                  print("No such user exist");
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text("No user exist with given email")));
-                } else {
-                  print("Exception result: $resultStatus");
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Something went wrong")));
-                }
-              }
-            },
+            text: "Send verification email",
+            press: sendVerificationEmailButtonCallback,
           ),
           SizedBox(height: SizeConfig.screenHeight * 0.1),
           NoAccountText(),
@@ -87,5 +65,27 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
       },
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
+  }
+
+  Future<void> sendVerificationEmailButtonCallback() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      final String emailInput = emailFieldController.text.trim();
+      String resultStatus =
+          await AuthentificationService().resetPasswordForEmail(emailInput);
+      if (resultStatus == AuthentificationService.PASSWORD_RESET_EMAIL_SENT) {
+        print("Verification Email sent...");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Verification Email sent")));
+      } else if (resultStatus == AuthentificationService.NO_USER_FOUND) {
+        print("No such user exist");
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("No user exist with given email")));
+      } else {
+        print("Exception result: $resultStatus");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Something went wrong...")));
+      }
+    }
   }
 }
