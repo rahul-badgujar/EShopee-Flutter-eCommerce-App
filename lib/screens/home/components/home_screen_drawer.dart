@@ -3,6 +3,7 @@ import 'package:e_commerce_app_flutter/screens/change_display_picture/change_dis
 import 'package:e_commerce_app_flutter/screens/change_email/change_email_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_password/change_password_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_phone/change_phone_screen.dart';
+import 'package:e_commerce_app_flutter/screens/manage_addresses/manage_addresses_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:flutter/material.dart';
 import '../../change_display_name/change_display_name_screen.dart';
@@ -46,6 +47,21 @@ class HomeScreenDrawer extends StatelessWidget {
             ),
           ),
           buildEditAccountExpansionTile(context),
+          ListTile(
+            leading: Icon(Icons.edit_location),
+            title: Text(
+              "Manage Addresses",
+              style: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ManageAddressesScreen(),
+                ),
+              );
+            },
+          ),
           ListTile(
             leading: Icon(Icons.logout),
             title: Text(
