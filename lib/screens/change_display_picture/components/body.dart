@@ -83,7 +83,9 @@ class _BodyState extends State<Body> {
       print("Image chosen is not valid");
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Invalid Image")));
-    } else if (chosenImage.lengthSync() > (500 * 1024)) {
+    } else if (chosenImage.lengthSync() >
+        (500 * 1024)) // Display Picture max allowed size 500kB
+    {
       chosenImage = null;
       print("Max picture size is 500kB, try another picture");
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
