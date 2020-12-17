@@ -14,9 +14,19 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
-  String email;
-  String password;
-  String confirmPassword;
+  final TextEditingController emailFieldController = TextEditingController();
+  final TextEditingController passwordFieldController = TextEditingController();
+  final TextEditingController confirmPasswordFieldController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+    emailFieldController.dispose();
+    passwordFieldController.dispose();
+    confirmPasswordFieldController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -34,39 +44,7 @@ class _SignUpFormState extends State<SignUpForm> {
             SizedBox(height: getProportionateScreenHeight(40)),
             DefaultButton(
               text: "Continue",
-              press: () async {
-                if (_formKey.currentState.validate()) {
-                  // goto complete profile page
-                  final AuthentificationService authService =
-                      AuthentificationService();
-                  String signUpStatus = await authService.signUp(
-                    email: email,
-                    password: password,
-                  );
-                  if (signUpStatus ==
-                      AuthentificationService.SIGN_UP_SUCCESS_MSG) {
-                    print("Sign Up succesfull, try signing in");
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                            "Signed Up succesfully, Please Sign In to continue")));
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignInScreen(),
-                        ));
-                  } else if (signUpStatus ==
-                      AuthentificationService.EMAIL_ALREADY_IN_USE) {
-                    print("Email already in use, try different email");
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content:
-                            Text("Email already in use, try different email")));
-                  } else {
-                    print("Exception result: $signUpStatus");
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Something went wrong")));
-                  }
-                }
-              },
+              press: signUpButtonCallback,
             ),
           ],
         ),
@@ -76,6 +54,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   Widget buildConfirmPasswordFormField() {
     return TextFormField(
+      controller: confirmPasswordFieldController,
       obscureText: true,
       decoration: InputDecoration(
         hintText: "Re-enter your password",
@@ -85,35 +64,23 @@ class _SignUpFormState extends State<SignUpForm> {
           svgIcon: "assets/icons/Lock.svg",
         ),
       ),
-      onChanged: (value) {
-        confirmPassword = value;
-        if (value.isNotEmpty) {
-          return kPassNullError;
-        } else if (password == confirmPassword) {
-          return kMatchPassError;
-        } else if (value.length >= 8) {
-          return kShortPassError;
-        }
-        return null;
-      },
       validator: (value) {
-        confirmPassword = value;
         if (value.isEmpty) {
           return kPassNullError;
-        } else if (password != confirmPassword) {
+        } else if (value != passwordFieldController.text) {
           return kMatchPassError;
         } else if (value.length < 8) {
           return kShortPassError;
         }
         return null;
       },
-      onSaved: (newValue) => confirmPassword = newValue,
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 
   Widget buildEmailFormField() {
     return TextFormField(
+      controller: emailFieldController,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         hintText: "Enter your email",
@@ -123,18 +90,7 @@ class _SignUpFormState extends State<SignUpForm> {
           svgIcon: "assets/icons/Mail.svg",
         ),
       ),
-      onChanged: (value) {
-        email = value;
-        password = value;
-        if (value.isNotEmpty) {
-          return kEmailNullError;
-        } else if (emailValidatorRegExp.hasMatch(value)) {
-          return kInvalidEmailError;
-        }
-        return null;
-      },
       validator: (value) {
-        email = value;
         if (value.isEmpty) {
           return kEmailNullError;
         } else if (!emailValidatorRegExp.hasMatch(value)) {
@@ -142,13 +98,13 @@ class _SignUpFormState extends State<SignUpForm> {
         }
         return null;
       },
-      onSaved: (newValue) => email = newValue,
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 
   Widget buildPasswordFormField() {
     return TextFormField(
+      controller: passwordFieldController,
       obscureText: true,
       decoration: InputDecoration(
         hintText: "Enter your password",
@@ -158,17 +114,7 @@ class _SignUpFormState extends State<SignUpForm> {
           svgIcon: "assets/icons/Lock.svg",
         ),
       ),
-      onChanged: (value) {
-        password = value;
-        if (value.isNotEmpty) {
-          return kPassNullError;
-        } else if (value.length >= 8) {
-          return kShortPassError;
-        }
-        return null;
-      },
       validator: (value) {
-        password = value;
         if (value.isEmpty) {
           return kPassNullError;
         } else if (value.length < 8) {
@@ -176,8 +122,37 @@ class _SignUpFormState extends State<SignUpForm> {
         }
         return null;
       },
-      onSaved: (newValue) => password = newValue,
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
+  }
+
+  Future<void> signUpButtonCallback() async {
+    if (_formKey.currentState.validate()) {
+      // goto complete profile page
+      final AuthentificationService authService = AuthentificationService();
+      String signUpStatus = await authService.signUp(
+        email: emailFieldController.text,
+        password: passwordFieldController.text,
+      );
+      if (signUpStatus == AuthentificationService.SIGN_UP_SUCCESS_MSG) {
+        print("Sign Up succesfull, try signing in");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+                Text("Signed Up succesfully, Please Sign In to continue")));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SignInScreen(),
+            ));
+      } else if (signUpStatus == AuthentificationService.EMAIL_ALREADY_IN_USE) {
+        print("Email already in use, try different email");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Email already in use, try different email")));
+      } else {
+        print("Exception result: $signUpStatus");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Something went wrong")));
+      }
+    }
   }
 }
