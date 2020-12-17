@@ -6,10 +6,12 @@ import '../size_config.dart';
 class DefaultButton extends StatelessWidget {
   final String text;
   final Function press;
+  final Color color;
   const DefaultButton({
     Key key,
     this.text,
     this.press,
+    this.color = kPrimaryColor,
   }) : super(key: key);
 
   @override
@@ -18,7 +20,7 @@ class DefaultButton extends StatelessWidget {
       width: double.infinity,
       height: getProportionateScreenHeight(56),
       child: FlatButton(
-        color: kPrimaryColor,
+        color: color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
