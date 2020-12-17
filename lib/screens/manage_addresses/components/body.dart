@@ -1,5 +1,6 @@
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
+import 'package:e_commerce_app_flutter/models/Address.dart';
 import 'package:e_commerce_app_flutter/screens/edit_address/edit_address_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
@@ -35,9 +36,8 @@ class Body extends StatelessWidget {
                 },
               ),
               SizedBox(height: getProportionateScreenHeight(30)),
-              // TODO: Fix -> after deleting address, this page should is not refreshing and showing deleted addresses
-              FutureBuilder(
-                future: UserDatabaseHelper().getAddressesListForCurrentUser(),
+              StreamBuilder(
+                stream: UserDatabaseHelper().currentUserAddressesStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Center(
@@ -49,7 +49,9 @@ class Body extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasData) {
-                    final addresses = snapshot.data;
+                    final addresses = snapshot.data.docs
+                        .map((e) => Address.fromMap(e.data(), id: e.id))
+                        .toList();
                     return Column(
                       children: List.generate(
                         addresses.length,
