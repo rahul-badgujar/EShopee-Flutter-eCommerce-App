@@ -1,11 +1,14 @@
-import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
+import 'package:e_commerce_app_flutter/models/Address.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 
 import 'address_details_form.dart';
 
 class Body extends StatelessWidget {
+  final Address addressToEdit;
+
+  const Body({Key key, this.addressToEdit}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -22,7 +25,7 @@ class Body extends StatelessWidget {
                 style: headingStyle,
               ),
               SizedBox(height: getProportionateScreenHeight(30)),
-              AddressDetailsForm(),
+              AddressDetailsForm(addressToEdit: addressToEdit),
               SizedBox(height: getProportionateScreenHeight(40)),
             ],
           ),

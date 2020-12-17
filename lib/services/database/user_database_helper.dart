@@ -7,6 +7,8 @@ class UserDatabaseHelper {
       "New address added successfully";
   static const String ADDRESS_DELETED_SUCCESSFULLY =
       "Address deleted successfully";
+  static const String ADDRESS_UPDATED_SUCCESSFULLY =
+      "Address updated successfully";
 
   static const String USERS_COLLECTION_NAME = "users";
   static const String ADDRESSES_COLLECTION_NAME = "addresses";
@@ -62,6 +64,21 @@ class UserDatabaseHelper {
           .doc(id);
       await addressDocReference.delete();
       return ADDRESS_DELETED_SUCCESSFULLY;
+    } on Exception catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<String> updateAddressForCurrentUser(Address address) async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final addressDocReference = firestore
+          .collection(USERS_COLLECTION_NAME)
+          .doc(uid)
+          .collection(ADDRESSES_COLLECTION_NAME)
+          .doc(address.id);
+      await addressDocReference.update(address.toMap());
+      return ADDRESS_UPDATED_SUCCESSFULLY;
     } on Exception catch (e) {
       return e.toString();
     }

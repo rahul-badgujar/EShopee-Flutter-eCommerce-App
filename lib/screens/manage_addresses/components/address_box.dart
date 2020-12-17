@@ -1,4 +1,5 @@
 import 'package:e_commerce_app_flutter/models/Address.dart';
+import 'package:e_commerce_app_flutter/screens/edit_address/edit_address_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -97,7 +98,9 @@ class AddressBox extends StatelessWidget {
                     fontSize: 18,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  editButtonCallback(context);
+                },
               ),
               FlatButton(
                 child: Text(
@@ -130,5 +133,12 @@ class AddressBox extends StatelessWidget {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Something went wrong...")));
     }
+  }
+
+  void editButtonCallback(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditAddressScreen(addressToEdit: address)));
   }
 }

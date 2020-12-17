@@ -8,8 +8,10 @@ import 'package:string_validator/string_validator.dart';
 import '../../../constants.dart';
 
 class AddressDetailsForm extends StatefulWidget {
+  final Address addressToEdit;
   AddressDetailsForm({
     Key key,
+    this.addressToEdit,
   }) : super(key: key);
 
   @override
@@ -58,7 +60,7 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
+    final form = Form(
       key: _formKey,
       child: Column(
         children: [
@@ -85,11 +87,26 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
           SizedBox(height: getProportionateScreenHeight(30)),
           DefaultButton(
             text: "Save Address",
-            press: saveAddressButtonCallback,
+            press: widget.addressToEdit == null
+                ? saveNewAddressButtonCallback
+                : saveEditedAddressButtonCallback,
           ),
         ],
       ),
     );
+    if (widget.addressToEdit != null) {
+      titleFieldController.text = widget.addressToEdit.title;
+      receiverFieldController.text = widget.addressToEdit.receiver;
+      addressLine1FieldController.text = widget.addressToEdit.addresLine1;
+      addressLine2FieldController.text = widget.addressToEdit.addressLine2;
+      cityFieldController.text = widget.addressToEdit.city;
+      districtFieldController.text = widget.addressToEdit.district;
+      stateFieldController.text = widget.addressToEdit.state;
+      landmarkFieldController.text = widget.addressToEdit.landmark;
+      pincodeFieldController.text = widget.addressToEdit.pincode;
+      phoneFieldController.text = widget.addressToEdit.phone;
+    }
+    return form;
   }
 
   Widget buildTitleField() {
@@ -288,21 +305,10 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
     );
   }
 
-  Future<void> saveAddressButtonCallback() async {
+  Future<void> saveNewAddressButtonCallback() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      final Address newAddress = Address(
-        title: titleFieldController.text,
-        receiver: receiverFieldController.text,
-        addresLine1: addressLine1FieldController.text,
-        addressLine2: addressLine2FieldController.text,
-        city: cityFieldController.text,
-        district: districtFieldController.text,
-        state: stateFieldController.text,
-        landmark: landmarkFieldController.text,
-        pincode: pincodeFieldController.text,
-        phone: phoneFieldController.text,
-      );
+      final Address newAddress = generateAddressObject();
       String status =
           await UserDatabaseHelper().addAddressForCurrentUser(newAddress);
       if (status == UserDatabaseHelper.NEW_ADDRESS_ADDED_SUCCESSFULLY) {
@@ -316,5 +322,42 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
             .showSnackBar(SnackBar(content: Text("Something went wrong")));
       }
     }
+  }
+
+  Future<void> saveEditedAddressButtonCallback() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      final Address newAddress =
+          generateAddressObject(id: widget.addressToEdit.id);
+
+      String status =
+          await UserDatabaseHelper().updateAddressForCurrentUser(newAddress);
+      if (status == UserDatabaseHelper.ADDRESS_UPDATED_SUCCESSFULLY) {
+        print("Address updated successfully");
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Address updated successfully")));
+        Navigator.pop(context);
+      } else {
+        print("Exception result: $status");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Something went wrong")));
+      }
+    }
+  }
+
+  Address generateAddressObject({String id}) {
+    return Address(
+      id: id,
+      title: titleFieldController.text,
+      receiver: receiverFieldController.text,
+      addresLine1: addressLine1FieldController.text,
+      addressLine2: addressLine2FieldController.text,
+      city: cityFieldController.text,
+      district: districtFieldController.text,
+      state: stateFieldController.text,
+      landmark: landmarkFieldController.text,
+      pincode: pincodeFieldController.text,
+      phone: phoneFieldController.text,
+    );
   }
 }
