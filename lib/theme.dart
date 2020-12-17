@@ -4,19 +4,20 @@ import 'constants.dart';
 
 ThemeData theme() {
   return ThemeData(
-      scaffoldBackgroundColor: Colors.white,
-      fontFamily: "Muli",
-      primarySwatch: Colors.deepOrange,
-      appBarTheme: appBarTheme(),
-      textTheme: textTheme(),
-      inputDecorationTheme: inputDecorationTheme(),
-      visualDensity: VisualDensity.adaptivePlatformDensity,
-      snackBarTheme: SnackBarThemeData(
-        backgroundColor: Colors.black,
-        contentTextStyle: TextStyle(
-          color: Colors.white,
-        ),
-      ));
+    scaffoldBackgroundColor: Colors.white,
+    fontFamily: "Muli",
+    primarySwatch: Colors.deepOrange,
+    appBarTheme: appBarTheme(),
+    textTheme: textTheme(),
+    inputDecorationTheme: inputDecorationTheme(),
+    visualDensity: VisualDensity.adaptivePlatformDensity,
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Colors.black,
+      contentTextStyle: TextStyle(
+        color: Colors.white,
+      ),
+    ),
+  );
 }
 
 InputDecorationTheme inputDecorationTheme() {

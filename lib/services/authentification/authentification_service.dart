@@ -29,6 +29,7 @@ class AuthentificationService {
     if (_firebaseAuth == null) {
       _firebaseAuth = FirebaseAuth.instance;
     }
+    if (_firebaseAuth.currentUser != null) _firebaseAuth.currentUser.reload();
     return _firebaseAuth;
   }
 
@@ -43,6 +44,7 @@ class AuthentificationService {
       final UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
       if (userCredential.user.emailVerified) {
+        currentUser.reload();
         return SIGN_IN_SUCCESS_MSG;
       } else {
         await userCredential.user.sendEmailVerification();
@@ -60,6 +62,7 @@ class AuthentificationService {
       if (userCredential.user.emailVerified == false) {
         await userCredential.user.sendEmailVerification();
       }
+      currentUser.reload();
       return SIGN_UP_SUCCESS_MSG;
     } on FirebaseAuthException catch (e) {
       return e.code;
@@ -68,15 +71,19 @@ class AuthentificationService {
 
   Future<void> signOut() async {
     await firebaseAuth.signOut();
+    currentUser.reload();
   }
 
-  bool get currentUserVerified => firebaseAuth.currentUser.emailVerified;
+  bool get currentUserVerified => currentUser.emailVerified;
 
   Future<void> sendVerificationEmailToCurrentUser() async {
     await firebaseAuth.currentUser.sendEmailVerification();
   }
 
-  User get currentUser => firebaseAuth.currentUser;
+  User get currentUser {
+    firebaseAuth.currentUser.reload();
+    return firebaseAuth.currentUser;
+  }
 
   void updateCurrentUserDisplayName(String updatedDisplayName) {
     currentUser.updateProfile(displayName: updatedDisplayName);
