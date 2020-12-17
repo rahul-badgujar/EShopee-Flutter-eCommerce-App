@@ -43,40 +43,7 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
             SizedBox(height: getProportionateScreenHeight(40)),
             DefaultButton(
               text: "Change Email",
-              press: () async {
-                if (_formKey.currentState.validate()) {
-                  _formKey.currentState.save();
-                  // TODO: user data reload
-                  final AuthentificationService authService =
-                      AuthentificationService();
-                  bool passwordValidation = await authService
-                      .verifyCurrentUserPassword(passwordController.text);
-                  if (passwordValidation) {
-                    String updationStatus =
-                        await authService.changeEmailForCurrentUser(
-                            newEmail: newEmailController.text);
-                    if (updationStatus ==
-                        AuthentificationService.EMAIL_UPDATE_SUCCESSFULL) {
-                      print(
-                          "Email updation action triggered, verify email to change");
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                              "Verification Email sent, Please verify new email")));
-                    } else if (updationStatus ==
-                        AuthentificationService.WRONG_PASSWORD) {
-                      print("Wrong password...");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Wrong Password")));
-                    } else {
-                      print("Exception result: $updationStatus");
-                    }
-                  } else {
-                    print("Entered password is wrong...");
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Something went wrong")));
-                  }
-                }
-              },
+              press: changeEmailButtonCallback,
             ),
           ],
         ),
@@ -146,5 +113,36 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
       },
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
+  }
+
+  Future<void> changeEmailButtonCallback() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      // TODO: user data reload
+      final AuthentificationService authService = AuthentificationService();
+      bool passwordValidation =
+          await authService.verifyCurrentUserPassword(passwordController.text);
+      if (passwordValidation) {
+        String updationStatus = await authService.changeEmailForCurrentUser(
+            newEmail: newEmailController.text);
+        if (updationStatus ==
+            AuthentificationService.EMAIL_UPDATE_SUCCESSFULL) {
+          print("Email updation action triggered, verify email to change");
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content:
+                  Text("Verification Email sent, Please verify new email")));
+        } else if (updationStatus == AuthentificationService.WRONG_PASSWORD) {
+          print("Wrong password...");
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Wrong Password")));
+        } else {
+          print("Exception result: $updationStatus");
+        }
+      } else {
+        print("Entered password is wrong...");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Something went wrong")));
+      }
+    }
   }
 }

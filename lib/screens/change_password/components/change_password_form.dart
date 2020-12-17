@@ -42,39 +42,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
             SizedBox(height: getProportionateScreenHeight(40)),
             DefaultButton(
               text: "Change Password",
-              press: () async {
-                if (_formKey.currentState.validate()) {
-                  _formKey.currentState.save();
-                  final AuthentificationService authService =
-                      AuthentificationService();
-                  bool currentPasswordValidation =
-                      await authService.verifyCurrentUserPassword(
-                          currentPasswordController.text);
-                  if (currentPasswordValidation == false) {
-                    print("Current password provided is wrong");
-                  } else {
-                    final String updationStatus =
-                        await authService.changePasswordForCurrentUser(
-                            newPassword: newPasswordController.text);
-                    if (updationStatus ==
-                        AuthentificationService.PASSWORD_UPDATE_SUCCESSFULL) {
-                      print("Password updated successfully...");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Updated Password")));
-                    } else if (updationStatus ==
-                        AuthentificationService.WEAK_PASSWORD) {
-                      print("Password is weak");
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                              "Password is too weak, try something better")));
-                    } else {
-                      print("Exception result: $updationStatus");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Something went wrong")));
-                    }
-                  }
-                }
-              },
+              press: changePasswordButtonCallback,
             ),
           ],
         ),
@@ -145,5 +113,35 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
       },
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
+  }
+
+  Future<void> changePasswordButtonCallback() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      final AuthentificationService authService = AuthentificationService();
+      bool currentPasswordValidation = await authService
+          .verifyCurrentUserPassword(currentPasswordController.text);
+      if (currentPasswordValidation == false) {
+        print("Current password provided is wrong");
+      } else {
+        final String updationStatus =
+            await authService.changePasswordForCurrentUser(
+                newPassword: newPasswordController.text);
+        if (updationStatus ==
+            AuthentificationService.PASSWORD_UPDATE_SUCCESSFULL) {
+          print("Password updated successfully...");
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Updated Password")));
+        } else if (updationStatus == AuthentificationService.WEAK_PASSWORD) {
+          print("Password is weak");
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("Password is too weak, try something better")));
+        } else {
+          print("Exception result: $updationStatus");
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Something went wrong")));
+        }
+      }
+    }
   }
 }

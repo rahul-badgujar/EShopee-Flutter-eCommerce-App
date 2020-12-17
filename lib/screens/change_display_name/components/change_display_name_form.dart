@@ -41,18 +41,8 @@ class _ChangeDisplayNameFormState extends State<ChangeDisplayNameForm> {
           buildNewDisplayNameField(),
           SizedBox(height: SizeConfig.screenHeight * 0.2),
           DefaultButton(
-            text: "Save",
-            press: () {
-              if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
-                AuthentificationService().updateCurrentUserDisplayName(
-                    newDisplayNameController.text);
-                print(
-                    "Display Name updated to ${newDisplayNameController.text} ...");
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Updated Display Name")));
-              }
-            },
+            text: "Change Display Name",
+            press: changeDisplayNameButtonCallback,
           ),
         ],
       ),
@@ -94,5 +84,16 @@ class _ChangeDisplayNameFormState extends State<ChangeDisplayNameForm> {
       ),
       readOnly: true,
     );
+  }
+
+  void changeDisplayNameButtonCallback() {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      AuthentificationService()
+          .updateCurrentUserDisplayName(newDisplayNameController.text);
+      print("Display Name updated to ${newDisplayNameController.text} ...");
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Updated Display Name")));
+    }
   }
 }

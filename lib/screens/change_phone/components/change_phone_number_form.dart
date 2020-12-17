@@ -41,7 +41,7 @@ class _ChangePhoneNumberFormState extends State<ChangePhoneNumberForm> {
           SizedBox(height: SizeConfig.screenHeight * 0.2),
           DefaultButton(
             text: "Send OTP",
-            press: updateUserPhoneNumber,
+            press: sendOtpButtonCallback,
           ),
         ],
       ),
@@ -51,7 +51,7 @@ class _ChangePhoneNumberFormState extends State<ChangePhoneNumberForm> {
     return form;
   }
 
-  void updateUserPhoneNumber() async {
+  void sendOtpButtonCallback() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       // TODO: fix implementation update phone service
