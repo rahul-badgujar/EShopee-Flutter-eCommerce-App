@@ -16,9 +16,15 @@ class SignInForm extends StatefulWidget {
 class _SignInFormState extends State<SignInForm> {
   final _formkey = GlobalKey<FormState>();
 
-  String email;
-  String password;
-  bool remember = false;
+  final TextEditingController emailFieldController = TextEditingController();
+  final TextEditingController passwordFieldController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailFieldController.dispose();
+    passwordFieldController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,85 +36,43 @@ class _SignInFormState extends State<SignInForm> {
           SizedBox(height: getProportionateScreenHeight(30)),
           buildPasswordFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
-          Row(
-            children: [
-              Checkbox(
-                value: remember,
-                onChanged: (value) {
-                  setState(() {
-                    remember = value;
-                  });
-                },
-                activeColor: kPrimaryColor,
-              ),
-              Text("Remember me"),
-              Spacer(),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ForgotPasswordScreen(),
-                      ));
-                },
-                child: Text(
-                  "Forgot Password",
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              )
-            ],
-          ),
+          buildForgotPasswordWidget(context),
           SizedBox(height: getProportionateScreenHeight(30)),
           DefaultButton(
             text: "Continue",
-            press: () async {
-              if (_formkey.currentState.validate()) {
-                _formkey.currentState.save();
-                final AuthentificationService authService =
-                    AuthentificationService();
-                String signInStatus = await authService.signIn(
-                  email: email.trim(),
-                  password: password.trim(),
-                );
-                if (signInStatus ==
-                    AuthentificationService.SIGN_IN_SUCCESS_MSG) {
-                  print("Signed In succesfully");
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Signed In succesfully")));
-                } else if (signInStatus ==
-                    AuthentificationService.USER_NOT_VERIFIED) {
-                  print(
-                      "Verification Email sent. Please verify Email Address to continue");
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                          "Please verify email first, Verification email sent")));
-                } else if (signInStatus ==
-                    AuthentificationService.NO_USER_FOUND) {
-                  print("User not registered");
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("No such user found")));
-                } else if (signInStatus ==
-                    AuthentificationService.WRONG_PASSWORD) {
-                  print("Wrong password");
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text("Wrong password")));
-                } else {
-                  print("Exception result: $signInStatus");
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Something went wrong")));
-                }
-              }
-            },
+            press: signInButtonCallback,
           ),
         ],
       ),
     );
   }
 
+  Row buildForgotPasswordWidget(BuildContext context) {
+    return Row(
+      children: [
+        Spacer(),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ForgotPasswordScreen(),
+                ));
+          },
+          child: Text(
+            "Forgot Password",
+            style: TextStyle(
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
   Widget buildPasswordFormField() {
     return TextFormField(
+      controller: passwordFieldController,
       obscureText: true,
       decoration: InputDecoration(
         hintText: "Enter your password",
@@ -118,17 +82,7 @@ class _SignInFormState extends State<SignInForm> {
           svgIcon: "assets/icons/Lock.svg",
         ),
       ),
-      onChanged: (value) {
-        password = value;
-        if (value.isNotEmpty) {
-          return kPassNullError;
-        } else if (value.length >= 8) {
-          return kShortPassError;
-        }
-        return null;
-      },
       validator: (value) {
-        password = value;
         if (value.isEmpty) {
           return kPassNullError;
         } else if (value.length < 8) {
@@ -136,13 +90,13 @@ class _SignInFormState extends State<SignInForm> {
         }
         return null;
       },
-      onSaved: (newValue) => password = newValue,
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 
   Widget buildEmailFormField() {
     return TextFormField(
+      controller: emailFieldController,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         hintText: "Enter your email",
@@ -152,17 +106,7 @@ class _SignInFormState extends State<SignInForm> {
           svgIcon: "assets/icons/Mail.svg",
         ),
       ),
-      onChanged: (value) {
-        email = value;
-        if (value.isNotEmpty) {
-          return kEmailNullError;
-        } else if (emailValidatorRegExp.hasMatch(value)) {
-          return kInvalidEmailError;
-        }
-        return null;
-      },
       validator: (value) {
-        email = value;
         if (value.isEmpty) {
           return kEmailNullError;
         } else if (!emailValidatorRegExp.hasMatch(value)) {
@@ -170,8 +114,41 @@ class _SignInFormState extends State<SignInForm> {
         }
         return null;
       },
-      onSaved: (newValue) => email = newValue,
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
+  }
+
+  Future<void> signInButtonCallback() async {
+    if (_formkey.currentState.validate()) {
+      _formkey.currentState.save();
+      final AuthentificationService authService = AuthentificationService();
+      String signInStatus = await authService.signIn(
+        email: emailFieldController.text.trim(),
+        password: passwordFieldController.text.trim(),
+      );
+      if (signInStatus == AuthentificationService.SIGN_IN_SUCCESS_MSG) {
+        print("Signed In succesfully");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Signed In succesfully")));
+      } else if (signInStatus == AuthentificationService.USER_NOT_VERIFIED) {
+        print(
+            "Verification Email sent. Please verify Email Address to continue");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+                Text("Please verify email first, Verification email sent")));
+      } else if (signInStatus == AuthentificationService.NO_USER_FOUND) {
+        print("User not registered");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("No such user found")));
+      } else if (signInStatus == AuthentificationService.WRONG_PASSWORD) {
+        print("Wrong password");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Wrong password")));
+      } else {
+        print("Exception result: $signInStatus");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Something went wrong")));
+      }
+    }
   }
 }
