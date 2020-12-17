@@ -1,7 +1,7 @@
 import 'Model.dart';
 
 class Address extends Model {
-  static const String TITLE_KEY = "nickname";
+  static const String TITLE_KEY = "title";
   static const String ADDRESS_LINE_1_KEY = "address_line_1";
   static const String ADDRESS_LINE_2_KEY = "address_line_2";
   static const String CITY_KEY = "city";
@@ -40,16 +40,16 @@ class Address extends Model {
 
   factory Address.fromMap(Map<String, dynamic> map) {
     return Address(
-      title: "Home",
-      receiver: "Rahul Badgujar",
-      addresLine1: "Main Road",
-      addressLine2: "A/P Malegaon MIDC",
-      city: "Sinnar",
-      district: "Nashik",
-      state: "Maharashtra",
-      landmark: "near Mahadev Mandir",
-      pincode: "422113",
-      phone: "7775919753",
+      title: map[TITLE_KEY],
+      receiver: map[RECEIVER_KEY],
+      addresLine1: map[ADDRESS_LINE_1_KEY],
+      addressLine2: map[ADDRESS_LINE_2_KEY],
+      city: map[CITY_KEY],
+      district: map[DISTRICT_KEY],
+      state: map[STATE_KEY],
+      landmark: map[LANDMARK_KEY],
+      pincode: map[PINCODE_KEY],
+      phone: map[PHONE_KEY],
     );
   }
 
@@ -67,5 +67,10 @@ class Address extends Model {
       PINCODE_KEY: pincode,
       PHONE_KEY: phone,
     };
+  }
+
+  @override
+  String toString() {
+    return toMap().toString();
   }
 }
