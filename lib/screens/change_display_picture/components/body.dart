@@ -81,6 +81,13 @@ class _BodyState extends State<Body> {
     chosenImage = File(imagePicked.path);
     if (chosenImage == null) {
       print("Image chosen is not valid");
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Invalid Image")));
+    } else if (chosenImage.lengthSync() > (500 * 1024)) {
+      chosenImage = null;
+      print("Max picture size is 500kB, try another picture");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Max picture size is 500kB, try another picture")));
     } else {
       setState(() {});
     }
