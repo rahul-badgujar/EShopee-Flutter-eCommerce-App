@@ -52,6 +52,7 @@ class HomeScreenDrawer extends StatelessWidget {
               );
             },
           ),
+          buildSellerExpansionTile(context),
           Divider(),
           ListTile(
             leading: Icon(Icons.logout),
@@ -183,6 +184,28 @@ class HomeScreenDrawer extends StatelessWidget {
                   builder: (context) => ChangePasswordScreen(),
                 ));
           },
+        ),
+      ],
+    );
+  }
+
+  Widget buildSellerExpansionTile(BuildContext context) {
+    return ExpansionTile(
+      leading: Icon(Icons.business),
+      title: Text(
+        "I am Seller",
+        style: TextStyle(fontSize: 16, color: Colors.black),
+      ),
+      children: [
+        ListTile(
+          title: Text(
+            "Add New Product",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 15,
+            ),
+          ),
+          onTap: () {},
         ),
       ],
     );
