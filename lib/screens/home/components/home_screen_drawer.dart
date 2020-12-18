@@ -3,6 +3,7 @@ import 'package:e_commerce_app_flutter/screens/change_display_picture/change_dis
 import 'package:e_commerce_app_flutter/screens/change_email/change_email_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_password/change_password_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_phone/change_phone_screen.dart';
+import 'package:e_commerce_app_flutter/screens/edit_product/edit_product_screen.dart';
 import 'package:e_commerce_app_flutter/screens/manage_addresses/manage_addresses_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -205,7 +206,10 @@ class HomeScreenDrawer extends StatelessWidget {
               fontSize: 15,
             ),
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => EditProductScreen()));
+          },
         ),
       ],
     );
