@@ -5,6 +5,7 @@ import 'package:e_commerce_app_flutter/screens/change_password/change_password_s
 import 'package:e_commerce_app_flutter/screens/change_phone/change_phone_screen.dart';
 import 'package:e_commerce_app_flutter/screens/manage_addresses/manage_addresses_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../change_display_name/change_display_name_screen.dart';
 
@@ -18,34 +19,23 @@ class HomeScreenDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: [
-          UserAccountsDrawerHeader(
-            margin: EdgeInsets.zero,
-            decoration: BoxDecoration(
-              color: kTextColor.withOpacity(0.15),
-            ),
-            accountEmail: Text(
-              AuthentificationService().currentUser.email ?? "No Email",
-              style: TextStyle(
-                fontSize: 15,
-                color: Colors.black,
-              ),
-            ),
-            accountName: Text(
-              AuthentificationService().currentUser.displayName ?? "No Name",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-              ),
-            ),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage:
-                  AuthentificationService().currentUser.photoURL == null
-                      ? null
-                      : NetworkImage(
-                          AuthentificationService().currentUser.photoURL),
-            ),
-          ),
+          StreamBuilder<User>(
+              stream: AuthentificationService().userChanges,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final user = snapshot.data;
+                  return buildUserAccountsHeader(user);
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return Center(
+                    child: Icon(Icons.error),
+                  );
+                }
+              }),
           buildEditAccountExpansionTile(context),
           ListTile(
             leading: Icon(Icons.edit_location),
@@ -73,6 +63,34 @@ class HomeScreenDrawer extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  UserAccountsDrawerHeader buildUserAccountsHeader(User user) {
+    return UserAccountsDrawerHeader(
+      margin: EdgeInsets.zero,
+      decoration: BoxDecoration(
+        color: kTextColor.withOpacity(0.15),
+      ),
+      accountEmail: Text(
+        user.email ?? "No Email",
+        style: TextStyle(
+          fontSize: 15,
+          color: Colors.black,
+        ),
+      ),
+      accountName: Text(
+        user.displayName ?? "No Name",
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+          color: Colors.black,
+        ),
+      ),
+      currentAccountPicture: CircleAvatar(
+        backgroundImage:
+            user.photoURL == null ? null : NetworkImage(user.photoURL),
       ),
     );
   }

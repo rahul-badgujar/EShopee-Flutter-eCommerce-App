@@ -29,7 +29,7 @@ class AuthentificationService {
     if (_firebaseAuth == null) {
       _firebaseAuth = FirebaseAuth.instance;
     }
-    if (_firebaseAuth.currentUser != null) _firebaseAuth.currentUser.reload();
+    //if (_firebaseAuth.currentUser != null) _firebaseAuth.currentUser.reload();
     return _firebaseAuth;
   }
 
@@ -39,12 +39,13 @@ class AuthentificationService {
 
   Stream<User> get authStateChanges => firebaseAuth.authStateChanges();
 
+  Stream<User> get userChanges => firebaseAuth.userChanges();
+
   Future<String> signIn({String email, String password}) async {
     try {
       final UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
       if (userCredential.user.emailVerified) {
-        currentUser.reload();
         return SIGN_IN_SUCCESS_MSG;
       } else {
         await userCredential.user.sendEmailVerification();
@@ -62,7 +63,7 @@ class AuthentificationService {
       if (userCredential.user.emailVerified == false) {
         await userCredential.user.sendEmailVerification();
       }
-      currentUser.reload();
+
       return SIGN_UP_SUCCESS_MSG;
     } on FirebaseAuthException catch (e) {
       return e.code;
@@ -71,7 +72,6 @@ class AuthentificationService {
 
   Future<void> signOut() async {
     await firebaseAuth.signOut();
-    currentUser.reload();
   }
 
   bool get currentUserVerified => currentUser.emailVerified;
@@ -81,7 +81,6 @@ class AuthentificationService {
   }
 
   User get currentUser {
-    firebaseAuth.currentUser.reload();
     return firebaseAuth.currentUser;
   }
 

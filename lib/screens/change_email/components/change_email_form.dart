@@ -118,7 +118,6 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
   Future<void> changeEmailButtonCallback() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      // TODO: user data reload
       final AuthentificationService authService = AuthentificationService();
       bool passwordValidation =
           await authService.verifyCurrentUserPassword(passwordController.text);
