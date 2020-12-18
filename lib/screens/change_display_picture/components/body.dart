@@ -38,7 +38,10 @@ class Body extends StatelessWidget {
                       },
                     ),
                     SizedBox(height: getProportionateScreenHeight(80)),
-                    buildActionButton(context, bodyState),
+                    buildChosePictureButton(context, bodyState),
+                    SizedBox(height: getProportionateScreenHeight(30)),
+                    buildUploadPictureButton(context, bodyState),
+                    SizedBox(height: getProportionateScreenHeight(80)),
                   ],
                 );
               },
@@ -51,14 +54,17 @@ class Body extends StatelessWidget {
 
   Widget buildDisplayPictureAvatar(BuildContext context, BodyState bodyState) {
     return CircleAvatar(
-      minRadius: 30,
-      maxRadius: 80,
-      backgroundColor: kTextColor.withOpacity(0.15),
-      backgroundImage: bodyState.chosenImage == null
-          ? ((AuthentificationService().currentUser.photoURL == null)
-              ? null
-              : NetworkImage(AuthentificationService().currentUser.photoURL))
-          : MemoryImage(bodyState.chosenImage.readAsBytesSync()),
+      radius: SizeConfig.screenWidth * 0.305,
+      backgroundColor: kPrimaryColor,
+      child: CircleAvatar(
+        radius: SizeConfig.screenWidth * 0.3,
+        backgroundColor: kTextColor.withOpacity(0.15),
+        backgroundImage: bodyState.chosenImage == null
+            ? ((AuthentificationService().currentUser.photoURL == null)
+                ? null
+                : NetworkImage(AuthentificationService().currentUser.photoURL))
+            : MemoryImage(bodyState.chosenImage.readAsBytesSync()),
+      ),
     );
   }
 
@@ -86,29 +92,31 @@ class Body extends StatelessWidget {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Invalid Image")));
     } else if (bodyState.chosenImage.lengthSync() >
-        (500 * 1024)) // Display Picture max allowed size 500kB
+        (1024 * 1024)) // Display Picture max allowed size 1MB
     {
       bodyState.setChosenImage = null;
-      print("Max picture size is 500kB, try another picture");
+      print("Max picture size is 1MB, try another picture");
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Max picture size is 500kB, try another picture")));
+          content: Text("Max picture size is 1MB, try another picture")));
     }
   }
 
-  Widget buildActionButton(BuildContext context, BodyState bodyState) {
-    return bodyState.chosenImage == null
-        ? DefaultButton(
-            text: "Chose Picture",
-            press: () {
-              getImageFromUser(context, bodyState);
-            },
-          )
-        : DefaultButton(
-            text: "Upload Picture",
-            press: () {
-              uploadImageToFirestorage(context, bodyState);
-            },
-          );
+  Widget buildChosePictureButton(BuildContext context, BodyState bodyState) {
+    return DefaultButton(
+      text: "Choose Picture",
+      press: () {
+        getImageFromUser(context, bodyState);
+      },
+    );
+  }
+
+  Widget buildUploadPictureButton(BuildContext context, BodyState bodyState) {
+    return DefaultButton(
+      text: "Upload Picture",
+      press: () {
+        uploadImageToFirestorage(context, bodyState);
+      },
+    );
   }
 
   Future<void> uploadImageToFirestorage(
