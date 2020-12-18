@@ -72,6 +72,12 @@ class AddressBox extends StatelessWidget {
             ),
           ),
           Text(
+            "Landmark: ${address.landmark}",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+          Text(
             "PIN: ${address.pincode}",
             style: TextStyle(
               fontSize: 16,
