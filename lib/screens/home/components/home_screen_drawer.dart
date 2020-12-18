@@ -52,6 +52,7 @@ class HomeScreenDrawer extends StatelessWidget {
               );
             },
           ),
+          Divider(),
           ListTile(
             leading: Icon(Icons.logout),
             title: Text(
