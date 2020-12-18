@@ -4,7 +4,6 @@ import 'package:e_commerce_app_flutter/services/database/user_database_helper.da
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:string_validator/string_validator.dart';
-
 import '../../../constants.dart';
 
 class AddressDetailsForm extends StatefulWidget {
@@ -119,7 +118,7 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (titleFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -138,7 +137,7 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (receiverFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -157,7 +156,7 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (addressLine1FieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -176,7 +175,7 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (addressLine2FieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -195,7 +194,7 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (cityFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -214,7 +213,7 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (districtFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -233,7 +232,7 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (stateFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -252,11 +251,11 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (pincodeFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
-        } else if (!isNumeric(value)) {
+        } else if (!isNumeric(pincodeFieldController.text)) {
           return "Only digits field";
-        } else if (value.length != 6) {
+        } else if (pincodeFieldController.text.length != 6) {
           return "PINCODE must be of 6 Digits only";
         }
         return null;
@@ -275,7 +274,7 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (landmarkFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -294,9 +293,9 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (phoneFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
-        } else if (value.length != 10) {
+        } else if (phoneFieldController.text.length != 10) {
           return "Only 10 Digits";
         }
         return null;

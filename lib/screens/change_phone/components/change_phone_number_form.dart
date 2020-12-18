@@ -84,9 +84,9 @@ class _ChangePhoneNumberFormState extends State<ChangePhoneNumberForm> {
         suffixIcon: Icon(Icons.phone),
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (newPhoneNumberController.text.isEmpty) {
           return "Phone Number cannot be empty";
-        } else if (value.length != 10) {
+        } else if (newPhoneNumberController.text.length != 10) {
           return "Only 10 digits allowed";
         }
         return null;

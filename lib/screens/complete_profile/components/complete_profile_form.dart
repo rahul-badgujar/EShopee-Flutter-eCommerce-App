@@ -81,7 +81,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
         ),
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (phoneNumberEditController.text.isEmpty) {
           return kPhoneNumberNullError;
         }
         return null;
@@ -103,7 +103,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
         ),
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (displayNameEditController.text.isEmpty) {
           return "Please enter your Display Name";
         }
         return null;

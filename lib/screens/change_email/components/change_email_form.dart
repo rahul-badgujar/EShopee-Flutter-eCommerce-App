@@ -66,7 +66,7 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
         ),
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (passwordController.text.isEmpty) {
           return "Password cannot be empty";
         }
         return null;
@@ -102,11 +102,11 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
         ),
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (newEmailController.text.isEmpty) {
           return kEmailNullError;
-        } else if (!emailValidatorRegExp.hasMatch(value)) {
+        } else if (!emailValidatorRegExp.hasMatch(newEmailController.text)) {
           return kInvalidEmailError;
-        } else if (value == currentEmailController.text) {
+        } else if (newEmailController.text == currentEmailController.text) {
           return "Email is already linked to account";
         }
         return null;

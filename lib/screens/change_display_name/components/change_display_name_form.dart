@@ -64,7 +64,7 @@ class _ChangeDisplayNameFormState extends State<ChangeDisplayNameForm> {
         suffixIcon: Icon(Icons.person),
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (newDisplayNameController.text.isEmpty) {
           return "Display Name cannot be empty";
         }
         return null;

@@ -83,9 +83,9 @@ class _SignInFormState extends State<SignInForm> {
         ),
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (passwordFieldController.text.isEmpty) {
           return kPassNullError;
-        } else if (value.length < 8) {
+        } else if (passwordFieldController.text.length < 8) {
           return kShortPassError;
         }
         return null;
@@ -107,9 +107,9 @@ class _SignInFormState extends State<SignInForm> {
         ),
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (emailFieldController.text.isEmpty) {
           return kEmailNullError;
-        } else if (!emailValidatorRegExp.hasMatch(value)) {
+        } else if (!emailValidatorRegExp.hasMatch(emailFieldController.text)) {
           return kInvalidEmailError;
         }
         return null;

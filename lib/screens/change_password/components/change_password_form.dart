@@ -63,7 +63,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
         ),
       ),
       validator: (value) {
-        if (value != newPasswordController.text) {
+        if (confirmNewPasswordController.text != newPasswordController.text) {
           return "Not matching with Password";
         }
         return null;
@@ -104,9 +104,9 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
         ),
       ),
       validator: (value) {
-        if (value.isEmpty) {
+        if (newPasswordController.text.isEmpty) {
           return "Password cannot be empty";
-        } else if (value.length < 8) {
+        } else if (newPasswordController.text.length < 8) {
           return "Password too short";
         }
         return null;
