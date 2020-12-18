@@ -1,4 +1,4 @@
-import 'package:e_commerce_app_flutter/models/Product.dart';
+/* import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/components/product_actions_section.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/components/product_images.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
@@ -29,3 +29,4 @@ class Body extends StatelessWidget {
     );
   }
 }
+ */

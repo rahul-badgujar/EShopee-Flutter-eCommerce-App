@@ -1,4 +1,4 @@
-import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
+/* import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:flutter/material.dart';
 import '../components/section_tile.dart';
 import '../../../size_config.dart';
@@ -43,3 +43,4 @@ class PopularProductsSection extends StatelessWidget {
     );
   }
 }
+ */

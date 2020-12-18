@@ -1,4 +1,4 @@
-import 'package:e_commerce_app_flutter/models/Product.dart';
+/* import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
@@ -71,3 +71,4 @@ class _ProductDescriptionState extends State<ProductDescription> {
     );
   }
 }
+ */

@@ -113,7 +113,7 @@ class UserDatabaseHelper {
       final userDoc =
           await firestore.collection(USERS_COLLECTION_NAME).doc(uid).get();
       return await userDoc.data()[PHONE_KEY];
-    } on Exception catch (e) {
+    } on Exception catch (_) {
       return null;
     }
   }

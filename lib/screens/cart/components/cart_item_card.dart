@@ -1,4 +1,4 @@
-import 'package:e_commerce_app_flutter/models/Cart.dart';
+/* import 'package:e_commerce_app_flutter/models/Cart.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
@@ -66,3 +66,4 @@ class CartItemCard extends StatelessWidget {
     );
   }
 }
+ */

@@ -1,4 +1,4 @@
-import 'package:e_commerce_app_flutter/models/Product.dart';
+/* import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:flutter/material.dart';
 
 import 'components/body.dart';
@@ -23,3 +23,4 @@ class ProductDetailsScreen extends StatelessWidget {
     );
   }
 }
+ */
