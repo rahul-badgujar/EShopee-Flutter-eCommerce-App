@@ -12,17 +12,17 @@ class Address extends Model {
   static const String RECEIVER_KEY = "receiver";
   static const String PHONE_KEY = "phone";
 
-  final String title;
-  final String receiver;
+  String title;
+  String receiver;
 
-  final String addresLine1;
-  final String addressLine2;
-  final String city;
-  final String district;
-  final String state;
-  final String landmark;
-  final String pincode;
-  final String phone;
+  String addresLine1;
+  String addressLine2;
+  String city;
+  String district;
+  String state;
+  String landmark;
+  String pincode;
+  String phone;
 
   Address({
     String id,
@@ -75,5 +75,21 @@ class Address extends Model {
   @override
   String toString() {
     return toMap().toString();
+  }
+
+  @override
+  Map<String, dynamic> toUpdateMap() {
+    final map = <String, dynamic>{};
+    if (title != null) map[TITLE_KEY] = title;
+    if (receiver != null) map[RECEIVER_KEY] = receiver;
+    if (addresLine1 != null) map[ADDRESS_LINE_1_KEY] = addresLine1;
+    if (addressLine2 != null) map[ADDRESS_LINE_2_KEY] = addressLine2;
+    if (city != null) map[CITY_KEY] = city;
+    if (district != null) map[DISTRICT_KEY] = district;
+    if (state != null) map[STATE_KEY] = state;
+    if (landmark != null) map[LANDMARK_KEY] = landmark;
+    if (pincode != null) map[PINCODE_KEY] = pincode;
+    if (phone != null) map[PHONE_KEY] = phone;
+    return map;
   }
 }

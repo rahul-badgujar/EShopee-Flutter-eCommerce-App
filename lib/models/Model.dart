@@ -4,4 +4,5 @@ abstract class Model {
   Model(this.id);
 
   Map<String, dynamic> toMap();
+  Map<String, dynamic> toUpdateMap();
 }
