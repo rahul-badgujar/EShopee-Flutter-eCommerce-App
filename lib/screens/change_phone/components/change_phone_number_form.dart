@@ -1,5 +1,6 @@
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -40,60 +41,34 @@ class _ChangePhoneNumberFormState extends State<ChangePhoneNumberForm> {
           buildNewPhoneNumberField(),
           SizedBox(height: SizeConfig.screenHeight * 0.2),
           DefaultButton(
-            text: "Send OTP",
-            press: sendOtpButtonCallback,
+            text: "Update Phone Number",
+            press: updatePhoneNumberButtonCallback,
           ),
         ],
       ),
     );
-    currentPhoneNumberController.text =
-        AuthentificationService().currentUser.phoneNumber;
+    UserDatabaseHelper().currentUserPhoneNumber.then((value) {
+      if (value != null) currentPhoneNumberController.text = value;
+    });
+
     return form;
   }
 
-  void sendOtpButtonCallback() async {
+  Future<void> updatePhoneNumberButtonCallback() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      // TODO: fix implementation update phone service
 
-      final authService = AuthentificationService().firebaseAuth;
-      print("Update Phone request for ${authService.currentUser.email} ...");
-      try {
-        print("Calling verifyPhoneNumber()");
-        final verificationCompleteCallback = (credential) async {
-          print("Inside verificationCompleted()");
-        };
-        final verificationFailedCallback = (exception) {
-          print("Inside verificationFailed()");
-          if (exception.code == 'invalid-phone-number') {
-            print('The provided phone number is not valid.');
-          } else {
-            print(
-                "Exception received in verificationFailed: ${exception.code}");
-          }
-        };
-        final codeSentCallback = (verificationId, resendToken) async {
-          print("Inside codeSent() -> verificationId: $verificationId");
-          PhoneAuthCredential phoneAuthCredential =
-              PhoneAuthProvider.credential(
-            verificationId: verificationId,
-            smsCode: "666666",
-          );
-          await authService.currentUser.updatePhoneNumber(phoneAuthCredential);
-        };
-        final codeAutoRetrivalTimeoutCallback = (verificationId) {
-          print(
-              "Inside codeAutoRetrievalTimeout() -> verificationId: $verificationId");
-        };
-        authService.verifyPhoneNumber(
-          phoneNumber: newPhoneNumberController.text,
-          verificationCompleted: verificationCompleteCallback,
-          verificationFailed: verificationFailedCallback,
-          codeSent: codeSentCallback,
-          codeAutoRetrievalTimeout: codeAutoRetrivalTimeoutCallback,
-        );
-      } catch (e) {
-        print("Exception: $e");
+      String status = await UserDatabaseHelper()
+          .updatePhoneForCurrentUser(newPhoneNumberController.text);
+      if (status == UserDatabaseHelper.PHONE_UPDATED_SUCCESSFULLY) {
+        print("Phone Number updated successfully");
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Phone Number updated successfully")));
+        Navigator.pop(context);
+      } else {
+        print("Exception Result: $status");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Something went wrong")));
       }
     }
   }
@@ -106,13 +81,13 @@ class _ChangePhoneNumberFormState extends State<ChangePhoneNumberForm> {
         hintText: "Enter New Phone Number",
         labelText: "New Phone Number",
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.person),
+        suffixIcon: Icon(Icons.phone),
       ),
       validator: (value) {
         if (value.isEmpty) {
           return "Phone Number cannot be empty";
-        } else if (value[0] != "+") {
-          return "Add Country Code with + sign";
+        } else if (value.length != 10) {
+          return "Only 10 digits allowed";
         }
         return null;
       },
@@ -122,12 +97,12 @@ class _ChangePhoneNumberFormState extends State<ChangePhoneNumberForm> {
 
   Widget buildCurrentPhoneNumberField() {
     return TextFormField(
-      controller: newPhoneNumberController,
+      controller: currentPhoneNumberController,
       decoration: InputDecoration(
         hintText: "No Phone Number available",
         labelText: "Current Phone Number",
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.person),
+        suffixIcon: Icon(Icons.phone),
       ),
       readOnly: true,
     );

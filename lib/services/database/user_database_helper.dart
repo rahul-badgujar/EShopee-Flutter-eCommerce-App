@@ -9,9 +9,11 @@ class UserDatabaseHelper {
       "Address deleted successfully";
   static const String ADDRESS_UPDATED_SUCCESSFULLY =
       "Address updated successfully";
+  static const String PHONE_UPDATED_SUCCESSFULLY = "Phone updated successfully";
 
   static const String USERS_COLLECTION_NAME = "users";
   static const String ADDRESSES_COLLECTION_NAME = "addresses";
+  static const String PHONE_KEY = 'phone';
   UserDatabaseHelper._privateConstructor();
   static UserDatabaseHelper _instance =
       UserDatabaseHelper._privateConstructor();
@@ -91,5 +93,28 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(ADDRESSES_COLLECTION_NAME)
         .snapshots();
+  }
+
+  Future<String> updatePhoneForCurrentUser(String phone) async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final userDocSnapshot =
+          firestore.collection(USERS_COLLECTION_NAME).doc(uid);
+      await userDocSnapshot.update({PHONE_KEY: phone});
+      return PHONE_UPDATED_SUCCESSFULLY;
+    } on Exception catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<String> get currentUserPhoneNumber async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final userDoc =
+          await firestore.collection(USERS_COLLECTION_NAME).doc(uid).get();
+      return await userDoc.data()[PHONE_KEY];
+    } on Exception catch (e) {
+      return null;
+    }
   }
 }
