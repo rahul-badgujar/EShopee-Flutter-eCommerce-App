@@ -10,7 +10,14 @@ class ProfileScreen extends StatelessWidget {
         title: Text("Profile"),
       ),
       body: Body(),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: CustomBottomNavBar(
+        items: [
+          Icon(Icons.shopping_bag),
+          Icon(Icons.favorite),
+          Icon(Icons.chat_bubble),
+          Icon(Icons.person),
+        ],
+      ),
     );
   }
 }
