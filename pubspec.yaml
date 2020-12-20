@@ -23,12 +23,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   cloud_firestore: ^0.14.4
   cupertino_icons: ^1.0.0
   firebase_auth: ^0.18.4+1
   firebase_core: ^0.5.3
   firebase_storage: ^5.2.0
   flutter_svg: ^0.19.2+1
+  future_progress_dialog: ^0.1.1
   image_picker: ^0.6.7+15
   permission_handler: ^5.0.1+1
   pin_code_fields: ^6.0.1

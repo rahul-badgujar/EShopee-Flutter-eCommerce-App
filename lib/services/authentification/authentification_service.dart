@@ -84,8 +84,8 @@ class AuthentificationService {
     return firebaseAuth.currentUser;
   }
 
-  void updateCurrentUserDisplayName(String updatedDisplayName) {
-    currentUser.updateProfile(displayName: updatedDisplayName);
+  Future<void> updateCurrentUserDisplayName(String updatedDisplayName) async {
+    await currentUser.updateProfile(displayName: updatedDisplayName);
   }
 
   Future<String> resetPasswordForEmail(String email) async {

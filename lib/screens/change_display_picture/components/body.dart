@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider_models/body_model.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 
 class Body extends StatelessWidget {
   @override
@@ -98,15 +99,25 @@ class Body extends StatelessWidget {
     return DefaultButton(
       text: "Upload Picture",
       press: () {
-        uploadImageToFirestorage(context, bodyState);
+        final Future uploadFuture =
+            uploadImageToFirestorage(context, bodyState);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return FutureProgressDialog(
+              uploadFuture,
+              message: Text("Updating Display Picture"),
+            );
+          },
+        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Display Picture updated")));
       },
     );
   }
 
   Future<void> uploadImageToFirestorage(
       BuildContext context, BodyState bodyState) async {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Updating Display Picture, Please wait")));
     final Reference firestorageRef = FirebaseStorage.instance.ref();
     final String currentUserUid = AuthentificationService().currentUser.uid;
     final snapshot = await firestorageRef
@@ -116,7 +127,5 @@ class Body extends StatelessWidget {
     print("Image uploaded at $downloadUrl");
 
     AuthentificationService().uploadDisplayPictureForCurrentUser(downloadUrl);
-
-    Navigator.pop(context);
   }
 }

@@ -4,6 +4,7 @@ import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 
 import '../../../constants.dart';
 
@@ -43,7 +44,18 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
             SizedBox(height: getProportionateScreenHeight(40)),
             DefaultButton(
               text: "Change Email",
-              press: changeEmailButtonCallback,
+              press: () {
+                final updateFuture = changeEmailButtonCallback();
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return FutureProgressDialog(
+                      updateFuture,
+                      message: Text("Updating Email"),
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),

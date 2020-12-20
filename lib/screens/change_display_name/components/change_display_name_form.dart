@@ -1,6 +1,7 @@
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:flutter/material.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 
 import '../../../size_config.dart';
 
@@ -42,7 +43,20 @@ class _ChangeDisplayNameFormState extends State<ChangeDisplayNameForm> {
           SizedBox(height: SizeConfig.screenHeight * 0.2),
           DefaultButton(
             text: "Change Display Name",
-            press: changeDisplayNameButtonCallback,
+            press: () {
+              final uploadFuture = changeDisplayNameButtonCallback();
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return FutureProgressDialog(
+                    uploadFuture,
+                    message: Text("Updating Display Name"),
+                  );
+                },
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Display Name updated")));
+            },
           ),
         ],
       ),
@@ -86,14 +100,12 @@ class _ChangeDisplayNameFormState extends State<ChangeDisplayNameForm> {
     );
   }
 
-  void changeDisplayNameButtonCallback() {
+  Future<void> changeDisplayNameButtonCallback() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      AuthentificationService()
+      await AuthentificationService()
           .updateCurrentUserDisplayName(newDisplayNameController.text);
       print("Display Name updated to ${newDisplayNameController.text} ...");
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Updated Display Name")));
     }
   }
 }
