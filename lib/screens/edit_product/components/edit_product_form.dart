@@ -373,6 +373,7 @@ class _EditProductFormState extends State<EditProductForm> {
           content: Text("Product Saved"),
         ),
       );
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

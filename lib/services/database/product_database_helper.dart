@@ -28,6 +28,25 @@ class ProductDatabaseHelper {
     return docRef.id;
   }
 
+  Future<List> getUsersProductsList() async {
+    String uid = AuthentificationService().currentUser.uid;
+
+    try {
+      final productsCollectionReference =
+          firestore.collection(PRODUCTS_COLLECTION_NAME);
+      final queryResult = await productsCollectionReference
+          .where(Product.OWNER_KEY, isEqualTo: uid)
+          .get();
+      List<Product> products =
+          queryResult.docs.map((e) => Product.fromMap(e.data())).toList();
+
+      return products;
+    } on Exception catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
   Future<void> updateProductsImages(
       String productId, List<String> imgUrl) async {
     final Product updateProduct = Product(null, images: imgUrl);

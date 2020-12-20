@@ -58,6 +58,23 @@ class Product extends Model {
     return map;
   }
 
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      null,
+      images: map[IMAGES_KEY].cast<String>(),
+      title: map[TITLE_KEY],
+      variant: map[VARIANT_KEY],
+      discountPrice: map[DISCOUNT_PRICE_KEY],
+      originalPrice: map[ORIGINAL_PRICE_KEY],
+      rating: map[RATING_KEY],
+      highlights: map[HIGHLIGHTS_KEY],
+      description: map[DESCRIPTION_KEY],
+      seller: map[SELLER_KEY],
+      favourite: map[FAVOURITE_KEY],
+      owner: map[OWNER_KEY],
+    );
+  }
+
   @override
   Map<String, dynamic> toUpdateMap() {
     final map = <String, dynamic>{};
@@ -73,5 +90,10 @@ class Product extends Model {
     if (favourite != null) map[FAVOURITE_KEY] = favourite;
     if (owner != null) map[OWNER_KEY] = owner;
     return map;
+  }
+
+  @override
+  String toString() {
+    return this.toMap().toString();
   }
 }

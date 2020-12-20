@@ -5,6 +5,7 @@ import 'package:e_commerce_app_flutter/screens/change_password/change_password_s
 import 'package:e_commerce_app_flutter/screens/change_phone/change_phone_screen.dart';
 import 'package:e_commerce_app_flutter/screens/edit_product/edit_product_screen.dart';
 import 'package:e_commerce_app_flutter/screens/manage_addresses/manage_addresses_screen.dart';
+import 'package:e_commerce_app_flutter/screens/my_products/my_products_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -192,6 +193,7 @@ class HomeScreenDrawer extends StatelessWidget {
 
   Widget buildSellerExpansionTile(BuildContext context) {
     return ExpansionTile(
+      childrenPadding: EdgeInsets.zero,
       leading: Icon(Icons.business),
       title: Text(
         "I am Seller",
@@ -209,6 +211,23 @@ class HomeScreenDrawer extends StatelessWidget {
           onTap: () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => EditProductScreen()));
+          },
+        ),
+        ListTile(
+          title: Text(
+            "Manage My Products",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 15,
+            ),
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyProductsScreen(),
+              ),
+            );
           },
         ),
       ],
