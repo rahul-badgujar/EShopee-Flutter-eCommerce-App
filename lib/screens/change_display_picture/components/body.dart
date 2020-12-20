@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:e_commerce_app_flutter/services/local_files_access/local_files_access_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -118,12 +119,10 @@ class Body extends StatelessWidget {
 
   Future<void> uploadImageToFirestorage(
       BuildContext context, BodyState bodyState) async {
-    final Reference firestorageRef = FirebaseStorage.instance.ref();
     final String currentUserUid = AuthentificationService().currentUser.uid;
-    final snapshot = await firestorageRef
-        .child("user/display_picture/$currentUserUid")
-        .putFile(bodyState.chosenImage);
-    final downloadUrl = await snapshot.ref.getDownloadURL();
+
+    final downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
+        bodyState.chosenImage, "user/display_picture/$currentUserUid");
     print("Image uploaded at $downloadUrl");
 
     AuthentificationService().uploadDisplayPictureForCurrentUser(downloadUrl);

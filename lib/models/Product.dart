@@ -11,6 +11,7 @@ class Product extends Model {
   static const String DESCRIPTION_KEY = "description";
   static const String SELLER_KEY = "seller";
   static const String FAVOURITE_KEY = "favourite";
+  static const String OWNER_KEY = "owner";
 
   List<String> images;
   String title;
@@ -22,6 +23,7 @@ class Product extends Model {
   String description;
   String seller;
   bool favourite;
+  String owner;
 
   Product(
     String id, {
@@ -35,6 +37,7 @@ class Product extends Model {
     this.description,
     this.seller,
     this.favourite = false,
+    this.owner,
   }) : super(id);
 
   @override
@@ -50,6 +53,7 @@ class Product extends Model {
       DESCRIPTION_KEY: description,
       SELLER_KEY: seller,
       FAVOURITE_KEY: favourite,
+      OWNER_KEY: owner,
     };
     return map;
   }
@@ -67,6 +71,7 @@ class Product extends Model {
     if (description != null) map[DESCRIPTION_KEY] = description;
     if (seller != null) map[SELLER_KEY] = seller;
     if (favourite != null) map[FAVOURITE_KEY] = favourite;
+    if (owner != null) map[OWNER_KEY] = owner;
     return map;
   }
 }

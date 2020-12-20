@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
+import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:e_commerce_app_flutter/services/local_files_access/local_files_access_service.dart';
 import 'package:flutter/material.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -339,10 +342,37 @@ class _EditProductFormState extends State<EditProductForm> {
     );
   }
 
-  void nextButtonCallback() {
+  Future<void> nextButtonCallback() async {
     if (basicDetailsFormValidated == true &&
         describeProductFormValidated == true) {
-      print("All okay");
+      final productUploadFuture =
+          ProductDatabaseHelper().addUsersProduct(widget.product);
+      String productId = await showDialog(
+        context: context,
+        builder: (context) {
+          return FutureProgressDialog(
+            productUploadFuture,
+            message: Text("Uploading Product"),
+          );
+        },
+      );
+      List<String> downloadUrls = await uploadProductImages(productId);
+      final updateProductFuture =
+          ProductDatabaseHelper().updateProductsImages(productId, downloadUrls);
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return FutureProgressDialog(
+            updateProductFuture,
+            message: Text("Saving Product"),
+          );
+        },
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Product Saved"),
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -350,6 +380,27 @@ class _EditProductFormState extends State<EditProductForm> {
         ),
       );
     }
+  }
+
+  Future<List<String>> uploadProductImages(String productId) async {
+    String path = "products/images/$productId";
+    List<String> urls = List<String>();
+    for (int i = 0; i < selectedImages.length; i++) {
+      print("Image being uploaded: " + selectedImages[i]);
+      final imgUploadFuture = FirestoreFilesAccess()
+          .uploadFileToPath(File(selectedImages[i]), path + "_$i");
+      String downloadUrl = await showDialog(
+        context: context,
+        builder: (context) {
+          return FutureProgressDialog(
+            imgUploadFuture,
+            message: Text("Uploading Images ${i + 1}/${selectedImages.length}"),
+          );
+        },
+      );
+      urls.add(downloadUrl);
+    }
+    return urls;
   }
 
   Future<void> addImageButtonCallback({int index}) async {
