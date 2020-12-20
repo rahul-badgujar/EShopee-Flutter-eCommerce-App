@@ -1,4 +1,5 @@
 import 'package:e_commerce_app_flutter/components/rounded_icon_button.dart';
+import 'package:e_commerce_app_flutter/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import '../components/search_field.dart';
 import '../../../components/icon_button_with_counter.dart';
@@ -35,7 +36,13 @@ class HomeHeader extends StatelessWidget {
         IconButtonWithCounter(
           svgSrc: "assets/icons/Bell.svg",
           numOfItems: 3,
-          press: () {},
+          press: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfileScreen(),
+                ));
+          },
         ),
       ],
     );

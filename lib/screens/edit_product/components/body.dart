@@ -2,7 +2,6 @@ import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'edit_product_form.dart';
 
