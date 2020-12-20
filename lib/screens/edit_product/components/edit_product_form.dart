@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/services/local_files_access/local_files_access_service.dart';
@@ -34,6 +36,7 @@ class _EditProductFormState extends State<EditProductForm> {
   final TextEditingController sellerFieldController = TextEditingController();
   bool basicDetailsFormValidated = false;
   bool describeProductFormValidated = false;
+  List<String> selectedImages = List<String>();
 
   @override
   void dispose() {
@@ -161,9 +164,8 @@ class _EditProductFormState extends State<EditProductForm> {
       childrenPadding:
           EdgeInsets.symmetric(vertical: getProportionateScreenHeight(20)),
       children: [
-        SizedBox(
-          height: 56,
-          width: 56,
+        Padding(
+          padding: const EdgeInsets.all(16.0),
           child: IconButton(
             icon: Icon(
               Icons.add_a_photo,
@@ -171,6 +173,30 @@ class _EditProductFormState extends State<EditProductForm> {
             color: kTextColor,
             onPressed: addImageButtonCallback,
           ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ...List.generate(
+              selectedImages.length,
+              (index) => SizedBox(
+                width: 80,
+                height: 80,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      addImageButtonCallback(index: index);
+                    },
+                    child: Image.memory(
+                      File(selectedImages[index]).readAsBytesSync(),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -326,7 +352,12 @@ class _EditProductFormState extends State<EditProductForm> {
     }
   }
 
-  Future<void> addImageButtonCallback() async {
+  Future<void> addImageButtonCallback({int index}) async {
+    if (index == null && selectedImages.length >= 3) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Max 3 images can be uploaded")));
+      return;
+    }
     final path = await choseImageFromLocalFiles(context);
     if (path == READ_STORAGE_PERMISSION_DENIED) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -341,5 +372,13 @@ class _EditProductFormState extends State<EditProductForm> {
           content: Text("File size should be within 5KB to 1MB only")));
       return;
     }
+
+    setState(() {
+      if (index == null) {
+        selectedImages.add(path);
+      } else {
+        selectedImages[index] = path;
+      }
+    });
   }
 }
