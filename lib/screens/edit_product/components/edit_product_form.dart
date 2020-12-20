@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,8 @@ class EditProductForm extends StatefulWidget {
 }
 
 class _EditProductFormState extends State<EditProductForm> {
-  final _formKey = GlobalKey<FormState>();
+  final _basicDetailsFormKey = GlobalKey<FormState>();
+  final _describeProductFormKey = GlobalKey<FormState>();
   final TextEditingController titleFieldController = TextEditingController();
   final TextEditingController variantFieldController = TextEditingController();
   final TextEditingController discountPriceFieldController =
@@ -29,6 +31,8 @@ class _EditProductFormState extends State<EditProductForm> {
   final TextEditingController desciptionFieldController =
       TextEditingController();
   final TextEditingController sellerFieldController = TextEditingController();
+  bool basicDetailsFormValidated = false;
+  bool describeProductFormValidated = false;
 
   @override
   void dispose() {
@@ -40,14 +44,39 @@ class _EditProductFormState extends State<EditProductForm> {
     highlightsFieldController.dispose();
     desciptionFieldController.dispose();
     sellerFieldController.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        buildBasicDetailsTile(context),
+        SizedBox(height: getProportionateScreenHeight(10)),
+        buildDescribeProductTile(context),
+        SizedBox(height: getProportionateScreenHeight(10)),
+        buildUploadImagesTile(context),
+        SizedBox(height: getProportionateScreenHeight(30)),
+        DefaultButton(
+          text: "Next",
+          press: nextButtonCallback,
+        ),
+        SizedBox(height: getProportionateScreenHeight(10)),
+      ],
+    );
+  }
+
+  Widget buildBasicDetailsTile(BuildContext context) {
     return Form(
-      key: _formKey,
-      child: Column(
+      key: _basicDetailsFormKey,
+      child: ExpansionTile(
+        title: Text(
+          "Basic Details",
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        childrenPadding:
+            EdgeInsets.symmetric(vertical: getProportionateScreenHeight(20)),
         children: [
           buildTitleField(),
           SizedBox(height: getProportionateScreenHeight(20)),
@@ -57,13 +86,73 @@ class _EditProductFormState extends State<EditProductForm> {
           SizedBox(height: getProportionateScreenHeight(20)),
           buildDiscountPriceField(),
           SizedBox(height: getProportionateScreenHeight(20)),
+          buildSellerField(),
+          SizedBox(height: getProportionateScreenHeight(20)),
+          DefaultButton(
+            text: "Save",
+            press: () {
+              if (_basicDetailsFormKey.currentState.validate()) {
+                _basicDetailsFormKey.currentState.save();
+                widget.product.title = titleFieldController.text;
+                widget.product.variant = variantFieldController.text;
+                widget.product.originalPrice =
+                    double.parse(originalPriceFieldController.text);
+                widget.product.discountPrice =
+                    double.parse(discountPriceFieldController.text);
+                widget.product.seller = sellerFieldController.text;
+                basicDetailsFormValidated = true;
+              } else {
+                basicDetailsFormValidated = false;
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildDescribeProductTile(BuildContext context) {
+    return Form(
+      key: _describeProductFormKey,
+      child: ExpansionTile(
+        title: Text(
+          "Describe Product",
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        childrenPadding:
+            EdgeInsets.symmetric(vertical: getProportionateScreenHeight(20)),
+        children: [
           buildHighlightsField(),
           SizedBox(height: getProportionateScreenHeight(20)),
           buildDescriptionField(),
           SizedBox(height: getProportionateScreenHeight(20)),
-          buildSellerField(),
+          DefaultButton(
+            text: "Save",
+            press: () {
+              if (_describeProductFormKey.currentState.validate()) {
+                _describeProductFormKey.currentState.save();
+                widget.product.highlights = highlightsFieldController.text;
+                widget.product.description = desciptionFieldController.text;
+                describeProductFormValidated = true;
+              } else {
+                describeProductFormValidated = false;
+              }
+            },
+          ),
         ],
       ),
+    );
+  }
+
+  Widget buildUploadImagesTile(BuildContext context) {
+    return ExpansionTile(
+      title: Text(
+        "Upload Images",
+        style: Theme.of(context).textTheme.headline6,
+      ),
+      childrenPadding:
+          EdgeInsets.symmetric(vertical: getProportionateScreenHeight(20)),
+      children: [],
     );
   }
 
@@ -202,5 +291,18 @@ class _EditProductFormState extends State<EditProductForm> {
       },
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
+  }
+
+  void nextButtonCallback() {
+    if (basicDetailsFormValidated == true &&
+        describeProductFormValidated == true) {
+      print("All okay");
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Please fill complete details"),
+        ),
+      );
+    }
   }
 }
