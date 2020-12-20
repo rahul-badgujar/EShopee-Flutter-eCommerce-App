@@ -1,5 +1,6 @@
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/services/local_files_access/local_files_access_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
@@ -75,6 +76,9 @@ class _EditProductFormState extends State<EditProductForm> {
           "Basic Details",
           style: Theme.of(context).textTheme.headline6,
         ),
+        leading: Icon(
+          Icons.shop,
+        ),
         childrenPadding:
             EdgeInsets.symmetric(vertical: getProportionateScreenHeight(20)),
         children: [
@@ -119,6 +123,9 @@ class _EditProductFormState extends State<EditProductForm> {
           "Describe Product",
           style: Theme.of(context).textTheme.headline6,
         ),
+        leading: Icon(
+          Icons.description,
+        ),
         childrenPadding:
             EdgeInsets.symmetric(vertical: getProportionateScreenHeight(20)),
         children: [
@@ -150,9 +157,22 @@ class _EditProductFormState extends State<EditProductForm> {
         "Upload Images",
         style: Theme.of(context).textTheme.headline6,
       ),
+      leading: Icon(Icons.image),
       childrenPadding:
           EdgeInsets.symmetric(vertical: getProportionateScreenHeight(20)),
-      children: [],
+      children: [
+        SizedBox(
+          height: 56,
+          width: 56,
+          child: IconButton(
+            icon: Icon(
+              Icons.add_a_photo,
+            ),
+            color: kTextColor,
+            onPressed: addImageButtonCallback,
+          ),
+        ),
+      ],
     );
   }
 
@@ -303,6 +323,23 @@ class _EditProductFormState extends State<EditProductForm> {
           content: Text("Please fill complete details"),
         ),
       );
+    }
+  }
+
+  Future<void> addImageButtonCallback() async {
+    final path = await choseImageFromLocalFiles(context);
+    if (path == READ_STORAGE_PERMISSION_DENIED) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Storage permissions required")));
+      return;
+    } else if (path == INVALID_FILE_CHOSEN) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Invalid Image")));
+      return;
+    } else if (path == FILE_SIZE_OUT_OF_BOUNDS) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("File size should be within 5KB to 1MB only")));
+      return;
     }
   }
 }

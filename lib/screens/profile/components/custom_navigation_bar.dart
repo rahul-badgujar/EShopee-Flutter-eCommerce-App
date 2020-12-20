@@ -1,6 +1,5 @@
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class CustomBottomNavBar extends StatelessWidget {

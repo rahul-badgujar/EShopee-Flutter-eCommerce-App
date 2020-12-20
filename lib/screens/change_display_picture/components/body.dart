@@ -3,11 +3,10 @@ import 'dart:io';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:e_commerce_app_flutter/services/local_files_access/local_files_access_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import '../provider_models/body_model.dart';
 
@@ -69,36 +68,21 @@ class Body extends StatelessWidget {
   }
 
   void getImageFromUser(BuildContext context, BodyState bodyState) async {
-    final PermissionStatus photoPermissionStatus =
-        await Permission.photos.request();
-    if (!photoPermissionStatus.isGranted) {
-      print("Permission to access photos not provided...");
+    final path = await choseImageFromLocalFiles(context);
+    if (path == READ_STORAGE_PERMISSION_DENIED) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Storage permissions required")));
       return;
-    }
-
-    final imgPicker = ImagePicker();
-    final PickedFile imagePicked =
-        await imgPicker.getImage(source: ImageSource.gallery);
-    if (imagePicked == null) {
-      print("Image picked invalid");
-
+    } else if (path == INVALID_FILE_CHOSEN) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Invalid Image")));
       return;
-    }
-    bodyState.setChosenImage = File(imagePicked.path);
-    if (bodyState.chosenImage == null) {
-      print("Image chosen is not valid");
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Invalid Image")));
-    } else if (bodyState.chosenImage.lengthSync() >
-        (1024 * 1024)) // Display Picture max allowed size 1MB
-    {
-      bodyState.setChosenImage = null;
-      print("Max picture size is 1MB, try another picture");
+    } else if (path == FILE_SIZE_OUT_OF_BOUNDS) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Max picture size is 1MB, try another picture")));
+          content: Text("File size should be within 5KB to 1MB only")));
+      return;
     }
+    bodyState.setChosenImage = File(path);
   }
 
   Widget buildChosePictureButton(BuildContext context, BodyState bodyState) {

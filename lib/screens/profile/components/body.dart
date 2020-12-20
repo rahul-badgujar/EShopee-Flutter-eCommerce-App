@@ -1,7 +1,5 @@
-import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'display_pic.dart';
 import 'profile_menu.dart';
