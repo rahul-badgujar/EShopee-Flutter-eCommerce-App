@@ -28,6 +28,15 @@ class ProductDatabaseHelper {
     return docRef.id;
   }
 
+  Future<String> updateUsersProduct(Product product) async {
+    final productsCollectionReference =
+        firestore.collection(PRODUCTS_COLLECTION_NAME);
+    await productsCollectionReference
+        .doc(product.id)
+        .update(product.toUpdateMap());
+    return product.id;
+  }
+
   Future<List> getUsersProductsList() async {
     String uid = AuthentificationService().currentUser.uid;
 

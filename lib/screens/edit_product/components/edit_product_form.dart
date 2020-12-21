@@ -73,8 +73,12 @@ class _EditProductFormState extends State<EditProductForm> {
   @override
   void initState() {
     if (widget.product == null) {
+      product = Product(null);
       selectedImages = List<CustomImage>();
+      newProduct = true;
     } else {
+      product = widget.product;
+      newProduct = false;
       selectedImages = widget.product.images
           .map((e) => CustomImage(imgType: ImageType.network, path: e))
           .toList();
@@ -93,18 +97,14 @@ class _EditProductFormState extends State<EditProductForm> {
         buildUploadImagesTile(context),
         SizedBox(height: getProportionateScreenHeight(30)),
         DefaultButton(
-          text: "Next",
-          press: nextButtonCallback,
+          text: "Save Product",
+          press: saveProductButtonCallback,
         ),
         SizedBox(height: getProportionateScreenHeight(10)),
       ],
     );
-    if (widget.product == null) {
-      product = Product(null);
-    }
-    if (widget.product != null) {
-      product = widget.product;
-      newProduct = false;
+
+    if (newProduct == false) {
       titleFieldController.text = product.title;
       variantFieldController.text = product.variant;
       discountPriceFieldController.text = product.discountPrice.toString();
@@ -384,17 +384,19 @@ class _EditProductFormState extends State<EditProductForm> {
     );
   }
 
-  Future<void> nextButtonCallback() async {
+  Future<void> saveProductButtonCallback() async {
     if (basicDetailsFormValidated == true &&
         describeProductFormValidated == true) {
-      final productUploadFuture =
-          ProductDatabaseHelper().addUsersProduct(widget.product);
+      final productUploadFuture = newProduct
+          ? ProductDatabaseHelper().addUsersProduct(product)
+          : ProductDatabaseHelper().updateUsersProduct(product);
       String productId = await showDialog(
         context: context,
         builder: (context) {
           return FutureProgressDialog(
             productUploadFuture,
-            message: Text("Uploading Product"),
+            message:
+                Text(newProduct ? "Uploading Product" : "Updating Product"),
           );
         },
       );
@@ -428,7 +430,6 @@ class _EditProductFormState extends State<EditProductForm> {
 
   Future<void> uploadProductImages(String productId) async {
     String path = "products/images/$productId";
-    List<String> urls = List<String>();
     for (int i = 0; i < selectedImages.length; i++) {
       if (selectedImages[i].imgType == ImageType.local) {
         print("Image being uploaded: " + selectedImages[i].path);
