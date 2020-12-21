@@ -13,63 +13,66 @@ class ProductShortDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: getProportionateScreenWidth(88),
-          child: AspectRatio(
-            aspectRatio: 0.88,
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: product.images.length > 0
-                  ? Image.network(
-                      product.images[0],
-                      fit: BoxFit.cover,
-                    )
-                  : Text("No Image"),
+    return InkWell(
+      onTap: () {},
+      child: Row(
+        children: [
+          SizedBox(
+            width: getProportionateScreenWidth(88),
+            child: AspectRatio(
+              aspectRatio: 0.88,
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: product.images.length > 0
+                    ? Image.network(
+                        product.images[0],
+                        fit: BoxFit.contain,
+                      )
+                    : Text("No Image"),
+              ),
             ),
           ),
-        ),
-        SizedBox(width: getProportionateScreenWidth(20)),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                product.title,
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
+          SizedBox(width: getProportionateScreenWidth(20)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product.title,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                  maxLines: 2,
                 ),
-                maxLines: 2,
-              ),
-              SizedBox(height: 10),
-              Text.rich(
-                TextSpan(
-                    text: "\₹${product.discountPrice}    ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: kPrimaryColor,
-                      fontSize: 15,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "\₹${product.originalPrice}",
-                        style: TextStyle(
-                          color: kTextColor,
-                          decoration: TextDecoration.lineThrough,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 12,
-                        ),
+                SizedBox(height: 10),
+                Text.rich(
+                  TextSpan(
+                      text: "\₹${product.discountPrice}    ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: kPrimaryColor,
+                        fontSize: 15,
                       ),
-                    ]),
-              ),
-            ],
+                      children: [
+                        TextSpan(
+                          text: "\₹${product.originalPrice}",
+                          style: TextStyle(
+                            color: kTextColor,
+                            decoration: TextDecoration.lineThrough,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ]),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

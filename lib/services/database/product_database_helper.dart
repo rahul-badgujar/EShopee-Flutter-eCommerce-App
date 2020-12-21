@@ -37,8 +37,14 @@ class ProductDatabaseHelper {
       final queryResult = await productsCollectionReference
           .where(Product.OWNER_KEY, isEqualTo: uid)
           .get();
-      List<Product> products =
-          queryResult.docs.map((e) => Product.fromMap(e.data())).toList();
+      List<Product> products = queryResult.docs
+          .map(
+            (e) => Product.fromMap(
+              e.data(),
+              id: e.id,
+            ),
+          )
+          .toList();
 
       return products;
     } on Exception catch (e) {

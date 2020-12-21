@@ -55,7 +55,6 @@ class HomeScreenDrawer extends StatelessWidget {
             },
           ),
           buildSellerExpansionTile(context),
-          Divider(),
           ListTile(
             leading: Icon(Icons.logout),
             title: Text(
@@ -193,7 +192,6 @@ class HomeScreenDrawer extends StatelessWidget {
 
   Widget buildSellerExpansionTile(BuildContext context) {
     return ExpansionTile(
-      childrenPadding: EdgeInsets.zero,
       leading: Icon(Icons.business),
       title: Text(
         "I am Seller",

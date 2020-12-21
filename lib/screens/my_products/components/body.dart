@@ -22,8 +22,11 @@ class _BodyState extends State<Body> {
           child: Column(
             children: [
               SizedBox(height: getProportionateScreenHeight(20)),
-              Text("Manage Your Products", style: headingStyle),
-              Text("Swipe LEFT to Edit, Swipe RIGHT to Delete"),
+              Text("Your Products", style: headingStyle),
+              Text(
+                "Swipe LEFT to Edit, Swipe RIGHT to Delete",
+                style: TextStyle(fontSize: 12),
+              ),
               SizedBox(height: getProportionateScreenHeight(30)),
               Expanded(
                 child: FutureBuilder(
@@ -31,7 +34,6 @@ class _BodyState extends State<Body> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
-                        //shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index) {
                           return buildProductsCard(snapshot.data[index]);
@@ -57,40 +59,114 @@ class _BodyState extends State<Body> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Dismissible(
-        key: Key("this"),
+        key: Key(product.id),
         direction: DismissDirection.horizontal,
-        background: Container(
-          padding:
-              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-          decoration: BoxDecoration(
-            color: kTextColor.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.edit,
-                color: kPrimaryColor,
-              ),
-              Spacer(),
-              Icon(
-                Icons.delete,
-                color: kPrimaryColor,
-              ),
-            ],
-          ),
-        ),
+        background: buildDismissiblePrimaryBackground(),
+        secondaryBackground: buildDismissibleSecondaryBackground(),
         child: ProductShortDetailCard(
           product: product,
         ),
+        confirmDismiss: (direction) async {
+          if (direction == DismissDirection.endToStart) {
+            return await showConfirmationDialog(
+                "Are you sure to Delete Product?");
+          } else if (direction == DismissDirection.startToEnd) {
+            return await showConfirmationDialog(
+                "Are you sure to Edit Product?");
+          }
+          return false;
+        },
         onDismissed: (direction) {
           if (direction == DismissDirection.endToStart) {
-            print("delete");
+            print("delete: ${product.id}");
           } else if (direction == DismissDirection.startToEnd) {
-            print("edit");
+            print("edit: ${product.id}");
           }
         },
       ),
+    );
+  }
+
+  Widget buildDismissiblePrimaryBackground() {
+    return Container(
+      padding: EdgeInsets.only(left: 20),
+      decoration: BoxDecoration(
+        color: Colors.green,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.edit,
+            color: Colors.white,
+          ),
+          SizedBox(width: 8),
+          Text(
+            "Edit",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildDismissibleSecondaryBackground() {
+    return Container(
+      padding: EdgeInsets.only(right: 20),
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text(
+            "Delete",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          SizedBox(width: 8),
+          Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<bool> showConfirmationDialog(String messege) async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(messege),
+          actions: [
+            FlatButton(
+              child: Text("Yes"),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            ),
+            FlatButton(
+              child: Text("No"),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

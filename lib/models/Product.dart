@@ -58,9 +58,9 @@ class Product extends Model {
     return map;
   }
 
-  factory Product.fromMap(Map<String, dynamic> map) {
+  factory Product.fromMap(Map<String, dynamic> map, {String id}) {
     return Product(
-      null,
+      id,
       images: map[IMAGES_KEY].cast<String>(),
       title: map[TITLE_KEY],
       variant: map[VARIANT_KEY],
