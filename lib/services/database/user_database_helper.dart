@@ -140,7 +140,7 @@ class UserDatabaseHelper {
     try {
       final userDocSnapshot =
           firestore.collection(USERS_COLLECTION_NAME).doc(uid);
-      await userDocSnapshot.update({DP_KEY: null});
+      await userDocSnapshot.update({DP_KEY: FieldValue.delete()});
     } on Exception catch (e) {
       print(e.toString());
     }

@@ -42,6 +42,7 @@ Future<String> choseImageFromLocalFiles(
     },
     context: context,
   );
+  if (imgSource == null) return null;
   final PickedFile imagePicked = await imgPicker.getImage(source: imgSource);
   if (imagePicked == null) {
     return INVALID_FILE_CHOSEN;

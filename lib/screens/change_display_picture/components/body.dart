@@ -76,6 +76,7 @@ class Body extends StatelessWidget {
 
   void getImageFromUser(BuildContext context, BodyState bodyState) async {
     final path = await choseImageFromLocalFiles(context);
+    if (path == null) return;
     if (path == READ_STORAGE_PERMISSION_DENIED) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Storage permissions required")));
@@ -135,10 +136,10 @@ class Body extends StatelessWidget {
   Widget buildRemovePictureButton(BuildContext context, BodyState bodyState) {
     return DefaultButton(
       text: "Remove Picture",
-      press: () {
+      press: () async {
         final Future uploadFuture =
             removeImageFromFirestore(context, bodyState);
-        showDialog(
+        await showDialog(
           context: context,
           builder: (context) {
             return FutureProgressDialog(
