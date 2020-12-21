@@ -6,6 +6,8 @@ import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../utils.dart';
+
 class Body extends StatefulWidget {
   @override
   _BodyState createState() => _BodyState();
@@ -69,10 +71,10 @@ class _BodyState extends State<Body> {
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.endToStart) {
             return await showConfirmationDialog(
-                "Are you sure to Delete Product?");
+                context, "Are you sure to Delete Product?");
           } else if (direction == DismissDirection.startToEnd) {
             return await showConfirmationDialog(
-                "Are you sure to Edit Product?");
+                context, "Are you sure to Edit Product?");
           }
           return false;
         },
@@ -142,31 +144,6 @@ class _BodyState extends State<Body> {
           ),
         ],
       ),
-    );
-  }
-
-  Future<bool> showConfirmationDialog(String messege) async {
-    return await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(messege),
-          actions: [
-            FlatButton(
-              child: Text("Yes"),
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-            ),
-            FlatButton(
-              child: Text("No"),
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

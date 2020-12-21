@@ -7,6 +7,7 @@ import 'package:e_commerce_app_flutter/screens/edit_product/edit_product_screen.
 import 'package:e_commerce_app_flutter/screens/manage_addresses/manage_addresses_screen.dart';
 import 'package:e_commerce_app_flutter/screens/my_products/my_products_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:e_commerce_app_flutter/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../change_display_name/change_display_name_screen.dart';
@@ -61,8 +62,10 @@ class HomeScreenDrawer extends StatelessWidget {
               "Sign out",
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
-            onTap: () {
-              AuthentificationService().signOut();
+            onTap: () async {
+              final confirmation =
+                  await showConfirmationDialog(context, "Confirm Sign out ?");
+              if (confirmation) AuthentificationService().signOut();
             },
           ),
         ],
