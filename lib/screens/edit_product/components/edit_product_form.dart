@@ -145,13 +145,13 @@ class _EditProductFormState extends State<EditProductForm> {
             press: () {
               if (_basicDetailsFormKey.currentState.validate()) {
                 _basicDetailsFormKey.currentState.save();
-                widget.product.title = titleFieldController.text;
-                widget.product.variant = variantFieldController.text;
-                widget.product.originalPrice =
+                product.title = titleFieldController.text;
+                product.variant = variantFieldController.text;
+                product.originalPrice =
                     double.parse(originalPriceFieldController.text);
-                widget.product.discountPrice =
+                product.discountPrice =
                     double.parse(discountPriceFieldController.text);
-                widget.product.seller = sellerFieldController.text;
+                product.seller = sellerFieldController.text;
                 basicDetailsFormValidated = true;
               } else {
                 basicDetailsFormValidated = false;
@@ -186,8 +186,8 @@ class _EditProductFormState extends State<EditProductForm> {
             press: () {
               if (_describeProductFormKey.currentState.validate()) {
                 _describeProductFormKey.currentState.save();
-                widget.product.highlights = highlightsFieldController.text;
-                widget.product.description = desciptionFieldController.text;
+                product.highlights = highlightsFieldController.text;
+                product.description = desciptionFieldController.text;
                 describeProductFormValidated = true;
               } else {
                 describeProductFormValidated = false;
@@ -429,12 +429,12 @@ class _EditProductFormState extends State<EditProductForm> {
   }
 
   Future<void> uploadProductImages(String productId) async {
-    String path = "products/images/$productId";
     for (int i = 0; i < selectedImages.length; i++) {
       if (selectedImages[i].imgType == ImageType.local) {
         print("Image being uploaded: " + selectedImages[i].path);
-        final imgUploadFuture = FirestoreFilesAccess()
-            .uploadFileToPath(File(selectedImages[i].path), path + "_$i");
+        final imgUploadFuture = FirestoreFilesAccess().uploadFileToPath(
+            File(selectedImages[i].path),
+            ProductDatabaseHelper().getPathForProductImage(productId, i));
         String downloadUrl = await showDialog(
           context: context,
           builder: (context) {

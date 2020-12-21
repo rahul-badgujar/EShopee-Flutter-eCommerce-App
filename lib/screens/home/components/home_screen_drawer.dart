@@ -95,8 +95,9 @@ class HomeScreenDrawer extends StatelessWidget {
         ),
       ),
       currentAccountPicture: CircleAvatar(
-        backgroundImage:
-            user.photoURL == null ? null : NetworkImage(user.photoURL),
+        backgroundImage: user.photoURL == null || user.photoURL == ""
+            ? null
+            : NetworkImage(user.photoURL),
       ),
     );
   }

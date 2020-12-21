@@ -117,4 +117,9 @@ class UserDatabaseHelper {
       return null;
     }
   }
+
+  String getPathForCurrentUserDisplayPicture() {
+    final String currentUserUid = AuthentificationService().currentUser.uid;
+    return "user/display_picture/$currentUserUid";
+  }
 }

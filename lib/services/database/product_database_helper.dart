@@ -28,6 +28,12 @@ class ProductDatabaseHelper {
     return docRef.id;
   }
 
+  Future<void> deleteUserProduct(String productId) async {
+    final productsCollectionReference =
+        firestore.collection(PRODUCTS_COLLECTION_NAME);
+    await productsCollectionReference.doc(productId).delete();
+  }
+
   Future<String> updateUsersProduct(Product product) async {
     final productsCollectionReference =
         firestore.collection(PRODUCTS_COLLECTION_NAME);
@@ -68,5 +74,10 @@ class ProductDatabaseHelper {
     final docRef =
         firestore.collection(PRODUCTS_COLLECTION_NAME).doc(productId);
     await docRef.update(updateProduct.toUpdateMap());
+  }
+
+  String getPathForProductImage(String id, int index) {
+    String path = "products/images/$id";
+    return path + "_$index";
   }
 }

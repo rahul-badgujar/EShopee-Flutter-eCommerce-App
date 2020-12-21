@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 Future<bool> showConfirmationDialog(
     BuildContext context, String messege) async {
-  return await showDialog(
+  var result = await showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
@@ -24,4 +24,6 @@ Future<bool> showConfirmationDialog(
       );
     },
   );
+  if (result == null) result = false;
+  return result;
 }

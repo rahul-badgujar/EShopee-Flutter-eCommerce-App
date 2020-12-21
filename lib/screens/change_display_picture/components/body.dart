@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:e_commerce_app_flutter/services/local_files_access/local_files_access_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider_models/body_model.dart';
@@ -40,8 +40,10 @@ class Body extends StatelessWidget {
                     ),
                     SizedBox(height: getProportionateScreenHeight(80)),
                     buildChosePictureButton(context, bodyState),
-                    SizedBox(height: getProportionateScreenHeight(30)),
+                    SizedBox(height: getProportionateScreenHeight(20)),
                     buildUploadPictureButton(context, bodyState),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    buildRemovePictureButton(context, bodyState),
                     SizedBox(height: getProportionateScreenHeight(80)),
                   ],
                 );
@@ -61,7 +63,8 @@ class Body extends StatelessWidget {
         radius: SizeConfig.screenWidth * 0.3,
         backgroundColor: kTextColor.withOpacity(0.15),
         backgroundImage: bodyState.chosenImage == null
-            ? ((AuthentificationService().currentUser.photoURL == null)
+            ? ((AuthentificationService().currentUser.photoURL == null ||
+                    AuthentificationService().currentUser.photoURL == "")
                 ? null
                 : NetworkImage(AuthentificationService().currentUser.photoURL))
             : MemoryImage(bodyState.chosenImage.readAsBytesSync()),
@@ -119,12 +122,39 @@ class Body extends StatelessWidget {
 
   Future<void> uploadImageToFirestorage(
       BuildContext context, BodyState bodyState) async {
-    final String currentUserUid = AuthentificationService().currentUser.uid;
-
     final downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
-        bodyState.chosenImage, "user/display_picture/$currentUserUid");
+        bodyState.chosenImage,
+        UserDatabaseHelper().getPathForCurrentUserDisplayPicture());
     print("Image uploaded at $downloadUrl");
 
     AuthentificationService().uploadDisplayPictureForCurrentUser(downloadUrl);
+  }
+
+  Widget buildRemovePictureButton(BuildContext context, BodyState bodyState) {
+    return DefaultButton(
+      text: "Remove Picture",
+      press: () {
+        final Future uploadFuture =
+            removeImageFromFirestore(context, bodyState);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return FutureProgressDialog(
+              uploadFuture,
+              message: Text("Deleting Display Picture"),
+            );
+          },
+        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Display Picture removed")));
+      },
+    );
+  }
+
+  Future<void> removeImageFromFirestore(
+      BuildContext context, BodyState bodyState) async {
+    await FirestoreFilesAccess().deleteFileFromPath(
+        UserDatabaseHelper().getPathForCurrentUserDisplayPicture());
+    await AuthentificationService().removeDisplayPictureForCurrentUser();
   }
 }

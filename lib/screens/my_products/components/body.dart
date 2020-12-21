@@ -3,9 +3,10 @@ import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/edit_product/edit_product_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
+import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 
 import '../../../utils.dart';
 
@@ -73,6 +74,35 @@ class _BodyState extends State<Body> {
           if (direction == DismissDirection.endToStart) {
             final confirmation = await showConfirmationDialog(
                 context, "Are you sure to Delete Product?");
+            if (confirmation) {
+              for (int i = 0; i < product.images.length; i++) {
+                String path = ProductDatabaseHelper()
+                    .getPathForProductImage(product.id, i);
+                final deletionFuture =
+                    FirestoreFilesAccess().deleteFileFromPath(path);
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return FutureProgressDialog(
+                      deletionFuture,
+                      message: Text(
+                          "Deleting Product Images ${i + 1}/${product.images.length}"),
+                    );
+                  },
+                );
+              }
+              final deleteProductFuture =
+                  ProductDatabaseHelper().deleteUserProduct(product.id);
+              await showDialog(
+                context: context,
+                builder: (context) {
+                  return FutureProgressDialog(
+                    deleteProductFuture,
+                    message: Text("Deleting Product"),
+                  );
+                },
+              );
+            }
             return confirmation;
           } else if (direction == DismissDirection.startToEnd) {
             final confirmation = await showConfirmationDialog(
