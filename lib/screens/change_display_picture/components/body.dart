@@ -56,19 +56,21 @@ class Body extends StatelessWidget {
   }
 
   Widget buildDisplayPictureAvatar(BuildContext context, BodyState bodyState) {
-    return CircleAvatar(
-      radius: SizeConfig.screenWidth * 0.305,
-      backgroundColor: kPrimaryColor,
-      child: CircleAvatar(
-        radius: SizeConfig.screenWidth * 0.3,
-        backgroundColor: kTextColor.withOpacity(0.15),
-        backgroundImage: bodyState.chosenImage == null
-            ? ((AuthentificationService().currentUser.photoURL == null ||
-                    AuthentificationService().currentUser.photoURL == "")
-                ? null
-                : NetworkImage(AuthentificationService().currentUser.photoURL))
-            : MemoryImage(bodyState.chosenImage.readAsBytesSync()),
-      ),
+    return FutureBuilder(
+      future: UserDatabaseHelper().displayPictureForCurrentUser,
+      builder: (context, snapshot) {
+        ImageProvider backImage;
+        if (bodyState.chosenImage != null) {
+          backImage = MemoryImage(bodyState.chosenImage.readAsBytesSync());
+        } else if (snapshot.hasData && snapshot.data != null) {
+          backImage = NetworkImage(snapshot.data);
+        }
+        return CircleAvatar(
+          radius: SizeConfig.screenWidth * 0.3,
+          backgroundColor: kTextColor.withOpacity(0.15),
+          backgroundImage: backImage,
+        );
+      },
     );
   }
 
@@ -127,7 +129,7 @@ class Body extends StatelessWidget {
         UserDatabaseHelper().getPathForCurrentUserDisplayPicture());
     print("Image uploaded at $downloadUrl");
 
-    AuthentificationService().uploadDisplayPictureForCurrentUser(downloadUrl);
+    UserDatabaseHelper().uploadDisplayPictureForCurrentUser(downloadUrl);
   }
 
   Widget buildRemovePictureButton(BuildContext context, BodyState bodyState) {
@@ -147,6 +149,7 @@ class Body extends StatelessWidget {
         );
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Display Picture removed")));
+        Navigator.pop(context);
       },
     );
   }
@@ -155,6 +158,6 @@ class Body extends StatelessWidget {
       BuildContext context, BodyState bodyState) async {
     await FirestoreFilesAccess().deleteFileFromPath(
         UserDatabaseHelper().getPathForCurrentUserDisplayPicture());
-    await AuthentificationService().removeDisplayPictureForCurrentUser();
+    await UserDatabaseHelper().removeDisplayPictureForCurrentUser();
   }
 }

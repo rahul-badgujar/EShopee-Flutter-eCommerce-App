@@ -14,6 +14,7 @@ class UserDatabaseHelper {
   static const String USERS_COLLECTION_NAME = "users";
   static const String ADDRESSES_COLLECTION_NAME = "addresses";
   static const String PHONE_KEY = 'phone';
+  static const String DP_KEY = "display_picture";
   UserDatabaseHelper._privateConstructor();
   static UserDatabaseHelper _instance =
       UserDatabaseHelper._privateConstructor();
@@ -121,5 +122,39 @@ class UserDatabaseHelper {
   String getPathForCurrentUserDisplayPicture() {
     final String currentUserUid = AuthentificationService().currentUser.uid;
     return "user/display_picture/$currentUserUid";
+  }
+
+  Future<void> uploadDisplayPictureForCurrentUser(String url) async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final userDocSnapshot =
+          firestore.collection(USERS_COLLECTION_NAME).doc(uid);
+      await userDocSnapshot.update({DP_KEY: url});
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> removeDisplayPictureForCurrentUser() async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final userDocSnapshot =
+          firestore.collection(USERS_COLLECTION_NAME).doc(uid);
+      await userDocSnapshot.update({DP_KEY: null});
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<String> get displayPictureForCurrentUser async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final userDocSnapshot =
+          await firestore.collection(USERS_COLLECTION_NAME).doc(uid).get();
+      return userDocSnapshot.data()[DP_KEY];
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+    return null;
   }
 }

@@ -7,6 +7,7 @@ import 'package:e_commerce_app_flutter/screens/edit_product/edit_product_screen.
 import 'package:e_commerce_app_flutter/screens/manage_addresses/manage_addresses_screen.dart';
 import 'package:e_commerce_app_flutter/screens/my_products/my_products_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -94,10 +95,20 @@ class HomeScreenDrawer extends StatelessWidget {
           color: Colors.black,
         ),
       ),
-      currentAccountPicture: CircleAvatar(
-        backgroundImage: user.photoURL == null || user.photoURL == ""
-            ? null
-            : NetworkImage(user.photoURL),
+      currentAccountPicture: FutureBuilder(
+        future: UserDatabaseHelper().displayPictureForCurrentUser,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data != null) {
+              return CircleAvatar(
+                backgroundImage: NetworkImage(snapshot.data),
+              );
+            }
+          }
+          return CircleAvatar(
+            backgroundColor: kTextColor,
+          );
+        },
       ),
     );
   }
