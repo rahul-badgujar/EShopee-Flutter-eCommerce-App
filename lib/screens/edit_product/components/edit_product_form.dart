@@ -11,6 +11,21 @@ import 'package:future_progress_dialog/future_progress_dialog.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
+enum ImageType {
+  local,
+  network,
+}
+
+class CustomImage {
+  final ImageType imgType;
+  final String path;
+  CustomImage({this.imgType = ImageType.local, @required this.path});
+  @override
+  String toString() {
+    return "Instance of Custom Image: {imgType: $imgType, path: $path}";
+  }
+}
+
 class EditProductForm extends StatefulWidget {
   final Product product;
   EditProductForm({
@@ -31,7 +46,6 @@ class _EditProductFormState extends State<EditProductForm> {
       TextEditingController();
   final TextEditingController originalPriceFieldController =
       TextEditingController();
-  final TextEditingController ratingFieldController = TextEditingController();
   final TextEditingController highlightsFieldController =
       TextEditingController();
   final TextEditingController desciptionFieldController =
@@ -39,7 +53,9 @@ class _EditProductFormState extends State<EditProductForm> {
   final TextEditingController sellerFieldController = TextEditingController();
   bool basicDetailsFormValidated = false;
   bool describeProductFormValidated = false;
-  List<String> selectedImages = List<String>();
+  bool newProduct = true;
+  List<CustomImage> selectedImages;
+  Product product;
 
   @override
   void dispose() {
@@ -47,7 +63,6 @@ class _EditProductFormState extends State<EditProductForm> {
     variantFieldController.dispose();
     discountPriceFieldController.dispose();
     originalPriceFieldController.dispose();
-    ratingFieldController.dispose();
     highlightsFieldController.dispose();
     desciptionFieldController.dispose();
     sellerFieldController.dispose();
@@ -56,8 +71,20 @@ class _EditProductFormState extends State<EditProductForm> {
   }
 
   @override
+  void initState() {
+    if (widget.product == null) {
+      selectedImages = List<CustomImage>();
+    } else {
+      selectedImages = widget.product.images
+          .map((e) => CustomImage(imgType: ImageType.network, path: e))
+          .toList();
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
+    final column = Column(
       children: [
         buildBasicDetailsTile(context),
         SizedBox(height: getProportionateScreenHeight(10)),
@@ -72,6 +99,21 @@ class _EditProductFormState extends State<EditProductForm> {
         SizedBox(height: getProportionateScreenHeight(10)),
       ],
     );
+    if (widget.product == null) {
+      product = Product(null);
+    }
+    if (widget.product != null) {
+      product = widget.product;
+      newProduct = false;
+      titleFieldController.text = product.title;
+      variantFieldController.text = product.variant;
+      discountPriceFieldController.text = product.discountPrice.toString();
+      originalPriceFieldController.text = product.originalPrice.toString();
+      highlightsFieldController.text = product.highlights;
+      desciptionFieldController.text = product.description;
+      sellerFieldController.text = product.seller;
+    }
+    return column;
   }
 
   Widget buildBasicDetailsTile(BuildContext context) {
@@ -99,7 +141,7 @@ class _EditProductFormState extends State<EditProductForm> {
           buildSellerField(),
           SizedBox(height: getProportionateScreenHeight(20)),
           DefaultButton(
-            text: "Save",
+            text: "Validate",
             press: () {
               if (_basicDetailsFormKey.currentState.validate()) {
                 _basicDetailsFormKey.currentState.save();
@@ -140,7 +182,7 @@ class _EditProductFormState extends State<EditProductForm> {
           buildDescriptionField(),
           SizedBox(height: getProportionateScreenHeight(20)),
           DefaultButton(
-            text: "Save",
+            text: "Validate",
             press: () {
               if (_describeProductFormKey.currentState.validate()) {
                 _describeProductFormKey.currentState.save();
@@ -191,10 +233,10 @@ class _EditProductFormState extends State<EditProductForm> {
                     onTap: () {
                       addImageButtonCallback(index: index);
                     },
-                    child: Image.memory(
-                      File(selectedImages[index]).readAsBytesSync(),
-                      fit: BoxFit.cover,
-                    ),
+                    child: selectedImages[index].imgType == ImageType.local
+                        ? Image.memory(
+                            File(selectedImages[index].path).readAsBytesSync())
+                        : Image.network(selectedImages[index].path),
                   ),
                 ),
               ),
@@ -356,7 +398,8 @@ class _EditProductFormState extends State<EditProductForm> {
           );
         },
       );
-      List<String> downloadUrls = await uploadProductImages(productId);
+      await uploadProductImages(productId);
+      List<String> downloadUrls = selectedImages.map((e) => e.path).toList();
       final updateProductFuture =
           ProductDatabaseHelper().updateProductsImages(productId, downloadUrls);
       await showDialog(
@@ -377,31 +420,34 @@ class _EditProductFormState extends State<EditProductForm> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Please fill complete details"),
+          content: Text("Form not validated properly"),
         ),
       );
     }
   }
 
-  Future<List<String>> uploadProductImages(String productId) async {
+  Future<void> uploadProductImages(String productId) async {
     String path = "products/images/$productId";
     List<String> urls = List<String>();
     for (int i = 0; i < selectedImages.length; i++) {
-      print("Image being uploaded: " + selectedImages[i]);
-      final imgUploadFuture = FirestoreFilesAccess()
-          .uploadFileToPath(File(selectedImages[i]), path + "_$i");
-      String downloadUrl = await showDialog(
-        context: context,
-        builder: (context) {
-          return FutureProgressDialog(
-            imgUploadFuture,
-            message: Text("Uploading Images ${i + 1}/${selectedImages.length}"),
-          );
-        },
-      );
-      urls.add(downloadUrl);
+      if (selectedImages[i].imgType == ImageType.local) {
+        print("Image being uploaded: " + selectedImages[i].path);
+        final imgUploadFuture = FirestoreFilesAccess()
+            .uploadFileToPath(File(selectedImages[i].path), path + "_$i");
+        String downloadUrl = await showDialog(
+          context: context,
+          builder: (context) {
+            return FutureProgressDialog(
+              imgUploadFuture,
+              message:
+                  Text("Uploading Images ${i + 1}/${selectedImages.length}"),
+            );
+          },
+        );
+        selectedImages[i] =
+            CustomImage(imgType: ImageType.network, path: downloadUrl);
+      }
     }
-    return urls;
   }
 
   Future<void> addImageButtonCallback({int index}) async {
@@ -427,9 +473,10 @@ class _EditProductFormState extends State<EditProductForm> {
 
     setState(() {
       if (index == null) {
-        selectedImages.add(path);
+        selectedImages.add(CustomImage(imgType: ImageType.local, path: path));
       } else {
-        selectedImages[index] = path;
+        selectedImages[index] =
+            CustomImage(imgType: ImageType.local, path: path);
       }
     });
   }

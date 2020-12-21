@@ -1,6 +1,7 @@
 import 'package:e_commerce_app_flutter/components/product_short_detail_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/screens/edit_product/edit_product_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
@@ -70,20 +71,30 @@ class _BodyState extends State<Body> {
         ),
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.endToStart) {
-            return await showConfirmationDialog(
+            final confirmation = await showConfirmationDialog(
                 context, "Are you sure to Delete Product?");
+            return confirmation;
           } else if (direction == DismissDirection.startToEnd) {
-            return await showConfirmationDialog(
+            final confirmation = await showConfirmationDialog(
                 context, "Are you sure to Edit Product?");
+            if (confirmation) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProductScreen(
+                    productToEdit: product,
+                  ),
+                ),
+              );
+            }
+            return false;
           }
           return false;
         },
         onDismissed: (direction) {
           if (direction == DismissDirection.endToStart) {
             print("delete: ${product.id}");
-          } else if (direction == DismissDirection.startToEnd) {
-            print("edit: ${product.id}");
-          }
+          } else if (direction == DismissDirection.startToEnd) {}
         },
       ),
     );
