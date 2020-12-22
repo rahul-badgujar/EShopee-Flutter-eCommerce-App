@@ -91,6 +91,15 @@ class UserDatabaseHelper {
     }
   }
 
+  Stream<DocumentSnapshot> get currentUserDataStream {
+    String uid = AuthentificationService().currentUser.uid;
+    return firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .get()
+        .asStream();
+  }
+
   Stream<QuerySnapshot> get currentUserAddressesStream {
     String uid = AuthentificationService().currentUser.uid;
     return firestore

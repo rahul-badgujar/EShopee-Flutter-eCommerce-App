@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
@@ -55,14 +56,15 @@ class Body extends StatelessWidget {
   }
 
   Widget buildDisplayPictureAvatar(BuildContext context, BodyState bodyState) {
-    return FutureBuilder(
-      future: UserDatabaseHelper().displayPictureForCurrentUser,
+    return StreamBuilder(
+      stream: UserDatabaseHelper().currentUserDataStream,
       builder: (context, snapshot) {
         ImageProvider backImage;
         if (bodyState.chosenImage != null) {
           backImage = MemoryImage(bodyState.chosenImage.readAsBytesSync());
         } else if (snapshot.hasData && snapshot.data != null) {
-          backImage = NetworkImage(snapshot.data);
+          final String url = snapshot.data.data()[UserDatabaseHelper.DP_KEY];
+          backImage = NetworkImage(url);
         }
         return CircleAvatar(
           radius: SizeConfig.screenWidth * 0.3,
