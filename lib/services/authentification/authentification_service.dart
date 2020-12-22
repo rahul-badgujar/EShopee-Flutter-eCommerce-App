@@ -51,6 +51,7 @@ class AuthentificationService {
         return SIGN_IN_SUCCESS_MSG;
       } else {
         await userCredential.user.sendEmailVerification();
+
         return USER_NOT_VERIFIED;
       }
     } on FirebaseAuthException catch (e) {
@@ -62,10 +63,11 @@ class AuthentificationService {
     try {
       final UserCredential userCredential = await firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
+      final String uid = userCredential.user.uid;
       if (userCredential.user.emailVerified == false) {
         await userCredential.user.sendEmailVerification();
       }
-      await UserDatabaseHelper().createNewUser(userCredential.user.uid);
+      await UserDatabaseHelper().createNewUser(uid);
       return SIGN_UP_SUCCESS_MSG;
     } on FirebaseAuthException catch (e) {
       return e.code;
