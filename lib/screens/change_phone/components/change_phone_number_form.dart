@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:flutter/material.dart';
@@ -57,9 +58,6 @@ class _ChangePhoneNumberFormState extends State<ChangePhoneNumberForm> {
         ],
       ),
     );
-    UserDatabaseHelper().currentUserPhoneNumber.then((value) {
-      if (value != null) currentPhoneNumberController.text = value;
-    });
 
     return form;
   }
@@ -106,15 +104,26 @@ class _ChangePhoneNumberFormState extends State<ChangePhoneNumberForm> {
   }
 
   Widget buildCurrentPhoneNumberField() {
-    return TextFormField(
-      controller: currentPhoneNumberController,
-      decoration: InputDecoration(
-        hintText: "No Phone Number available",
-        labelText: "Current Phone Number",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.phone),
-      ),
-      readOnly: true,
+    return StreamBuilder<DocumentSnapshot>(
+      stream: UserDatabaseHelper().currentUserDataStream,
+      builder: (context, snapshot) {
+        String currentPhone;
+        if (snapshot.hasData && snapshot.data != null)
+          currentPhone = snapshot.data.data()[UserDatabaseHelper.PHONE_KEY];
+        final textField = TextFormField(
+          controller: currentPhoneNumberController,
+          decoration: InputDecoration(
+            hintText: "No Phone Number available",
+            labelText: "Current Phone Number",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: Icon(Icons.phone),
+          ),
+          readOnly: true,
+        );
+        if (currentPhone != null)
+          currentPhoneNumberController.text = currentPhone;
+        return textField;
+      },
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:e_commerce_app_flutter/components/default_button.dart';
 
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 
@@ -61,7 +62,7 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
         ),
       ),
     );
-    currentEmailController.text = AuthentificationService().currentUser.email;
+
     return form;
   }
 
@@ -88,17 +89,27 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
   }
 
   Widget buildCurrentEmailFormField() {
-    return TextFormField(
-      controller: currentEmailController,
-      decoration: InputDecoration(
-        hintText: "CurrentEmail",
-        labelText: "Current Email",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSuffixIcon(
-          svgIcon: "assets/icons/Mail.svg",
-        ),
-      ),
-      readOnly: true,
+    return StreamBuilder<User>(
+      stream: AuthentificationService().userChanges,
+      builder: (context, snapshot) {
+        String currentEmail;
+        if (snapshot.hasData && snapshot.data != null)
+          currentEmail = snapshot.data.email;
+        final textField = TextFormField(
+          controller: currentEmailController,
+          decoration: InputDecoration(
+            hintText: "CurrentEmail",
+            labelText: "Current Email",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: CustomSuffixIcon(
+              svgIcon: "assets/icons/Mail.svg",
+            ),
+          ),
+          readOnly: true,
+        );
+        if (currentEmail != null) currentEmailController.text = currentEmail;
+        return textField;
+      },
     );
   }
 

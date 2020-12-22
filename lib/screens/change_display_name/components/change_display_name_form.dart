@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 
@@ -62,8 +65,6 @@ class _ChangeDisplayNameFormState extends State<ChangeDisplayNameForm> {
       ),
     );
 
-    currentDisplayNameController.text =
-        AuthentificationService().currentUser.displayName;
     return form;
   }
 
@@ -88,15 +89,26 @@ class _ChangeDisplayNameFormState extends State<ChangeDisplayNameForm> {
   }
 
   Widget buildCurrentDisplayNameField() {
-    return TextFormField(
-      controller: currentDisplayNameController,
-      decoration: InputDecoration(
-        hintText: "No Display Name available",
-        labelText: "Current Display Name",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.person),
-      ),
-      readOnly: true,
+    return StreamBuilder<User>(
+      stream: AuthentificationService().userChanges,
+      builder: (context, snapshot) {
+        String displayName;
+        if (snapshot.hasData && snapshot.data != null)
+          displayName = snapshot.data.displayName;
+        final textField = TextFormField(
+          controller: currentDisplayNameController,
+          decoration: InputDecoration(
+            hintText: "No Display Name available",
+            labelText: "Current Display Name",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: Icon(Icons.person),
+          ),
+          readOnly: true,
+        );
+        if (displayName != null)
+          currentDisplayNameController.text = displayName;
+        return textField;
+      },
     );
   }
 
