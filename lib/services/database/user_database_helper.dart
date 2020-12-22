@@ -29,6 +29,10 @@ class UserDatabaseHelper {
     return _firebaseFirestore;
   }
 
+  Future<void> createNewUser(String uid) async {
+    await firestore.collection(USERS_COLLECTION_NAME).doc(uid).set({});
+  }
+
   Future<List> getAddressesListForCurrentUser() async {
     String uid = AuthentificationService().currentUser.uid;
     final snapshot = await firestore

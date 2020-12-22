@@ -1,6 +1,5 @@
 import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
-import 'package:e_commerce_app_flutter/screens/sign_in/sign_in_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
@@ -140,11 +139,7 @@ class _SignUpFormState extends State<SignUpForm> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content:
                 Text("Signed Up succesfully, Please Sign In to continue")));
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SignInScreen(),
-            ));
+        Navigator.pop(context);
       } else if (signUpStatus == AuthentificationService.EMAIL_ALREADY_IN_USE) {
         print("Email already in use, try different email");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

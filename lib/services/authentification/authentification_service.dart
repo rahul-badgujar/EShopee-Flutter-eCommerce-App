@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -42,6 +43,7 @@ class AuthentificationService {
   Stream<User> get userChanges => firebaseAuth.userChanges();
 
   Future<String> signIn({String email, String password}) async {
+    // TODO: FIX if user not email verified, it does not return USER_NOT_VERIFIED but return Exception
     try {
       final UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
@@ -63,7 +65,7 @@ class AuthentificationService {
       if (userCredential.user.emailVerified == false) {
         await userCredential.user.sendEmailVerification();
       }
-
+      await UserDatabaseHelper().createNewUser(userCredential.user.uid);
       return SIGN_UP_SUCCESS_MSG;
     } on FirebaseAuthException catch (e) {
       return e.code;
