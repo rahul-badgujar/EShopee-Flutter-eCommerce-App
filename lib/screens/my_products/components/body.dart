@@ -33,14 +33,17 @@ class _BodyState extends State<Body> {
               ),
               SizedBox(height: getProportionateScreenHeight(30)),
               Expanded(
-                child: FutureBuilder(
-                  future: ProductDatabaseHelper().getUsersProductsList(),
+                child: StreamBuilder(
+                  stream: ProductDatabaseHelper().usersProductListStream,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
+                      final products = snapshot.data.docs
+                          .map((e) => Product.fromMap(e.data(), id: e.id))
+                          .toList();
                       return ListView.builder(
-                        itemCount: snapshot.data.length,
+                        itemCount: products.length,
                         itemBuilder: (context, index) {
-                          return buildProductsCard(snapshot.data[index]);
+                          return buildProductsCard(products[index]);
                         },
                       );
                     } else if (snapshot.hasError) {

@@ -68,6 +68,22 @@ class ProductDatabaseHelper {
     }
   }
 
+  Stream get usersProductListStream {
+    String uid = AuthentificationService().currentUser.uid;
+
+    try {
+      final productsCollectionReference =
+          firestore.collection(PRODUCTS_COLLECTION_NAME);
+      final queryStream = productsCollectionReference
+          .where(Product.OWNER_KEY, isEqualTo: uid)
+          .snapshots();
+      return queryStream;
+    } on Exception catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
   Future<void> updateProductsImages(
       String productId, List<String> imgUrl) async {
     final Product updateProduct = Product(null, images: imgUrl);
