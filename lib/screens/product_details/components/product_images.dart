@@ -1,4 +1,4 @@
-/* import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
@@ -23,15 +23,18 @@ class _ProductImagesState extends State<ProductImages> {
     return Column(
       children: [
         SizedBox(
-          width: getProportionateScreenWidth(238),
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: Hero(
-              tag: widget.product.title,
-              child: Image.asset(widget.product.images[selectedImage]),
+          height: getProportionateScreenHeight(280),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(
+              Radius.circular(24),
+            ),
+            child: Image.network(
+              widget.product.images[selectedImage],
+              fit: BoxFit.contain,
             ),
           ),
         ),
+        SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -65,9 +68,8 @@ class _ProductImagesState extends State<ProductImages> {
               color:
                   selectedImage == index ? kPrimaryColor : Colors.transparent),
         ),
-        child: Image.asset(widget.product.images[index]),
+        child: Image.network(widget.product.images[index]),
       ),
     );
   }
 }
- */

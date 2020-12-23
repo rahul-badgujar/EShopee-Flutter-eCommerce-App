@@ -23,7 +23,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   cloud_firestore: ^0.14.4
   cupertino_icons: ^1.0.0
   firebase_auth: ^0.18.4+1
@@ -34,6 +33,7 @@ dependencies:
   image_picker: ^0.6.7+15
   permission_handler: ^5.0.1+1
   pin_code_fields: ^6.0.1
+  pinch_zoom_image_updated: ^0.2.6
   provider: ^4.3.2+3
   shared_preferences: ^0.5.12+4
   string_validator: ^0.1.4

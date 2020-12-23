@@ -76,8 +76,21 @@ class ProductDatabaseHelper {
           firestore.collection(PRODUCTS_COLLECTION_NAME);
       final queryStream = productsCollectionReference
           .where(Product.OWNER_KEY, isEqualTo: uid)
-          .snapshots();
+          .get()
+          .asStream();
       return queryStream;
+    } on Exception catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Stream get allProductsListStream {
+    try {
+      final productsCollectionReference =
+          firestore.collection(PRODUCTS_COLLECTION_NAME);
+
+      return productsCollectionReference.get().asStream();
     } on Exception catch (e) {
       print(e.toString());
       return null;

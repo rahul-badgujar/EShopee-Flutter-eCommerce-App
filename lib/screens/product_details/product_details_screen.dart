@@ -1,4 +1,5 @@
-/* import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/components/default_button.dart';
+import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:flutter/material.dart';
 
 import 'components/body.dart';
@@ -20,7 +21,20 @@ class ProductDetailsScreen extends StatelessWidget {
       body: Body(
         product: product,
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        label: Text(
+          "Add to Cart",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        icon: Icon(
+          Icons.shopping_cart,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
- */

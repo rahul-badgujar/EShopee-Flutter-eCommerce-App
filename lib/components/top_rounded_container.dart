@@ -15,14 +15,14 @@ class TopRoundedContainer extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: getProportionateScreenWidth(20)),
       padding: EdgeInsets.symmetric(
-        horizontal: getProportionateScreenWidth(20),
-        vertical: getProportionateScreenWidth(20),
+        horizontal: getProportionateScreenWidth(30),
+        vertical: getProportionateScreenWidth(40),
       ),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(48),
-          topRight: Radius.circular(48),
+          topLeft: Radius.circular(64),
+          topRight: Radius.circular(64),
           bottomRight: Radius.circular(24),
           bottomLeft: Radius.circular(24),
         ),
