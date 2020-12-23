@@ -70,6 +70,10 @@ class _BodyState extends State<Body> {
         direction: DismissDirection.horizontal,
         background: buildDismissiblePrimaryBackground(),
         secondaryBackground: buildDismissibleSecondaryBackground(),
+        dismissThresholds: {
+          DismissDirection.endToStart: 0.65,
+          DismissDirection.startToEnd: 0.65,
+        },
         child: ProductShortDetailCard(
           product: product,
         ),
@@ -148,13 +152,13 @@ class _BodyState extends State<Body> {
             Icons.edit,
             color: Colors.white,
           ),
-          SizedBox(width: 8),
+          SizedBox(width: 4),
           Text(
             "Edit",
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 15,
             ),
           ),
         ],
@@ -178,10 +182,10 @@ class _BodyState extends State<Body> {
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 15,
             ),
           ),
-          SizedBox(width: 8),
+          SizedBox(width: 4),
           Icon(
             Icons.delete,
             color: Colors.white,

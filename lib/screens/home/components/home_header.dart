@@ -32,18 +32,6 @@ class HomeHeader extends StatelessWidget {
                 )); */
           },
         ),
-        SizedBox(width: 5),
-        IconButtonWithCounter(
-          svgSrc: "assets/icons/Bell.svg",
-          numOfItems: 3,
-          press: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfileScreen(),
-                ));
-          },
-        ),
       ],
     );
   }

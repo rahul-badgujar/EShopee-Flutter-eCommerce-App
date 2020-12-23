@@ -17,11 +17,10 @@ class ProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: press,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2),
-        child: Card(
-          elevation: 24,
-          shadowColor: Color(0xFFDADADA).withOpacity(0.16),
-          shape: RoundedRectangleBorder(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: kTextColor.withOpacity(0.12)),
             borderRadius: BorderRadius.all(
               Radius.circular(16),
             ),

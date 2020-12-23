@@ -1,5 +1,6 @@
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:flutter/material.dart';
+import 'package:pinch_zoom_image_updated/pinch_zoom_image_updated.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -22,15 +23,22 @@ class _ProductImagesState extends State<ProductImages> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          height: getProportionateScreenHeight(280),
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(
-              Radius.circular(24),
+        PinchZoomImage(
+          hideStatusBarWhileZooming: true,
+          image: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(30),
+              ),
             ),
-            child: Image.network(
-              widget.product.images[selectedImage],
-              fit: BoxFit.contain,
+            child: SizedBox(
+              height: getProportionateScreenHeight(280),
+              child: Image.network(
+                widget.product.images[selectedImage],
+                fit: BoxFit.contain,
+              ),
             ),
           ),
         ),

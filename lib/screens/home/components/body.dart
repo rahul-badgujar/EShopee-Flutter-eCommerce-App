@@ -27,7 +27,7 @@ class Body extends StatelessWidget {
             ),
             SizedBox(height: getProportionateScreenHeight(20)),
             Flexible(
-                flex: 5,
+                flex: 6,
                 child: buildProductsList(
                     ProductDatabaseHelper().allProductsListStream)),
             SizedBox(height: getProportionateScreenHeight(20)),
@@ -37,7 +37,7 @@ class Body extends StatelessWidget {
             ),
             SizedBox(height: getProportionateScreenHeight(20)),
             Flexible(
-                flex: 5,
+                flex: 6,
                 child: buildProductsList(
                     ProductDatabaseHelper().allProductsListStream)),
             SizedBox(height: getProportionateScreenHeight(10)),
