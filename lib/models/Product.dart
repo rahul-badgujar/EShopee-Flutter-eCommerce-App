@@ -10,7 +10,6 @@ class Product extends Model {
   static const String HIGHLIGHTS_KEY = "highlights";
   static const String DESCRIPTION_KEY = "description";
   static const String SELLER_KEY = "seller";
-  static const String FAVOURITE_KEY = "favourite";
   static const String OWNER_KEY = "owner";
 
   List<String> images;
@@ -52,7 +51,6 @@ class Product extends Model {
       HIGHLIGHTS_KEY: highlights,
       DESCRIPTION_KEY: description,
       SELLER_KEY: seller,
-      FAVOURITE_KEY: favourite,
       OWNER_KEY: owner,
     };
     return map;
@@ -70,7 +68,6 @@ class Product extends Model {
       highlights: map[HIGHLIGHTS_KEY],
       description: map[DESCRIPTION_KEY],
       seller: map[SELLER_KEY],
-      favourite: map[FAVOURITE_KEY],
       owner: map[OWNER_KEY],
     );
   }
@@ -87,7 +84,7 @@ class Product extends Model {
     if (highlights != null) map[HIGHLIGHTS_KEY] = highlights;
     if (description != null) map[DESCRIPTION_KEY] = description;
     if (seller != null) map[SELLER_KEY] = seller;
-    if (favourite != null) map[FAVOURITE_KEY] = favourite;
+
     if (owner != null) map[OWNER_KEY] = owner;
     return map;
   }

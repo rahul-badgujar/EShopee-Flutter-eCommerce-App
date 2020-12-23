@@ -137,8 +137,7 @@ class _SignUpFormState extends State<SignUpForm> {
       if (signUpStatus == AuthentificationService.SIGN_UP_SUCCESS_MSG) {
         print("Sign Up succesfull, try signing in");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content:
-                Text("Signed Up succesfully, Please Sign In to continue")));
+            content: Text("Signed Up succesfully, Verification Email sent")));
         Navigator.pop(context);
       } else if (signUpStatus == AuthentificationService.EMAIL_ALREADY_IN_USE) {
         print("Email already in use, try different email");

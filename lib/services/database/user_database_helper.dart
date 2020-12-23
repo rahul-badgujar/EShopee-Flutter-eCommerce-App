@@ -15,6 +15,7 @@ class UserDatabaseHelper {
   static const String ADDRESSES_COLLECTION_NAME = "addresses";
   static const String PHONE_KEY = 'phone';
   static const String DP_KEY = "display_picture";
+
   UserDatabaseHelper._privateConstructor();
   static UserDatabaseHelper _instance =
       UserDatabaseHelper._privateConstructor();
@@ -30,7 +31,10 @@ class UserDatabaseHelper {
   }
 
   Future<void> createNewUser(String uid) async {
-    await firestore.collection(USERS_COLLECTION_NAME).doc(uid).set({});
+    await firestore.collection(USERS_COLLECTION_NAME).doc(uid).set({
+      DP_KEY: null,
+      PHONE_KEY: null,
+    });
   }
 
   Future<List> getAddressesListForCurrentUser() async {
