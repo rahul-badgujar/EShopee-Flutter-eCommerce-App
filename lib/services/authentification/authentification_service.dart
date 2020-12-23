@@ -43,7 +43,7 @@ class AuthentificationService {
   Stream<User> get userChanges => firebaseAuth.userChanges();
 
   Future<String> signIn({String email, String password}) async {
-    // TODO: FIX if user not email verified, it does not return USER_NOT_VERIFIED but return Exception
+    // TODO: if user not verified, restrict some actions
     try {
       final UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);

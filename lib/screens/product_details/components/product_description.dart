@@ -24,9 +24,45 @@ class _ProductDescriptionState extends State<ProductDescription> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.product.title,
-              style: Theme.of(context).textTheme.headline6,
+            Text.rich(
+              TextSpan(
+                  text: widget.product.title,
+                  style: TextStyle(
+                    fontSize: 21,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "\n${widget.product.variant} ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ]),
+            ),
+            const SizedBox(height: 16),
+            Text.rich(
+              TextSpan(
+                text: "\₹${widget.product.discountPrice}   ",
+                style: TextStyle(
+                  color: kPrimaryColor,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18,
+                ),
+                children: [
+                  TextSpan(
+                    text: "\₹${widget.product.originalPrice}",
+                    style: TextStyle(
+                      decoration: TextDecoration.lineThrough,
+                      color: kTextColor,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
             ExpandableText(
@@ -37,6 +73,24 @@ class _ProductDescriptionState extends State<ProductDescription> {
             ExpandableText(
               title: "Description",
               content: widget.product.description,
+            ),
+            const SizedBox(height: 16),
+            Text.rich(
+              TextSpan(
+                text: "Sold by ",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+                children: [
+                  TextSpan(
+                    text: "${widget.product.seller}",
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -71,7 +125,7 @@ class _ExpandableTextState extends State<ExpandableText> {
           widget.title,
           style: TextStyle(
             color: Colors.black,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
             fontSize: 16,
           ),
         ),
