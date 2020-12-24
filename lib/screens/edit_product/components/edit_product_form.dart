@@ -5,6 +5,7 @@ import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:e_commerce_app_flutter/services/local_files_access/local_files_access_service.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 
@@ -56,6 +57,7 @@ class _EditProductFormState extends State<EditProductForm> {
   bool newProduct = true;
   List<CustomImage> selectedImages;
   Product product;
+  ProductType productType;
 
   @override
   void dispose() {
@@ -82,6 +84,7 @@ class _EditProductFormState extends State<EditProductForm> {
       selectedImages = widget.product.images
           .map((e) => CustomImage(imgType: ImageType.network, path: e))
           .toList();
+      productType = product.productType;
     }
     super.initState();
   }
@@ -95,7 +98,9 @@ class _EditProductFormState extends State<EditProductForm> {
         buildDescribeProductTile(context),
         SizedBox(height: getProportionateScreenHeight(10)),
         buildUploadImagesTile(context),
-        SizedBox(height: getProportionateScreenHeight(30)),
+        SizedBox(height: getProportionateScreenHeight(20)),
+        buildProductTypeDropdown(),
+        SizedBox(height: getProportionateScreenHeight(20)),
         DefaultButton(
           text: "Save Product",
           press: saveProductButtonCallback,
@@ -195,6 +200,46 @@ class _EditProductFormState extends State<EditProductForm> {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buildProductTypeDropdown() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 24,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(color: kTextColor, width: 1),
+        borderRadius: BorderRadius.all(Radius.circular(28)),
+      ),
+      child: DropdownButton(
+        value: productType,
+        items: ProductType.values
+            .map(
+              (e) => DropdownMenuItem(
+                value: e,
+                child: Text(
+                  EnumToString.convertToString(e),
+                ),
+              ),
+            )
+            .toList(),
+        hint: Text(
+          "Chose Product Type",
+        ),
+        style: TextStyle(
+          color: kTextColor,
+          fontSize: 16,
+        ),
+        onChanged: (value) {
+          setState(() {
+            productType = value;
+          });
+        },
+        elevation: 0,
+        underline: SizedBox(width: 0, height: 0),
       ),
     );
   }
@@ -385,8 +430,17 @@ class _EditProductFormState extends State<EditProductForm> {
   }
 
   Future<void> saveProductButtonCallback() async {
+    if (productType == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Please select Product Type"),
+        ),
+      );
+      return;
+    }
     if (basicDetailsFormValidated == true &&
         describeProductFormValidated == true) {
+      product.productType = productType;
       final productUploadFuture = newProduct
           ? ProductDatabaseHelper().addUsersProduct(product)
           : ProductDatabaseHelper().updateUsersProduct(product);
