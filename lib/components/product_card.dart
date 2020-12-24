@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../constants.dart';
-import '../size_config.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 
 class ProductCard extends StatelessWidget {
@@ -14,6 +14,11 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int discountPercentage =
+        (((product.originalPrice - product.discountPrice) * 100) /
+                product.originalPrice)
+            .round();
+
     return GestureDetector(
       onTap: press,
       child: Padding(
@@ -30,48 +35,89 @@ class ProductCard extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: SizeConfig.screenWidth * 0.2,
-                  height: SizeConfig.screenHeight * 0.1,
-                  child: Image.network(
-                    product.images[0],
-                    fit: BoxFit.contain,
+                Flexible(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.network(
+                      product.images[0],
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
                 SizedBox(height: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${product.title}\n",
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 5),
-                    Text.rich(
-                      TextSpan(
-                        text: "\₹${product.discountPrice}\n",
-                        style: TextStyle(
-                          color: kPrimaryColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: "\₹${product.originalPrice}",
-                            style: TextStyle(
-                              color: kTextColor,
-                              decoration: TextDecoration.lineThrough,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 12,
-                            ),
+                Flexible(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: Text(
+                          "${product.title}\n",
+                          style: TextStyle(
+                            color: Colors.black,
                           ),
-                        ],
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 5),
+                      Flexible(
+                        flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              flex: 5,
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "\₹${product.discountPrice}\n",
+                                  style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: "\₹${product.originalPrice}",
+                                      style: TextStyle(
+                                        color: kTextColor,
+                                        decoration: TextDecoration.lineThrough,
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Flexible(
+                              flex: 3,
+                              child: Stack(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/icons/DiscountTag.svg",
+                                    color: kPrimaryColor,
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      "$discountPercentage%\nOff",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 8,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
