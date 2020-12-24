@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 
 class ProductDatabaseHelper {
   static const String PRODUCTS_COLLECTION_NAME = "products";
@@ -43,9 +44,31 @@ class ProductDatabaseHelper {
     return product.id;
   }
 
+  Stream<List<Product>> getCategoryProducts(ProductType productType) async* {
+    try {
+      final productsCollectionReference =
+          firestore.collection(PRODUCTS_COLLECTION_NAME);
+      final queryResult = productsCollectionReference
+          .where(Product.PRODUCT_TYPE_KEY,
+              isEqualTo: EnumToString.convertToString(productType))
+          .get()
+          .asStream();
+      await for (final QuerySnapshot querySnapshot in queryResult) {
+        List<Product> products = List<Product>();
+        for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
+          Product product = Product.fromMap(doc.data(), id: doc.id);
+          products.add(product);
+        }
+        yield products;
+      }
+    } on Exception catch (e) {
+      print(e.toString());
+      yield null;
+    }
+  }
+
   Future<List> getUsersProductsList() async {
     String uid = AuthentificationService().currentUser.uid;
-
     try {
       final productsCollectionReference =
           firestore.collection(PRODUCTS_COLLECTION_NAME);

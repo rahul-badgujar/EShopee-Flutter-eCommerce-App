@@ -14,7 +14,6 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(product.calculatePercentageDiscount);
     return GestureDetector(
       onTap: press,
       child: Padding(

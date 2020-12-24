@@ -45,7 +45,8 @@ class Body extends StatelessWidget {
               SizedBox(height: getProportionateScreenHeight(20)),
               Expanded(
                 child: StreamBuilder<List<Product>>(
-                    stream: ProductDatabaseHelper().allProductsListStream,
+                    stream: ProductDatabaseHelper()
+                        .getCategoryProducts(productType),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         List<Product> products = snapshot.data;

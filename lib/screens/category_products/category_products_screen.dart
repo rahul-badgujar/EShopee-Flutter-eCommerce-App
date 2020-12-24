@@ -1,6 +1,5 @@
 import 'package:e_commerce_app_flutter/models/Product.dart';
 
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 
 import 'components/body.dart';
