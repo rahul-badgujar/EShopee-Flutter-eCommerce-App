@@ -1,4 +1,5 @@
 import 'package:e_commerce_app_flutter/components/product_card.dart';
+import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/home/components/section_tile.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
@@ -6,6 +7,7 @@ import 'package:e_commerce_app_flutter/services/database/product_database_helper
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../components/home_header.dart';
 
 class Body extends StatelessWidget {
@@ -17,28 +19,130 @@ class Body extends StatelessWidget {
             EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
         child: Column(
           mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(height: getProportionateScreenHeight(20)),
+            SizedBox(height: getProportionateScreenHeight(5)),
             Flexible(flex: 2, child: HomeHeader()),
-            SizedBox(height: getProportionateScreenHeight(20)),
             Flexible(
-              flex: 6,
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    SizedBox(width: 8),
+                    ProductTypeBox(
+                      icon: "assets/icons/Electronics.svg",
+                      title: "Electronics",
+                      onPress: () {},
+                    ),
+                    ProductTypeBox(
+                      icon: "assets/icons/Books.svg",
+                      title: "Books",
+                      onPress: () {},
+                    ),
+                    ProductTypeBox(
+                      icon: "assets/icons/Fashion.svg",
+                      title: "Fashion",
+                      onPress: () {},
+                    ),
+                    ProductTypeBox(
+                      icon: "assets/icons/Groceries.svg",
+                      title: "Groceries",
+                      onPress: () {},
+                    ),
+                    ProductTypeBox(
+                      icon: "assets/icons/Art.svg",
+                      title: "Art",
+                      onPress: () {},
+                    ),
+                    ProductTypeBox(
+                      icon: "assets/icons/Others.svg",
+                      title: "Others",
+                      onPress: () {},
+                    ),
+                    SizedBox(width: 8),
+                  ],
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 8,
               child: ProductsSection(
                 sectionTitle: "Products You Like",
                 productsStream:
                     UserDatabaseHelper().usersFavouriteProductsStream,
               ),
             ),
-            SizedBox(height: getProportionateScreenHeight(20)),
             Flexible(
-              flex: 6,
+              flex: 8,
               child: ProductsSection(
                 sectionTitle: "Explore All Products",
                 productsStream: ProductDatabaseHelper().allProductsListStream,
               ),
             ),
-            SizedBox(height: getProportionateScreenHeight(10)),
+            SizedBox(height: getProportionateScreenHeight(5)),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProductTypeBox extends StatelessWidget {
+  final String icon;
+  final String title;
+  final VoidCallback onPress;
+  const ProductTypeBox({
+    Key key,
+    @required this.icon,
+    @required this.title,
+    @required this.onPress,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPress,
+      child: AspectRatio(
+        aspectRatio: 1.05,
+        child: Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: 4,
+          ),
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: kPrimaryColor.withOpacity(0.09),
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(
+              color: kPrimaryColor.withOpacity(0.18),
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: SvgPicture.asset(
+                    icon,
+                    color: kPrimaryColor,
+                  ),
+                ),
+              ),
+              SizedBox(height: 2),
+              Text(
+                title,
+                style: TextStyle(
+                  color: kPrimaryColor,
+                  fontSize: getProportionateScreenHeight(8),
+                  fontWeight: FontWeight.w900,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -62,7 +166,7 @@ class ProductsSection extends StatelessWidget {
           title: "Product You Like",
           press: () {},
         ),
-        SizedBox(height: getProportionateScreenHeight(20)),
+        SizedBox(height: getProportionateScreenHeight(5)),
         Expanded(
           child: buildProductsList(productsStream),
         ),
