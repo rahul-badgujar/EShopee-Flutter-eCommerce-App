@@ -69,6 +69,12 @@ class Product extends Model {
     return map;
   }
 
+  int calculatePercentageDiscount() {
+    int discount =
+        (((originalPrice - discountPrice) * 100) / originalPrice).round();
+    return discount;
+  }
+
   factory Product.fromMap(Map<String, dynamic> map, {String id}) {
     return Product(
       id,

@@ -1,6 +1,7 @@
 import 'package:e_commerce_app_flutter/components/product_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/screens/category_products/category_products_screen.dart';
 import 'package:e_commerce_app_flutter/screens/home/components/section_tile.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
@@ -34,32 +35,86 @@ class Body extends StatelessWidget {
                     ProductTypeBox(
                       icon: "assets/icons/Electronics.svg",
                       title: "Electronics",
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategoryProductsScreen(
+                              productType: ProductType.Electronics,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     ProductTypeBox(
                       icon: "assets/icons/Books.svg",
                       title: "Books",
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategoryProductsScreen(
+                              productType: ProductType.Books,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     ProductTypeBox(
                       icon: "assets/icons/Fashion.svg",
                       title: "Fashion",
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategoryProductsScreen(
+                              productType: ProductType.Fashion,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     ProductTypeBox(
                       icon: "assets/icons/Groceries.svg",
                       title: "Groceries",
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategoryProductsScreen(
+                              productType: ProductType.Groceries,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     ProductTypeBox(
                       icon: "assets/icons/Art.svg",
                       title: "Art",
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategoryProductsScreen(
+                              productType: ProductType.Art,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     ProductTypeBox(
                       icon: "assets/icons/Others.svg",
                       title: "Others",
-                      onPress: () {},
+                      onPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategoryProductsScreen(
+                              productType: ProductType.Others,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(width: 8),
                   ],

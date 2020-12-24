@@ -14,11 +14,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int discountPercentage =
-        (((product.originalPrice - product.discountPrice) * 100) /
-                product.originalPrice)
-            .round();
-
+    print(product.calculatePercentageDiscount);
     return GestureDetector(
       onTap: press,
       child: Padding(
@@ -101,7 +97,7 @@ class ProductCard extends StatelessWidget {
                                   ),
                                   Center(
                                     child: Text(
-                                      "$discountPercentage%\nOff",
+                                      "${product.calculatePercentageDiscount()}%\nOff",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 8,

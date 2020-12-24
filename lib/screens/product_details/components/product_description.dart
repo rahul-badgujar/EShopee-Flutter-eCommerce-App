@@ -21,10 +21,6 @@ class _ProductDescriptionState extends State<ProductDescription> {
   bool showFullDescription = false;
   @override
   Widget build(BuildContext context) {
-    int discountPercentage =
-        (((widget.product.originalPrice - widget.product.discountPrice) * 100) /
-                widget.product.originalPrice)
-            .round();
     return Stack(
       children: [
         Column(
@@ -88,7 +84,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                         ),
                         Center(
                           child: Text(
-                            "$discountPercentage%\nOff",
+                            "${widget.product.calculatePercentageDiscount()}%\nOff",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: getProportionateScreenHeight(15),
