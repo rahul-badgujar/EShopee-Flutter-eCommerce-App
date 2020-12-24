@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
+import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 
 class UserDatabaseHelper {
   static const String NEW_ADDRESS_ADDED_SUCCESSFULLY =
@@ -40,18 +42,53 @@ class UserDatabaseHelper {
   }
 
   Future<bool> isProductFavourite(String productId) async {
+    String uid = AuthentificationService().currentUser.uid;
     try {
-      await for (final DocumentSnapshot doc in currentUserDataStream) {
-        final favList = doc.data()[FAV_PRODUCTS_KEY].cast<String>();
-        if (favList.contains(productId)) {
-          return true;
-        } else {
-          return false;
-        }
+      final userDocSnapshot =
+          firestore.collection(USERS_COLLECTION_NAME).doc(uid);
+      final userDocData = (await userDocSnapshot.get()).data();
+      final favList = userDocData[FAV_PRODUCTS_KEY].cast<String>();
+      if (favList.contains(productId)) {
+        return true;
+      } else {
+        return false;
       }
     } on Exception catch (e) {
       print(e.toString());
       return false;
+    }
+  }
+
+  Future<List<String>> get usersFavouriteProductsList async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final userDocSnapshot =
+          firestore.collection(USERS_COLLECTION_NAME).doc(uid);
+      final userDocData = (await userDocSnapshot.get()).data();
+      final favList = userDocData[FAV_PRODUCTS_KEY].cast<String>();
+      return favList;
+    } on Exception catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Stream<List<Product>> get usersFavouriteProductsStream async* {
+    final usersFavProducts = await usersFavouriteProductsList;
+    try {
+      await for (final List<Product> list
+          in ProductDatabaseHelper().allProductsListStream) {
+        List<Product> favProducts = List<Product>();
+        for (final Product product in list) {
+          if (usersFavProducts.contains(product.id)) {
+            favProducts.add(product);
+          }
+        }
+        yield favProducts;
+      }
+    } catch (e) {
+      print(e.toString());
+      yield null;
     }
   }
 

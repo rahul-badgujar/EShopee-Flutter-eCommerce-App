@@ -22,41 +22,61 @@ class Body extends StatelessWidget {
             SizedBox(height: getProportionateScreenHeight(20)),
             Flexible(flex: 2, child: HomeHeader()),
             SizedBox(height: getProportionateScreenHeight(20)),
-            SectionTile(
-              title: "Product You Like",
-              press: () {},
+            Flexible(
+              flex: 6,
+              child: ProductsSection(
+                sectionTitle: "Products You Like",
+                productsStream:
+                    UserDatabaseHelper().usersFavouriteProductsStream,
+              ),
             ),
             SizedBox(height: getProportionateScreenHeight(20)),
             Flexible(
-                flex: 6,
-                child: buildProductsList(
-                    ProductDatabaseHelper().allProductsListStream)),
-            SizedBox(height: getProportionateScreenHeight(20)),
-            SectionTile(
-              title: "Explore All Product",
-              press: () {},
+              flex: 6,
+              child: ProductsSection(
+                sectionTitle: "Explore All Products",
+                productsStream: ProductDatabaseHelper().allProductsListStream,
+              ),
             ),
-            SizedBox(height: getProportionateScreenHeight(20)),
-            Flexible(
-                flex: 6,
-                child: buildProductsList(
-                    ProductDatabaseHelper().allProductsListStream)),
             SizedBox(height: getProportionateScreenHeight(10)),
           ],
         ),
       ),
     );
   }
+}
+
+class ProductsSection extends StatelessWidget {
+  final String sectionTitle;
+  final Stream productsStream;
+  const ProductsSection({
+    Key key,
+    @required this.sectionTitle,
+    @required this.productsStream,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SectionTile(
+          title: "Product You Like",
+          press: () {},
+        ),
+        SizedBox(height: getProportionateScreenHeight(20)),
+        Expanded(
+          child: buildProductsList(productsStream),
+        ),
+      ],
+    );
+  }
 
   Widget buildProductsList(Stream stream) {
-    return StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<List<Product>>(
       stream: stream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final products = snapshot.data.docs
-              .map((e) => Product.fromMap(e.data(), id: e.id))
-              .toList();
-          return buildHorizontalProductsList(products);
+          return buildHorizontalProductsList(snapshot.data);
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(),

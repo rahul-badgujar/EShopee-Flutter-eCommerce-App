@@ -20,7 +20,7 @@ class ProductCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: kTextColor.withOpacity(0.12)),
+            border: Border.all(color: kTextColor.withOpacity(0.15)),
             borderRadius: BorderRadius.all(
               Radius.circular(16),
             ),

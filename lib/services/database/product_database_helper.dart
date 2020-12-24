@@ -68,7 +68,7 @@ class ProductDatabaseHelper {
     }
   }
 
-  Stream get usersProductListStream {
+  Stream<QuerySnapshot> get usersProductListStream {
     String uid = AuthentificationService().currentUser.uid;
 
     try {
@@ -85,15 +85,23 @@ class ProductDatabaseHelper {
     }
   }
 
-  Stream get allProductsListStream {
+  Stream<List<Product>> get allProductsListStream async* {
     try {
       final productsCollectionReference =
           firestore.collection(PRODUCTS_COLLECTION_NAME);
 
-      return productsCollectionReference.get().asStream();
+      final productsStream = productsCollectionReference.get().asStream();
+      await for (final QuerySnapshot querySnapshot in productsStream) {
+        List<Product> productsList = List<Product>();
+        for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
+          Product product = Product.fromMap(doc.data(), id: doc.id);
+          productsList.add(product);
+        }
+        yield productsList;
+      }
     } on Exception catch (e) {
       print(e.toString());
-      return null;
+      yield null;
     }
   }
 
