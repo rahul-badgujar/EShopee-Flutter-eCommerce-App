@@ -15,6 +15,7 @@ class UserDatabaseHelper {
   static const String ADDRESSES_COLLECTION_NAME = "addresses";
   static const String PHONE_KEY = 'phone';
   static const String DP_KEY = "display_picture";
+  static const String FAV_PRODUCTS_KEY = "favourite_products";
 
   UserDatabaseHelper._privateConstructor();
   static UserDatabaseHelper _instance =
@@ -34,7 +35,53 @@ class UserDatabaseHelper {
     await firestore.collection(USERS_COLLECTION_NAME).doc(uid).set({
       DP_KEY: null,
       PHONE_KEY: null,
+      FAV_PRODUCTS_KEY: List<String>(),
     });
+  }
+
+  Future<bool> isProductFavourite(String productId) async {
+    try {
+      await for (final DocumentSnapshot doc in currentUserDataStream) {
+        final favList = doc.data()[FAV_PRODUCTS_KEY].cast<String>();
+        if (favList.contains(productId)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } on Exception catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<void> switchProductFavouriteStatus(String productId) async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final userDocSnapshot =
+          firestore.collection(USERS_COLLECTION_NAME).doc(uid);
+      final userDocData = (await userDocSnapshot.get()).data();
+      final listPresent = userDocData.containsKey(FAV_PRODUCTS_KEY);
+
+      if (listPresent == false) {
+        List<String> fv = List<String>();
+        fv.add(productId);
+        userDocSnapshot.update({FAV_PRODUCTS_KEY: fv});
+      } else {
+        final favList = userDocData[FAV_PRODUCTS_KEY].cast<String>();
+        if (favList.contains(productId)) {
+          userDocSnapshot.update({
+            FAV_PRODUCTS_KEY: FieldValue.arrayRemove([productId])
+          });
+        } else {
+          userDocSnapshot.update({
+            FAV_PRODUCTS_KEY: FieldValue.arrayUnion([productId])
+          });
+        }
+      }
+    } on Exception catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<List> getAddressesListForCurrentUser() async {

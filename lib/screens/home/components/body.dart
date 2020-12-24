@@ -4,6 +4,7 @@ import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/home/components/section_tile.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
+import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 import '../components/home_header.dart';
@@ -76,7 +77,7 @@ class Body extends StatelessWidget {
       itemBuilder: (context, index) {
         return ProductCard(
           product: products[index],
-          press: () {
+          press: () async {
             Navigator.push(
               context,
               MaterialPageRoute(

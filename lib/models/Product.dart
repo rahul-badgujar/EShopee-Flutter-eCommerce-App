@@ -35,7 +35,6 @@ class Product extends Model {
     this.highlights,
     this.description,
     this.seller,
-    this.favourite = false,
     this.owner,
   }) : super(id);
 
