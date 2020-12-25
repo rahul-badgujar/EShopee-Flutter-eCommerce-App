@@ -103,7 +103,11 @@ class _BodyState extends State<Body> {
 
   Widget buildCartItem(CartItem cartItem) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      padding: EdgeInsets.only(
+        bottom: 4,
+        top: 4,
+        right: 4,
+      ),
       margin: EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         border: Border.all(color: kTextColor.withOpacity(0.15)),
@@ -151,7 +155,7 @@ class _BodyState extends State<Body> {
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: kTextColor.withOpacity(0.5),
+                    color: kTextColor.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Column(
@@ -160,7 +164,7 @@ class _BodyState extends State<Body> {
                       InkWell(
                         child: Icon(
                           Icons.arrow_drop_up,
-                          color: Colors.white,
+                          color: kPrimaryColor,
                         ),
                         onTap: () {},
                       ),
@@ -168,7 +172,7 @@ class _BodyState extends State<Body> {
                       Text(
                         "${cartItem.itemCount}",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: kPrimaryColor,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -177,7 +181,7 @@ class _BodyState extends State<Body> {
                       InkWell(
                         child: Icon(
                           Icons.arrow_drop_down,
-                          color: Colors.white,
+                          color: kPrimaryColor,
                         ),
                         onTap: () {},
                       ),
