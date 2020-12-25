@@ -164,7 +164,7 @@ class _BodyState extends State<Body> {
                       InkWell(
                         child: Icon(
                           Icons.arrow_drop_up,
-                          color: kPrimaryColor,
+                          color: kTextColor,
                         ),
                         onTap: () {},
                       ),
@@ -174,14 +174,14 @@ class _BodyState extends State<Body> {
                         style: TextStyle(
                           color: kPrimaryColor,
                           fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w900,
                         ),
                       ),
                       SizedBox(height: 8),
                       InkWell(
                         child: Icon(
                           Icons.arrow_drop_down,
-                          color: kPrimaryColor,
+                          color: kTextColor,
                         ),
                         onTap: () {},
                       ),

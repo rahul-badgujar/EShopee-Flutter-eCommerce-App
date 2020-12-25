@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
 import 'package:e_commerce_app_flutter/screens/edit_address/edit_address_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
@@ -13,114 +14,139 @@ class AddressBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(30)),
-        border: Border.all(
-          color: Colors.black,
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 6,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "${address.title}",
-            style: TextStyle(
-              fontSize: 22,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          Divider(thickness: 2),
-          Text(
-            "${address.receiver}",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          Text(
-            "${address.addresLine1}",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          Text(
-            "${address.addressLine2}",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          Text(
-            "City: ${address.city}",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          Text(
-            "District: ${address.district}",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          Text(
-            "State: ${address.state}",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          Text(
-            "Landmark: ${address.landmark}",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          Text(
-            "PIN: ${address.pincode}",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          Text(
-            "Phone: ${address.phone}",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: Divider(thickness: 2),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              FlatButton(
-                child: Text(
-                  "Edit",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+          SizedBox(
+            width: double.infinity,
+            child: Container(
+              padding: EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: kTextColor.withOpacity(0.025),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
                 ),
-                onPressed: () {
-                  editButtonCallback(context);
-                },
+                border: Border.all(
+                  color: kTextColor.withOpacity(0.18),
+                ),
               ),
-              FlatButton(
-                child: Text(
-                  "Delete",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${address.title}",
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
+                  Text(
+                    "${address.receiver}",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    "${address.addresLine1}",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    "${address.addressLine2}",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    "City: ${address.city}",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    "District: ${address.district}",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    "State: ${address.state}",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    "Landmark: ${address.landmark}",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    "PIN: ${address.pincode}",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    "Phone: ${address.phone}",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 8,
+            ),
+            decoration: BoxDecoration(
+                color: kPrimaryColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                )),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FlatButton(
+                  child: Text(
+                    "Edit",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    editButtonCallback(context);
+                  },
                 ),
-                onPressed: () {
-                  deleteButtonCallback(context);
-                },
-              )
-            ],
+                FlatButton(
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    deleteButtonCallback(context);
+                  },
+                )
+              ],
+            ),
           ),
         ],
       ),
