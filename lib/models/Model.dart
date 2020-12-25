@@ -5,4 +5,9 @@ abstract class Model {
 
   Map<String, dynamic> toMap();
   Map<String, dynamic> toUpdateMap();
+
+  @override
+  String toString() {
+    return this.toMap().toString();
+  }
 }

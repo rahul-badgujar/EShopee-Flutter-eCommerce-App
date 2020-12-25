@@ -73,11 +73,6 @@ class Address extends Model {
   }
 
   @override
-  String toString() {
-    return toMap().toString();
-  }
-
-  @override
   Map<String, dynamic> toUpdateMap() {
     final map = <String, dynamic>{};
     if (title != null) map[TITLE_KEY] = title;

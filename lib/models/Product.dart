@@ -95,7 +95,6 @@ class Product extends Model {
 
   @override
   Map<String, dynamic> toUpdateMap() {
-    print("Debug: " + EnumToString.convertToString(productType));
     final map = <String, dynamic>{};
     if (images != null) map[IMAGES_KEY] = images;
     if (title != null) map[TITLE_KEY] = title;
@@ -111,10 +110,5 @@ class Product extends Model {
 
     if (owner != null) map[OWNER_KEY] = owner;
     return map;
-  }
-
-  @override
-  String toString() {
-    return this.toMap().toString();
   }
 }
