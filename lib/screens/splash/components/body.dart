@@ -74,7 +74,7 @@ class _BodyState extends State<Body> {
                       DefaultButton(
                         text: "Continue",
                         press: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SignInScreen()));

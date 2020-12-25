@@ -218,7 +218,7 @@ class ProductsSection extends StatelessWidget {
     return Column(
       children: [
         SectionTile(
-          title: "Product You Like",
+          title: sectionTitle,
           press: () {},
         ),
         SizedBox(height: getProportionateScreenHeight(5)),

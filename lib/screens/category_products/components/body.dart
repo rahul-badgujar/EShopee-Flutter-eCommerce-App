@@ -5,6 +5,7 @@ import 'package:e_commerce_app_flutter/components/rounded_icon_button.dart';
 import 'package:e_commerce_app_flutter/components/search_field.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:enum_to_string/enum_to_string.dart';
@@ -138,7 +139,16 @@ class Body extends StatelessWidget {
       itemBuilder: (context, index) {
         return ProductCard(
           product: products[index],
-          press: () {},
+          press: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductDetailsScreen(
+                  product: products[index],
+                ),
+              ),
+            );
+          },
         );
       },
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

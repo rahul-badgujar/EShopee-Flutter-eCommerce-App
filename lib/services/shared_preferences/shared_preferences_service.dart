@@ -16,4 +16,20 @@ class SharedPreferencesService {
     }
     return _sharedPreferences;
   }
+
+  Future<bool> get firstRun async {
+    return (await sharedPreferences).getBool("welcome") == null;
+  }
+
+  Future<void> setKeyValue(String key, dynamic value) async {
+    if (value is bool) {
+      (await sharedPreferences).setBool(key, value);
+    } else if (value is String) {
+      (await sharedPreferences).setString(key, value);
+    } else if (value is double) {
+      (await sharedPreferences).setDouble(key, value);
+    } else if (value is int) {
+      (await sharedPreferences).setInt(key, value);
+    }
+  }
 }
