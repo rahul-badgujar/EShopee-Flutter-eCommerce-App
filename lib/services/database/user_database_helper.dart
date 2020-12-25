@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
+import 'package:e_commerce_app_flutter/models/CartItem.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
@@ -15,6 +16,7 @@ class UserDatabaseHelper {
 
   static const String USERS_COLLECTION_NAME = "users";
   static const String ADDRESSES_COLLECTION_NAME = "addresses";
+  static const String CART_COLLECTION_NAME = "cart";
   static const String PHONE_KEY = 'phone';
   static const String DP_KEY = "display_picture";
   static const String FAV_PRODUCTS_KEY = "favourite_products";
@@ -176,6 +178,44 @@ class UserDatabaseHelper {
       return ADDRESS_UPDATED_SUCCESSFULLY;
     } on Exception catch (e) {
       return e.toString();
+    }
+  }
+
+  Future<bool> addProductToCart(CartItem cartItem) async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final cartCollectionReference = firestore
+          .collection(USERS_COLLECTION_NAME)
+          .doc(uid)
+          .collection(CART_COLLECTION_NAME);
+      await cartCollectionReference.add(cartItem.toMap());
+      return true;
+    } on Exception catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Stream<List<CartItem>> get allCartItemsStream async* {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final querySnapshotStream = firestore
+          .collection(USERS_COLLECTION_NAME)
+          .doc(uid)
+          .collection(CART_COLLECTION_NAME)
+          .get()
+          .asStream();
+      await for (final QuerySnapshot querySnapshot in querySnapshotStream) {
+        List<CartItem> cartItems = List<CartItem>();
+        for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
+          CartItem cartItem = CartItem.fromMap(doc.data(), id: doc.id);
+          cartItems.add(cartItem);
+        }
+        yield cartItems;
+      }
+    } on Exception catch (e) {
+      print(e.toString());
+      yield null;
     }
   }
 

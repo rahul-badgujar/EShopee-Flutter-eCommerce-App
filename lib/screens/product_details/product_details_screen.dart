@@ -1,4 +1,6 @@
+import 'package:e_commerce_app_flutter/models/CartItem.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:flutter/material.dart';
 
 import 'components/body.dart';
@@ -8,8 +10,10 @@ class ProductDetailsScreen extends StatelessWidget {
   static const String routeName = "/details";
   final Product product;
 
-  const ProductDetailsScreen({Key key, @required this.product})
-      : super(key: key);
+  const ProductDetailsScreen({
+    Key key,
+    @required this.product,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +25,27 @@ class ProductDetailsScreen extends StatelessWidget {
         product: product,
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () async {
+          bool addedSuccessfully = await UserDatabaseHelper().addProductToCart(
+            CartItem(
+              productID: product.id,
+              itemCount: 1,
+            ),
+          );
+          if (addedSuccessfully) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Product added to Cart successfully"),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Something went wrong"),
+              ),
+            );
+          }
+        },
         label: Text(
           "Add to Cart",
           style: TextStyle(

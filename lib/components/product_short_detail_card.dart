@@ -6,15 +6,17 @@ import '../size_config.dart';
 
 class ProductShortDetailCard extends StatelessWidget {
   final Product product;
+  final VoidCallback onPressed;
   const ProductShortDetailCard({
     Key key,
     @required this.product,
+    @required this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: onPressed,
       child: Row(
         children: [
           SizedBox(

@@ -2,6 +2,7 @@ import 'package:e_commerce_app_flutter/components/product_short_detail_card.dart
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/edit_product/edit_product_screen.dart';
+import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
@@ -68,17 +69,27 @@ class _BodyState extends State<Body> {
       child: Dismissible(
         key: Key(product.id),
         direction: DismissDirection.horizontal,
-        background: buildDismissiblePrimaryBackground(),
-        secondaryBackground: buildDismissibleSecondaryBackground(),
+        background: buildDismissibleSecondaryBackground(),
+        secondaryBackground: buildDismissiblePrimaryBackground(),
         dismissThresholds: {
           DismissDirection.endToStart: 0.65,
           DismissDirection.startToEnd: 0.65,
         },
         child: ProductShortDetailCard(
           product: product,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductDetailsScreen(
+                  product: product,
+                ),
+              ),
+            );
+          },
         ),
         confirmDismiss: (direction) async {
-          if (direction == DismissDirection.endToStart) {
+          if (direction == DismissDirection.startToEnd) {
             final confirmation = await showConfirmationDialog(
                 context, "Are you sure to Delete Product?");
             if (confirmation) {
@@ -111,7 +122,7 @@ class _BodyState extends State<Body> {
               );
             }
             return confirmation;
-          } else if (direction == DismissDirection.startToEnd) {
+          } else if (direction == DismissDirection.endToStart) {
             final confirmation = await showConfirmationDialog(
                 context, "Are you sure to Edit Product?");
             if (confirmation) {
@@ -129,7 +140,7 @@ class _BodyState extends State<Body> {
           return false;
         },
         onDismissed: (direction) {
-          if (direction == DismissDirection.endToStart) {
+          if (direction == DismissDirection.startToEnd) {
             print("delete: ${product.id}");
           } else if (direction == DismissDirection.startToEnd) {}
         },
@@ -139,14 +150,14 @@ class _BodyState extends State<Body> {
 
   Widget buildDismissiblePrimaryBackground() {
     return Container(
-      padding: EdgeInsets.only(left: 20),
+      padding: EdgeInsets.only(right: 20),
       decoration: BoxDecoration(
         color: Colors.green,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Icon(
             Icons.edit,
@@ -168,14 +179,14 @@ class _BodyState extends State<Body> {
 
   Widget buildDismissibleSecondaryBackground() {
     return Container(
-      padding: EdgeInsets.only(right: 20),
+      padding: EdgeInsets.only(left: 20),
       decoration: BoxDecoration(
         color: Colors.red,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
             "Delete",

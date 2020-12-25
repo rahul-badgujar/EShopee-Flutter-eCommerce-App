@@ -1,19 +1,19 @@
 import 'package:e_commerce_app_flutter/models/Model.dart';
 
-class Cart extends Model {
+class CartItem extends Model {
   static const String PRODUCT_ID_KEY = "product_id";
   static const String ITEM_COUNT_KEY = "item_count";
 
   String productID;
   int itemCount;
-  Cart({
+  CartItem({
     String id,
     this.itemCount = 0,
     this.productID,
   }) : super(id);
 
-  factory Cart.fromMap(Map<String, dynamic> map, {String id}) {
-    return Cart(
+  factory CartItem.fromMap(Map<String, dynamic> map, {String id}) {
+    return CartItem(
       id: id,
       productID: map[PRODUCT_ID_KEY],
       itemCount: map[ITEM_COUNT_KEY],

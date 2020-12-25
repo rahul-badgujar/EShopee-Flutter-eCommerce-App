@@ -1,69 +1,84 @@
-/* import 'package:e_commerce_app_flutter/models/Cart.dart';
+import 'package:e_commerce_app_flutter/models/CartItem.dart';
+import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class CartItemCard extends StatelessWidget {
-  final Cart cart;
+  final CartItem cartItem;
   const CartItemCard({
     Key key,
-    @required this.cart,
+    @required this.cartItem,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: getProportionateScreenWidth(88),
-          child: AspectRatio(
-            aspectRatio: 0.88,
-            child: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Color(0xFFFF5F6F9),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Image.asset(
-                cart.product.images[0],
-              ),
+    return FutureBuilder<Product>(
+      future: ProductDatabaseHelper().getProductWithID(cartItem.productID),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Icon(
+              Icons.error,
             ),
-          ),
-        ),
-        SizedBox(width: getProportionateScreenWidth(20)),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        return Row(
           children: [
-            Text(
-              cart.product.title,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-              maxLines: 2,
-            ),
-            SizedBox(height: 10),
-            Text.rich(
-              TextSpan(
-                  text: "\$${cart.product.price}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: kPrimaryColor,
+            SizedBox(
+              width: getProportionateScreenWidth(88),
+              child: AspectRatio(
+                aspectRatio: 0.88,
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFF5F6F9),
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                  children: [
-                    TextSpan(
-                      text: "  x${cart.numOfItem}",
+                  child: Image.asset(
+                    snapshot.data.images[0],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: getProportionateScreenWidth(20)),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  snapshot.data.title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                  maxLines: 2,
+                ),
+                SizedBox(height: 10),
+                Text.rich(
+                  TextSpan(
+                      text: "\$${snapshot.data.originalPrice}",
                       style: TextStyle(
-                        color: kTextColor,
+                        fontWeight: FontWeight.w600,
+                        color: kPrimaryColor,
                       ),
-                    ),
-                  ]),
+                      children: [
+                        TextSpan(
+                          text: "  x${cartItem.itemCount}",
+                          style: TextStyle(
+                            color: kTextColor,
+                          ),
+                        ),
+                      ]),
+                ),
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }
- */
