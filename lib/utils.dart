@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 Future<bool> showConfirmationDialog(
-    BuildContext context, String messege) async {
+  BuildContext context,
+  String messege, {
+  String positiveResponse = "Yes",
+  String negativeResponse = "No",
+}) async {
   var result = await showDialog(
     context: context,
     builder: (context) {
@@ -9,13 +13,13 @@ Future<bool> showConfirmationDialog(
         title: Text(messege),
         actions: [
           FlatButton(
-            child: Text("Yes"),
+            child: Text(positiveResponse),
             onPressed: () {
               Navigator.pop(context, true);
             },
           ),
           FlatButton(
-            child: Text("No"),
+            child: Text(negativeResponse),
             onPressed: () {
               Navigator.pop(context, false);
             },
