@@ -56,7 +56,7 @@ class UserDatabaseHelper {
   Stream<List<OrderedProduct>> get orderedProductsStream async* {
     String uid = AuthentificationService().currentUser.uid;
     try {
-      final querySnapshotStream = await firestore
+      final querySnapshotStream = firestore
           .collection(USERS_COLLECTION_NAME)
           .doc(uid)
           .collection(ORDERED_PRODUCTS_COLLECTION_NAME)

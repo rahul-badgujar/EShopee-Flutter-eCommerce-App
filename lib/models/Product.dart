@@ -26,9 +26,9 @@ class Product extends Model {
   List<String> images;
   String title;
   String variant;
-  double discountPrice;
-  double originalPrice;
-  double rating;
+  num discountPrice;
+  num originalPrice;
+  num rating;
   String highlights;
   String description;
   String seller;

@@ -3,16 +3,16 @@ import 'package:e_commerce_app_flutter/models/Model.dart';
 class Review extends Model {
   static const String REVIEWER_UID_KEY = "reviewer_uid";
   static const String RATING_KEY = "rating";
-  static const String REVIEW_KEY = "review";
+  static const String FEEDBACK_KEY = "review";
 
   String reviewerUid;
   int rating;
-  String review;
+  String feedback;
   Review(
     String id, {
     this.reviewerUid,
-    this.rating,
-    this.review,
+    this.rating = 3,
+    this.feedback,
   }) : super(id);
 
   factory Review.fromMap(Map<String, dynamic> map, {String id}) {
@@ -20,7 +20,7 @@ class Review extends Model {
       id,
       reviewerUid: map[REVIEWER_UID_KEY],
       rating: map[RATING_KEY],
-      review: map[REVIEW_KEY],
+      feedback: map[FEEDBACK_KEY],
     );
   }
 
@@ -29,7 +29,7 @@ class Review extends Model {
     final map = <String, dynamic>{
       REVIEWER_UID_KEY: reviewerUid,
       RATING_KEY: rating,
-      REVIEW_KEY: review,
+      FEEDBACK_KEY: feedback,
     };
     return map;
   }
@@ -39,7 +39,7 @@ class Review extends Model {
     final map = <String, dynamic>{};
     if (reviewerUid != null) map[REVIEWER_UID_KEY] = reviewerUid;
     if (rating != null) map[RATING_KEY] = rating;
-    if (review != null) map[REVIEW_KEY] = review;
+    if (feedback != null) map[FEEDBACK_KEY] = feedback;
     return map;
   }
 }

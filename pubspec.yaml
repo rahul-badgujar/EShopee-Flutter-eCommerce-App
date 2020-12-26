@@ -29,6 +29,7 @@ dependencies:
   firebase_auth: ^0.18.4+1
   firebase_core: ^0.5.3
   firebase_storage: ^5.2.0
+  flutter_rating_bar: ^3.2.0+1
   flutter_svg: ^0.19.2+1
   future_progress_dialog: ^0.1.1
   image_picker: ^0.6.7+15

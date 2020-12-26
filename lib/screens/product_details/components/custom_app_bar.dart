@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import '../../../size_config.dart';
 
 class CustomAppBar extends PreferredSize {
-  final double rating;
+  final num rating;
 
   CustomAppBar({@required this.rating});
   @override

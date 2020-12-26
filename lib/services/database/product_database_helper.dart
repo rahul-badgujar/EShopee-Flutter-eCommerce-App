@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/models/Review.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 
@@ -19,6 +20,77 @@ class ProductDatabaseHelper {
       _firebaseFirestore = FirebaseFirestore.instance;
     }
     return _firebaseFirestore;
+  }
+
+  Future<bool> addProductReview(String productId, Review review) async {
+    try {
+      final reviewesCollectionRef = firestore
+          .collection(PRODUCTS_COLLECTION_NAME)
+          .doc(productId)
+          .collection(REVIEWS_COLLECTOIN_NAME);
+      final reviewDoc = reviewesCollectionRef.doc(review.reviewerUid);
+      if ((await reviewDoc.get()).exists == false) {
+        reviewDoc.set(review.toMap());
+        return await addUsersRatingForProduct(
+          productId,
+          review.rating,
+        );
+      } else {
+        int oldRating = 0;
+        oldRating = (await reviewDoc.get()).data()[Product.RATING_KEY];
+        reviewDoc.update(review.toUpdateMap());
+        return await addUsersRatingForProduct(productId, review.rating,
+            oldRating: oldRating);
+      }
+    } on Exception catch (e) {
+      print(e.toString);
+      return false;
+    }
+  }
+
+  Future<bool> addUsersRatingForProduct(String productId, int rating,
+      {int oldRating}) async {
+    try {
+      final productDocRef =
+          firestore.collection(PRODUCTS_COLLECTION_NAME).doc(productId);
+      final ratingsCount =
+          (await productDocRef.collection(REVIEWS_COLLECTOIN_NAME).get())
+              .docs
+              .length;
+      final productDoc = await productDocRef.get();
+      final prevRating = productDoc.data()[Review.RATING_KEY];
+      double newRating;
+      if (oldRating == null) {
+        newRating = (prevRating * (ratingsCount - 1) + rating) / ratingsCount;
+      } else {
+        newRating =
+            (prevRating * (ratingsCount) + rating - oldRating) / ratingsCount;
+      }
+      final newRatingRounded = double.parse(newRating.toStringAsFixed(1));
+      await productDocRef.update({Product.RATING_KEY: newRatingRounded});
+      return true;
+    } on Exception catch (e) {
+      print(e.toString);
+      return false;
+    }
+  }
+
+  Future<Review> getProductReviewWithID(
+      String productId, String reviewId) async {
+    try {
+      final reviewesCollectionRef = firestore
+          .collection(PRODUCTS_COLLECTION_NAME)
+          .doc(productId)
+          .collection(REVIEWS_COLLECTOIN_NAME);
+      final reviewDoc = await reviewesCollectionRef.doc(reviewId).get();
+      if (reviewDoc.exists) {
+        return Review.fromMap(reviewDoc.data(), id: reviewDoc.id);
+      }
+      return null;
+    } on Exception catch (e) {
+      print(e.toString);
+      return null;
+    }
   }
 
   Future<Product> getProductWithID(String productId) async {

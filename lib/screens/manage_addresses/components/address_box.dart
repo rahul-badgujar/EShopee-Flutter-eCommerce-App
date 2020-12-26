@@ -124,7 +124,7 @@ class AddressBox extends StatelessWidget {
                     "Edit",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 16,
                       color: Colors.white,
                     ),
                   ),
@@ -137,7 +137,7 @@ class AddressBox extends StatelessWidget {
                     "Delete",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 16,
                       color: Colors.white,
                     ),
                   ),
