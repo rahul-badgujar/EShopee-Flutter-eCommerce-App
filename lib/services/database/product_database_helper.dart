@@ -93,6 +93,29 @@ class ProductDatabaseHelper {
     }
   }
 
+  Stream<List<Review>> getAllReviewsStreamForProductId(
+      String productId) async* {
+    try {
+      final reviewesQuerySnapshot = firestore
+          .collection(PRODUCTS_COLLECTION_NAME)
+          .doc(productId)
+          .collection(REVIEWS_COLLECTOIN_NAME)
+          .get()
+          .asStream();
+      await for (final querySnapshot in reviewesQuerySnapshot) {
+        List<Review> reviews = List<Review>();
+        for (final reviewDoc in querySnapshot.docs) {
+          Review review = Review.fromMap(reviewDoc.data(), id: reviewDoc.id);
+          reviews.add(review);
+        }
+        yield reviews;
+      }
+    } on Exception catch (e) {
+      print(e.toString);
+      yield null;
+    }
+  }
+
   Future<Product> getProductWithID(String productId) async {
     try {
       final docSnapshot = await firestore

@@ -36,10 +36,18 @@ class CustomAppBar extends PreferredSize {
               ),
               child: Row(
                 children: [
-                  Text("$rating",
-                      style: TextStyle(fontWeight: FontWeight.w600)),
+                  Text(
+                    "$rating",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
                   SizedBox(width: 5),
-                  SvgPicture.asset("assets/icons/Star Icon.svg"),
+                  Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
                 ],
               ),
             ),

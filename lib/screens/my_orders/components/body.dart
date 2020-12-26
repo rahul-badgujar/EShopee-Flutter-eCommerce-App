@@ -247,7 +247,7 @@ class ProductReviewDialog extends StatelessWidget {
               review.feedback = value;
             },
             maxLines: null,
-            maxLength: 50,
+            maxLength: 150,
           ),
         ),
         SizedBox(height: getProportionateScreenHeight(10)),

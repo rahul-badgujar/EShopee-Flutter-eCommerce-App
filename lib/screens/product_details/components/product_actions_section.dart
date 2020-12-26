@@ -57,7 +57,6 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
             ),
           ],
         ),
-        SizedBox(height: getProportionateScreenHeight(50)),
       ],
     );
   }
