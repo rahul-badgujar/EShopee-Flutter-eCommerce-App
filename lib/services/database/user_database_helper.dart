@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
 import 'package:e_commerce_app_flutter/models/CartItem.dart';
+import 'package:e_commerce_app_flutter/models/OrderedProduct.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
@@ -18,6 +19,7 @@ class UserDatabaseHelper {
   static const String ADDRESSES_COLLECTION_NAME = "addresses";
   static const String CART_COLLECTION_NAME = "cart";
   static const String ORDERED_PRODUCTS_COLLECTION_NAME = "ordered_products";
+
   static const String PHONE_KEY = 'phone';
   static const String DP_KEY = "display_picture";
   static const String FAV_PRODUCTS_KEY = "favourite_products";
@@ -34,6 +36,21 @@ class UserDatabaseHelper {
       _firebaseFirestore = FirebaseFirestore.instance;
     }
     return _firebaseFirestore;
+  }
+
+  Future<bool> addOrderedProduct(OrderedProduct orderedProduct) async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final orderedProductsCollectionRef = firestore
+          .collection(USERS_COLLECTION_NAME)
+          .doc(uid)
+          .collection(ORDERED_PRODUCTS_COLLECTION_NAME);
+      await orderedProductsCollectionRef.add(orderedProduct.toMap());
+      return true;
+    } on Exception catch (e) {
+      print(e.toString);
+      return false;
+    }
   }
 
   Future<void> createNewUser(String uid) async {
@@ -190,6 +207,21 @@ class UserDatabaseHelper {
           .doc(uid)
           .collection(CART_COLLECTION_NAME);
       await cartCollectionReference.add(cartItem.toMap());
+      return true;
+    } on Exception catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> removeProductFromCart(String cartItemID) async {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final cartCollectionReference = firestore
+          .collection(USERS_COLLECTION_NAME)
+          .doc(uid)
+          .collection(CART_COLLECTION_NAME);
+      await cartCollectionReference.doc(cartItemID).delete();
       return true;
     } on Exception catch (e) {
       print(e.toString());

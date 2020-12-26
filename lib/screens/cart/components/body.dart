@@ -87,14 +87,30 @@ class _BodyState extends State<Body> {
                       context,
                       "Remove Product from Cart?",
                     );
-                    if (confirmation) {}
-                    return confirmation;
+                    if (confirmation) {
+                      if (direction == DismissDirection.startToEnd) {
+                        final result = await UserDatabaseHelper()
+                            .removeProductFromCart(snapshot.data[index].id);
+                        if (result) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Product Removed from Cart"),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Couldnt remove Product from Cart"),
+                            ),
+                          );
+                        }
+                        return result;
+                      }
+                    }
                   }
                   return false;
                 },
-                onDismissed: (direction) {
-                  print("Cart item delete request");
-                },
+                onDismissed: (direction) {},
               );
             },
           );
