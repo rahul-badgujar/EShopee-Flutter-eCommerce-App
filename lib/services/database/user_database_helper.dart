@@ -17,6 +17,7 @@ class UserDatabaseHelper {
   static const String USERS_COLLECTION_NAME = "users";
   static const String ADDRESSES_COLLECTION_NAME = "addresses";
   static const String CART_COLLECTION_NAME = "cart";
+  static const String ORDERED_PRODUCTS_COLLECTION_NAME = "ordered_products";
   static const String PHONE_KEY = 'phone';
   static const String DP_KEY = "display_picture";
   static const String FAV_PRODUCTS_KEY = "favourite_products";
