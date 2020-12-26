@@ -32,6 +32,7 @@ dependencies:
   flutter_svg: ^0.19.2+1
   future_progress_dialog: ^0.1.1
   image_picker: ^0.6.7+15
+  intl: ^0.16.1
   permission_handler: ^5.0.1+1
   pin_code_fields: ^6.0.1
   pinch_zoom_image_updated: ^0.2.6

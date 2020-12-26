@@ -53,6 +53,29 @@ class UserDatabaseHelper {
     }
   }
 
+  Stream<List<OrderedProduct>> get orderedProductsStream async* {
+    String uid = AuthentificationService().currentUser.uid;
+    try {
+      final querySnapshotStream = await firestore
+          .collection(USERS_COLLECTION_NAME)
+          .doc(uid)
+          .collection(ORDERED_PRODUCTS_COLLECTION_NAME)
+          .get()
+          .asStream();
+      await for (final querySnapshot in querySnapshotStream) {
+        List<OrderedProduct> orderedProductsList = List<OrderedProduct>();
+        for (final doc in querySnapshot.docs) {
+          final orderedProduct = OrderedProduct.fromMap(doc.data(), id: doc.id);
+          orderedProductsList.add(orderedProduct);
+        }
+        yield orderedProductsList;
+      }
+    } on Exception catch (e) {
+      print(e.toString);
+      yield null;
+    }
+  }
+
   Future<void> createNewUser(String uid) async {
     await firestore.collection(USERS_COLLECTION_NAME).doc(uid).set({
       DP_KEY: null,

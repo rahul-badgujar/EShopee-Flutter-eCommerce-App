@@ -11,6 +11,7 @@ import 'package:e_commerce_app_flutter/services/database/user_database_helper.da
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
+import 'package:intl/intl.dart';
 
 import '../../../utils.dart';
 
@@ -311,13 +312,17 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Future orderAllCartProducts() async {
+  Future<void> orderAllCartProducts() async {
+    final datetime = DateTime.now();
+    final dateformat = DateFormat("yyyy-MM-dd");
+    String date = dateformat.format(datetime);
+
     for (int i = 0; i < cartItems.length; i++) {
       final productAddedToOrderedList =
           await UserDatabaseHelper().addOrderedProduct(OrderedProduct(
         null,
         productUid: cartItems[i].productID,
-        orderDate: "",
+        orderDate: date,
       ));
       if (productAddedToOrderedList) {
         await UserDatabaseHelper().removeProductFromCart(cartItems[i].id);
