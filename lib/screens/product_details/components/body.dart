@@ -7,6 +7,7 @@ import 'package:e_commerce_app_flutter/screens/product_details/components/produc
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class Body extends StatelessWidget {
   final Product product;
@@ -106,6 +107,9 @@ class ReviewBox extends StatelessWidget {
       padding: EdgeInsets.symmetric(
         horizontal: 16,
         vertical: 8,
+      ),
+      margin: EdgeInsets.symmetric(
+        vertical: 4,
       ),
       decoration: BoxDecoration(
         color: kTextColor.withOpacity(0.075),

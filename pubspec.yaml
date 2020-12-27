@@ -34,6 +34,7 @@ dependencies:
   future_progress_dialog: ^0.1.1
   image_picker: ^0.6.7+15
   intl: ^0.16.1
+  logger: ^0.9.4
   permission_handler: ^5.0.1+1
   pin_code_fields: ^6.0.1
   pinch_zoom_image_updated: ^0.2.6
