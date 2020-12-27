@@ -77,7 +77,8 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
         print("Verification Email sent...");
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Verification Email sent")));
-      } else if (resultStatus == AuthentificationService.NO_USER_FOUND) {
+      } else if (resultStatus ==
+          AuthentificationService.USER_NOT_FOUND_EXCEPTION_CODE) {
         print("No such user exist");
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("No user exist with given email")));

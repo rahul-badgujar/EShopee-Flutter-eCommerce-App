@@ -1,6 +1,5 @@
 import 'package:e_commerce_app_flutter/components/rounded_icon_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../../size_config.dart';
 

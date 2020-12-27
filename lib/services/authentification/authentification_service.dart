@@ -1,14 +1,15 @@
 import 'dart:async';
 
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/signin_exceptions.dart';
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/signup_exceptions.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class AuthentificationService {
-  static const String SIGN_IN_SUCCESS_MSG = "Signed In";
   static const String SIGN_UP_SUCCESS_MSG = "Signed Up";
-  static const String NO_USER_FOUND = "user-not-found";
-  static const String WRONG_PASSWORD = "wrong-password";
+  static const String USER_NOT_FOUND_EXCEPTION_CODE = "user-not-found";
+  static const String WRONG_PASSWORD_EXCEPTION_CODE = "wrong-password";
   static const String EMAIL_ALREADY_IN_USE = "email-already-in-use";
   static const String WEAK_PASSWORD = "weak-password";
   static const String USER_NOT_VERIFIED = "User not verified";
@@ -17,7 +18,8 @@ class AuthentificationService {
       "Password update successfull";
   static const String USER_MISMATCH = "user-mismatch";
   static const String INVALID_CREDENTIALS = "invalid-credential";
-  static const String INVALID_EMAIL = "invalid-email";
+  static const String INVALID_EMAIL_EXCEPTION_CODE = "invalid-email";
+  static const String USER_DISABLED_EXCEPTION_CODE = "user-disabled";
   static const String EMAIL_UPDATE_SUCCESSFULL = "Email update successful";
 
   FirebaseAuth _firebaseAuth;
@@ -30,7 +32,6 @@ class AuthentificationService {
     if (_firebaseAuth == null) {
       _firebaseAuth = FirebaseAuth.instance;
     }
-    //if (_firebaseAuth.currentUser != null) _firebaseAuth.currentUser.reload();
     return _firebaseAuth;
   }
 
@@ -42,20 +43,39 @@ class AuthentificationService {
 
   Stream<User> get userChanges => firebaseAuth.userChanges();
 
-  Future<String> signIn({String email, String password}) async {
+  Future<bool> signIn({String email, String password}) async {
     // TODO: if user not verified, restrict some actions
     try {
       final UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
       if (userCredential.user.emailVerified) {
-        return SIGN_IN_SUCCESS_MSG;
+        return true;
       } else {
         await userCredential.user.sendEmailVerification();
-
-        return USER_NOT_VERIFIED;
+        throw FirebaseAuthUserNotVerifiedException();
       }
+    } on FirebaseAuthSignInException {
+      rethrow;
     } on FirebaseAuthException catch (e) {
-      return e.code;
+      switch (e.code) {
+        case INVALID_EMAIL_EXCEPTION_CODE:
+          throw FirebaseAuthInvalidEmailException();
+          break;
+        case USER_DISABLED_EXCEPTION_CODE:
+          throw FirebaseAuthUserDisabledException();
+          break;
+        case USER_NOT_FOUND_EXCEPTION_CODE:
+          throw FirebaseAuthUserNotFoundException();
+          break;
+        case WRONG_PASSWORD_EXCEPTION_CODE:
+          throw FirebaseAuthWrongPasswordException();
+          break;
+        default:
+          throw FirebaseAuthSignInException(e.code);
+          break;
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -98,7 +118,7 @@ class AuthentificationService {
       return PASSWORD_RESET_EMAIL_SENT;
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
-        return NO_USER_FOUND;
+        return USER_NOT_FOUND_EXCEPTION_CODE;
       } else {
         return e.code;
       }
@@ -118,7 +138,7 @@ class AuthentificationService {
 
         return PASSWORD_UPDATE_SUCCESSFULL;
       } else {
-        return WRONG_PASSWORD;
+        return WRONG_PASSWORD_EXCEPTION_CODE;
       }
     } on FirebaseAuthException catch (e) {
       return e.code;
@@ -137,7 +157,7 @@ class AuthentificationService {
 
         return EMAIL_UPDATE_SUCCESSFULL;
       } else {
-        return WRONG_PASSWORD;
+        return WRONG_PASSWORD_EXCEPTION_CODE;
       }
     } on FirebaseAuthException catch (e) {
       return e.code;

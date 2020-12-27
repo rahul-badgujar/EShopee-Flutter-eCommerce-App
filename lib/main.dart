@@ -8,6 +8,3 @@ Future<void> main() async {
 
   runApp(App());
 }
-
-// TODO: Feature-> Add Logger for Debugging
-// TODO: Feature-> Add Product Review

@@ -1,5 +1,7 @@
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/signin_exceptions.dart';
 import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:logger/logger.dart';
 
 import '../../../components/custom_suffix_icon.dart';
 import '../../../components/default_button.dart';
@@ -122,32 +124,29 @@ class _SignInFormState extends State<SignInForm> {
     if (_formkey.currentState.validate()) {
       _formkey.currentState.save();
       final AuthentificationService authService = AuthentificationService();
-      String signInStatus = await authService.signIn(
-        email: emailFieldController.text.trim(),
-        password: passwordFieldController.text.trim(),
-      );
-      if (signInStatus == AuthentificationService.SIGN_IN_SUCCESS_MSG) {
-        print("Signed In succesfully");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Signed In succesfully")));
-      } else if (signInStatus == AuthentificationService.USER_NOT_VERIFIED) {
-        print(
-            "Verification Email sent. Please verify Email Address to continue");
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content:
-                Text("Please verify email first, Verification email sent")));
-      } else if (signInStatus == AuthentificationService.NO_USER_FOUND) {
-        print("User not registered");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("No such user found")));
-      } else if (signInStatus == AuthentificationService.WRONG_PASSWORD) {
-        print("Wrong password");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Wrong password")));
-      } else {
-        print("Exception result: $signInStatus");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Something went wrong")));
+      bool signInStatus = false;
+      String snackbarMessage;
+      try {
+        signInStatus = await authService.signIn(
+          email: emailFieldController.text.trim(),
+          password: passwordFieldController.text.trim(),
+        );
+        if (signInStatus == true) {
+          snackbarMessage = "Signed In Successfully";
+        } else {
+          throw FirebaseAuthSignInFailureUnknownReason();
+        }
+      } on FirebaseAuthSignInException catch (e) {
+        snackbarMessage = e.message;
+      } catch (e) {
+        snackbarMessage = e.toString();
+      } finally {
+        Logger().i(snackbarMessage);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
       }
     }
   }

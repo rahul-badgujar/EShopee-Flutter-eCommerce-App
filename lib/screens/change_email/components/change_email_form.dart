@@ -153,7 +153,8 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content:
                   Text("Verification Email sent, Please verify new email")));
-        } else if (updationStatus == AuthentificationService.WRONG_PASSWORD) {
+        } else if (updationStatus ==
+            AuthentificationService.WRONG_PASSWORD_EXCEPTION_CODE) {
           print("Wrong password...");
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text("Wrong Password")));

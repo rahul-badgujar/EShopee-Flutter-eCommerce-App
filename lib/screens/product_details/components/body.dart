@@ -7,7 +7,6 @@ import 'package:e_commerce_app_flutter/screens/product_details/components/produc
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 
 class Body extends StatelessWidget {
   final Product product;
