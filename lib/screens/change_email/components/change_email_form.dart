@@ -1,11 +1,14 @@
 import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/credential_actions_exceptions.dart';
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/messeged_firebaseauth_exception.dart';
 
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
+import 'package:logger/logger.dart';
 
 import '../../../constants.dart';
 
@@ -145,26 +148,31 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
       bool passwordValidation =
           await authService.verifyCurrentUserPassword(passwordController.text);
       if (passwordValidation) {
-        String updationStatus = await authService.changeEmailForCurrentUser(
-            newEmail: newEmailController.text);
-        if (updationStatus ==
-            AuthentificationService.EMAIL_UPDATE_SUCCESSFULL) {
-          print("Email updation action triggered, verify email to change");
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content:
-                  Text("Verification Email sent, Please verify new email")));
-        } else if (updationStatus ==
-            AuthentificationService.WRONG_PASSWORD_EXCEPTION_CODE) {
-          print("Wrong password...");
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Wrong Password")));
-        } else {
-          print("Exception result: $updationStatus");
+        bool updationStatus = false;
+        String snackbarMessage;
+        try {
+          updationStatus = await authService.changeEmailForCurrentUser(
+              newEmail: newEmailController.text);
+          if (updationStatus == true) {
+            snackbarMessage =
+                "Verification email sent. Please verify your new email";
+          } else {
+            throw FirebaseCredentialActionAuthUnknownReasonFailureException(
+                message:
+                    "Couldn't process your request now. Please try again later");
+          }
+        } on MessagedFirebaseAuthException catch (e) {
+          snackbarMessage = e.message;
+        } catch (e) {
+          snackbarMessage = e.toString();
+        } finally {
+          Logger().i(snackbarMessage);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(snackbarMessage),
+            ),
+          );
         }
-      } else {
-        print("Entered password is wrong...");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Something went wrong")));
       }
     }
   }

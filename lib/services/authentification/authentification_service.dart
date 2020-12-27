@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:e_commerce_app_flutter/exceptions/firebaseauth/messeged_firebaseauth_exception.dart';
-import 'package:e_commerce_app_flutter/exceptions/firebaseauth/password_actions_exceptions.dart';
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/credential_actions_exceptions.dart';
 import 'package:e_commerce_app_flutter/exceptions/firebaseauth/reauth_exceptions.dart';
 import 'package:e_commerce_app_flutter/exceptions/firebaseauth/signin_exceptions.dart';
 import 'package:e_commerce_app_flutter/exceptions/firebaseauth/signup_exceptions.dart';
@@ -17,9 +17,6 @@ class AuthentificationService {
   static const String OPERATION_NOT_ALLOWED_EXCEPTION_CODE =
       "operation-not-allowed";
   static const String WEAK_PASSWORD_EXCEPTION_CODE = "weak-password";
-  static const String PASSWORD_RESET_EMAIL_SENT = "Password reset email sent";
-  static const String PASSWORD_UPDATE_SUCCESSFULL =
-      "Password update successfull";
   static const String USER_MISMATCH_EXCEPTION_CODE = "user-mismatch";
   static const String INVALID_CREDENTIALS_EXCEPTION_CODE = "invalid-credential";
   static const String INVALID_EMAIL_EXCEPTION_CODE = "invalid-email";
@@ -30,7 +27,6 @@ class AuthentificationService {
       "invalid-verification-id";
   static const String REQUIRES_RECENT_LOGIN_EXCEPTION_CODE =
       "requires-recent-login";
-  static const String EMAIL_UPDATE_SUCCESSFULL = "Email update successful";
 
   FirebaseAuth _firebaseAuth;
 
@@ -144,9 +140,9 @@ class AuthentificationService {
       rethrow;
     } on FirebaseAuthException catch (e) {
       if (e.code == USER_NOT_FOUND_EXCEPTION_CODE) {
-        throw FirebasePasswordActionAuthUserNotFoundException();
+        throw FirebaseCredentialActionAuthUserNotFoundException();
       } else {
-        throw FirebasePasswordActionAuthException(message: e.code);
+        throw FirebaseCredentialActionAuthException(message: e.code);
       }
     } catch (e) {
       rethrow;
@@ -173,18 +169,18 @@ class AuthentificationService {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case WEAK_PASSWORD_EXCEPTION_CODE:
-          throw FirebasePasswordActionAuthWeakPasswordException();
+          throw FirebaseCredentialActionAuthWeakPasswordException();
         case REQUIRES_RECENT_LOGIN_EXCEPTION_CODE:
-          throw FirebasePasswordActionAuthRequiresRecentLoginException();
+          throw FirebaseCredentialActionAuthRequiresRecentLoginException();
         default:
-          throw FirebasePasswordActionAuthException(message: e.code);
+          throw FirebaseCredentialActionAuthException(message: e.code);
       }
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<String> changeEmailForCurrentUser(
+  Future<bool> changeEmailForCurrentUser(
       {String password, String newEmail}) async {
     try {
       bool isPasswordProvidedCorrect = true;
@@ -194,12 +190,16 @@ class AuthentificationService {
       if (isPasswordProvidedCorrect) {
         await currentUser.verifyBeforeUpdateEmail(newEmail);
 
-        return EMAIL_UPDATE_SUCCESSFULL;
+        return true;
       } else {
-        return WRONG_PASSWORD_EXCEPTION_CODE;
+        throw FirebaseReauthWrongPasswordException();
       }
+    } on MessagedFirebaseAuthException {
+      rethrow;
     } on FirebaseAuthException catch (e) {
-      return e.code;
+      throw FirebaseCredentialActionAuthException(message: e.code);
+    } catch (e) {
+      rethrow;
     }
   }
 

@@ -3,7 +3,7 @@ import 'package:e_commerce_app_flutter/components/default_button.dart';
 
 import 'package:e_commerce_app_flutter/components/no_account_text.dart';
 import 'package:e_commerce_app_flutter/exceptions/firebaseauth/messeged_firebaseauth_exception.dart';
-import 'package:e_commerce_app_flutter/exceptions/firebaseauth/password_actions_exceptions.dart';
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/credential_actions_exceptions.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +82,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
         if (resultStatus == true) {
           snackbarMessage = "Password Reset Link sent to your email";
         } else {
-          throw FirebasePasswordActionAuthUnknownReasonFailureException(
+          throw FirebaseCredentialActionAuthUnknownReasonFailureException(
               message:
                   "Sorry, could not process your request now, try again later");
         }
