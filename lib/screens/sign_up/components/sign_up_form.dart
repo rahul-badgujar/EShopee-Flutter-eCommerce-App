@@ -1,8 +1,10 @@
 import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/signup_exceptions.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import '../../../constants.dart';
 
@@ -130,23 +132,33 @@ class _SignUpFormState extends State<SignUpForm> {
     if (_formKey.currentState.validate()) {
       // goto complete profile page
       final AuthentificationService authService = AuthentificationService();
-      String signUpStatus = await authService.signUp(
-        email: emailFieldController.text,
-        password: passwordFieldController.text,
-      );
-      if (signUpStatus == AuthentificationService.SIGN_UP_SUCCESS_MSG) {
-        print("Sign Up succesfull, try signing in");
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("Signed Up succesfully, Verification Email sent")));
-        Navigator.pop(context);
-      } else if (signUpStatus == AuthentificationService.EMAIL_ALREADY_IN_USE) {
-        print("Email already in use, try different email");
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("Email already in use, try different email")));
-      } else {
-        print("Exception result: $signUpStatus");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Something went wrong")));
+      bool signUpStatus = false;
+      String snackbarMessage;
+      try {
+        signUpStatus = await authService.signUp(
+          email: emailFieldController.text,
+          password: passwordFieldController.text,
+        );
+        if (signUpStatus == true) {
+          snackbarMessage =
+              "Registered successfully, Please verify your email id";
+        } else {
+          throw FirebaseSignUpAuthUnknownReasonFailureException();
+        }
+      } on FirebaseSignUpAuthException catch (e) {
+        snackbarMessage = e.message;
+      } catch (e) {
+        snackbarMessage = e.toString();
+      } finally {
+        Logger().i(snackbarMessage);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+        if (signUpStatus == true) {
+          Navigator.pop(context);
+        }
       }
     }
   }

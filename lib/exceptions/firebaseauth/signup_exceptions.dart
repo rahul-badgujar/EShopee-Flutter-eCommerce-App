@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-class FirebaseAuthSignUpException extends FirebaseAuthException {
+class FirebaseSignUpAuthException extends FirebaseAuthException {
   String _message;
-  FirebaseAuthSignUpException(this._message);
+  FirebaseSignUpAuthException(this._message);
   String get message => _message;
   @override
   String toString() {
@@ -10,27 +10,37 @@ class FirebaseAuthSignUpException extends FirebaseAuthException {
   }
 }
 
-class FirebaseAuthEmailAlreadyInUseException
-    extends FirebaseAuthSignUpException {
-  FirebaseAuthEmailAlreadyInUseException(
+class FirebaseSignUpAuthEmailAlreadyInUseException
+    extends FirebaseSignUpAuthException {
+  FirebaseSignUpAuthEmailAlreadyInUseException(
       {String message = "Email already in use"})
       : super(message);
 }
 
-class FirebaseAuthInvalidEmailException extends FirebaseAuthSignUpException {
-  FirebaseAuthInvalidEmailException({String message = "Email is not valid"})
+class FirebaseSignUpAuthInvalidEmailException
+    extends FirebaseSignUpAuthException {
+  FirebaseSignUpAuthInvalidEmailException(
+      {String message = "Email is not valid"})
       : super(message);
 }
 
-class FirebaseAuthOperationNotAllowedException
-    extends FirebaseAuthSignUpException {
-  FirebaseAuthOperationNotAllowedException(
+class FirebaseSignUpAuthOperationNotAllowedException
+    extends FirebaseSignUpAuthException {
+  FirebaseSignUpAuthOperationNotAllowedException(
       {String message = "Sign up is restricted for this user"})
       : super(message);
 }
 
-class FirebaseAuthWeakPasswordException extends FirebaseAuthSignUpException {
-  FirebaseAuthWeakPasswordException(
+class FirebaseSignUpAuthWeakPasswordException
+    extends FirebaseSignUpAuthException {
+  FirebaseSignUpAuthWeakPasswordException(
       {String message = "Weak password, try something better"})
+      : super(message);
+}
+
+class FirebaseSignUpAuthUnknownReasonFailureException
+    extends FirebaseSignUpAuthException {
+  FirebaseSignUpAuthUnknownReasonFailureException(
+      {String message = "Can't register due to unknown reason"})
       : super(message);
 }

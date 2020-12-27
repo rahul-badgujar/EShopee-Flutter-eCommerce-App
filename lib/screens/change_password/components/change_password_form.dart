@@ -144,7 +144,8 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
           print("Password updated successfully...");
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text("Updated Password")));
-        } else if (updationStatus == AuthentificationService.WEAK_PASSWORD) {
+        } else if (updationStatus ==
+            AuthentificationService.WEAK_PASSWORD_EXCEPTION_CODE) {
           print("Password is weak");
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("Password is too weak, try something better")));

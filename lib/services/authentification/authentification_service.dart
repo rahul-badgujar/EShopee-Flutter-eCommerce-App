@@ -10,8 +10,11 @@ class AuthentificationService {
   static const String SIGN_UP_SUCCESS_MSG = "Signed Up";
   static const String USER_NOT_FOUND_EXCEPTION_CODE = "user-not-found";
   static const String WRONG_PASSWORD_EXCEPTION_CODE = "wrong-password";
-  static const String EMAIL_ALREADY_IN_USE = "email-already-in-use";
-  static const String WEAK_PASSWORD = "weak-password";
+  static const String EMAIL_ALREADY_IN_USE_EXCEPTION_CODE =
+      "email-already-in-use";
+  static const String OPERATION_NOT_ALLOWED_EXCEPTION_CODE =
+      "operation-not-allowed";
+  static const String WEAK_PASSWORD_EXCEPTION_CODE = "weak-password";
   static const String USER_NOT_VERIFIED = "User not verified";
   static const String PASSWORD_RESET_EMAIL_SENT = "Password reset email sent";
   static const String PASSWORD_UPDATE_SUCCESSFULL =
@@ -52,34 +55,33 @@ class AuthentificationService {
         return true;
       } else {
         await userCredential.user.sendEmailVerification();
-        throw FirebaseAuthUserNotVerifiedException();
+        throw FirebaseSignInAuthUserNotVerifiedException();
       }
-    } on FirebaseAuthSignInException {
+    } on FirebaseSignInAuthException {
       rethrow;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case INVALID_EMAIL_EXCEPTION_CODE:
-          throw FirebaseAuthInvalidEmailException();
-          break;
+          throw FirebaseSignInAuthInvalidEmailException();
+
         case USER_DISABLED_EXCEPTION_CODE:
-          throw FirebaseAuthUserDisabledException();
-          break;
+          throw FirebaseSignInAuthUserDisabledException();
+
         case USER_NOT_FOUND_EXCEPTION_CODE:
-          throw FirebaseAuthUserNotFoundException();
-          break;
+          throw FirebaseSignInAuthUserNotFoundException();
+
         case WRONG_PASSWORD_EXCEPTION_CODE:
-          throw FirebaseAuthWrongPasswordException();
-          break;
+          throw FirebaseSignInAuthWrongPasswordException();
+
         default:
-          throw FirebaseAuthSignInException(e.code);
-          break;
+          throw FirebaseSignInAuthException(e.code);
       }
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<String> signUp({String email, String password}) async {
+  Future<bool> signUp({String email, String password}) async {
     try {
       final UserCredential userCredential = await firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -88,9 +90,24 @@ class AuthentificationService {
         await userCredential.user.sendEmailVerification();
       }
       await UserDatabaseHelper().createNewUser(uid);
-      return SIGN_UP_SUCCESS_MSG;
+      return true;
+    } on FirebaseSignInAuthException {
+      rethrow;
     } on FirebaseAuthException catch (e) {
-      return e.code;
+      switch (e.code) {
+        case EMAIL_ALREADY_IN_USE_EXCEPTION_CODE:
+          throw FirebaseSignUpAuthEmailAlreadyInUseException();
+        case INVALID_EMAIL_EXCEPTION_CODE:
+          throw FirebaseSignUpAuthInvalidEmailException();
+        case OPERATION_NOT_ALLOWED_EXCEPTION_CODE:
+          throw FirebaseSignUpAuthOperationNotAllowedException();
+        case WEAK_PASSWORD_EXCEPTION_CODE:
+          throw FirebaseSignUpAuthWeakPasswordException();
+        default:
+          throw FirebaseSignInAuthException(e.code);
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 

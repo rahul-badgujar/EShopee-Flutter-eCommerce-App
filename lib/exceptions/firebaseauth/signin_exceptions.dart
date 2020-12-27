@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-class FirebaseAuthSignInException extends FirebaseAuthException {
+class FirebaseSignInAuthException extends FirebaseAuthException {
   String _message;
-  FirebaseAuthSignInException(this._message);
+  FirebaseSignInAuthException(this._message);
   String get message => _message;
   @override
   String toString() {
@@ -10,30 +10,43 @@ class FirebaseAuthSignInException extends FirebaseAuthException {
   }
 }
 
-class FirebaseAuthUserDisabledException extends FirebaseAuthSignInException {
-  FirebaseAuthUserDisabledException({String message = "This user is disabled"})
+class FirebaseSignInAuthUserDisabledException
+    extends FirebaseSignInAuthException {
+  FirebaseSignInAuthUserDisabledException(
+      {String message = "This user is disabled"})
       : super(message);
 }
 
-class FirebaseAuthUserNotFoundException extends FirebaseAuthSignInException {
-  FirebaseAuthUserNotFoundException({String message = "No such user found"})
+class FirebaseSignInAuthUserNotFoundException
+    extends FirebaseSignInAuthException {
+  FirebaseSignInAuthUserNotFoundException(
+      {String message = "No such user found"})
       : super(message);
 }
 
-class FirebaseAuthWrongPasswordException extends FirebaseAuthSignInException {
-  FirebaseAuthWrongPasswordException({String message = "Wrong password"})
+class FirebaseSignInAuthInvalidEmailException
+    extends FirebaseSignInAuthException {
+  FirebaseSignInAuthInvalidEmailException(
+      {String message = "Email is not valid"})
       : super(message);
 }
 
-class FirebaseAuthUserNotVerifiedException extends FirebaseAuthSignInException {
-  FirebaseAuthUserNotVerifiedException(
+class FirebaseSignInAuthWrongPasswordException
+    extends FirebaseSignInAuthException {
+  FirebaseSignInAuthWrongPasswordException({String message = "Wrong password"})
+      : super(message);
+}
+
+class FirebaseSignInAuthUserNotVerifiedException
+    extends FirebaseSignInAuthException {
+  FirebaseSignInAuthUserNotVerifiedException(
       {String message = "This user is not verified"})
       : super(message);
 }
 
-class FirebaseAuthSignInFailureUnknownReason
-    extends FirebaseAuthSignInException {
-  FirebaseAuthSignInFailureUnknownReason(
+class FirebaseSignInAuthUnknownReasonFailure
+    extends FirebaseSignInAuthException {
+  FirebaseSignInAuthUnknownReasonFailure(
       {String message = "Sign in failed due to unknown reason"})
       : super(message);
 }

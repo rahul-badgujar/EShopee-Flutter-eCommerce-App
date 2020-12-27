@@ -134,9 +134,9 @@ class _SignInFormState extends State<SignInForm> {
         if (signInStatus == true) {
           snackbarMessage = "Signed In Successfully";
         } else {
-          throw FirebaseAuthSignInFailureUnknownReason();
+          throw FirebaseSignInAuthUnknownReasonFailure();
         }
-      } on FirebaseAuthSignInException catch (e) {
+      } on FirebaseSignInAuthException catch (e) {
         snackbarMessage = e.message;
       } catch (e) {
         snackbarMessage = e.toString();
