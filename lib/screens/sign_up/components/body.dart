@@ -1,4 +1,3 @@
-import 'package:e_commerce_app_flutter/components/social_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/screens/sign_up/components/sign_up_form.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';

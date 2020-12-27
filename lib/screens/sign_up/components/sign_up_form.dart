@@ -1,5 +1,6 @@
 import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/messeged_firebaseauth_exception.dart';
 import 'package:e_commerce_app_flutter/exceptions/firebaseauth/signup_exceptions.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
@@ -145,7 +146,7 @@ class _SignUpFormState extends State<SignUpForm> {
         } else {
           throw FirebaseSignUpAuthUnknownReasonFailureException();
         }
-      } on FirebaseSignUpAuthException catch (e) {
+      } on MessagedFirebaseAuthException catch (e) {
         snackbarMessage = e.message;
       } catch (e) {
         snackbarMessage = e.toString();

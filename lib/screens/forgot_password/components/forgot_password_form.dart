@@ -2,9 +2,12 @@ import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 
 import 'package:e_commerce_app_flutter/components/no_account_text.dart';
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/messeged_firebaseauth_exception.dart';
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/password_actions_exceptions.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import '../../../constants.dart';
 
@@ -71,21 +74,29 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       final String emailInput = emailFieldController.text.trim();
-      String resultStatus =
-          await AuthentificationService().resetPasswordForEmail(emailInput);
-      if (resultStatus == AuthentificationService.PASSWORD_RESET_EMAIL_SENT) {
-        print("Verification Email sent...");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Verification Email sent")));
-      } else if (resultStatus ==
-          AuthentificationService.USER_NOT_FOUND_EXCEPTION_CODE) {
-        print("No such user exist");
+      bool resultStatus;
+      String snackbarMessage;
+      try {
+        resultStatus =
+            await AuthentificationService().resetPasswordForEmail(emailInput);
+        if (resultStatus == true) {
+          snackbarMessage = "Password Reset Link sent to your email";
+        } else {
+          throw FirebasePasswordActionAuthUnknownReasonFailureException(
+              message:
+                  "Sorry, could not process your request now, try again later");
+        }
+      } on MessagedFirebaseAuthException catch (e) {
+        snackbarMessage = e.message;
+      } catch (e) {
+        snackbarMessage = e.toString();
+      } finally {
+        Logger().i(snackbarMessage);
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("No user exist with given email")));
-      } else {
-        print("Exception result: $resultStatus");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Something went wrong...")));
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
       }
     }
   }

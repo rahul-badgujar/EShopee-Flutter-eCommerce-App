@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/exceptions/firebaseauth/messeged_firebaseauth_exception.dart';
 import 'package:e_commerce_app_flutter/exceptions/firebaseauth/signin_exceptions.dart';
 import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
@@ -136,7 +137,7 @@ class _SignInFormState extends State<SignInForm> {
         } else {
           throw FirebaseSignInAuthUnknownReasonFailure();
         }
-      } on FirebaseSignInAuthException catch (e) {
+      } on MessagedFirebaseAuthException catch (e) {
         snackbarMessage = e.message;
       } catch (e) {
         snackbarMessage = e.toString();
