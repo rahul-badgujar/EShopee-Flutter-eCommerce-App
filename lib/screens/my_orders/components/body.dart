@@ -11,6 +11,7 @@ import 'package:e_commerce_app_flutter/services/database/user_database_helper.da
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:logger/logger.dart';
 
 class Body extends StatelessWidget {
   @override
@@ -41,18 +42,29 @@ class Body extends StatelessWidget {
     return StreamBuilder<List<OrderedProduct>>(
       stream: UserDatabaseHelper().orderedProductsStream,
       builder: (context, snapshot) {
-        if (snapshot.hasError || snapshot.data == null) {
-          return Center(child: Icon(Icons.error));
+        if (snapshot.hasData) {
+          final orderedProductsList = snapshot.data;
+          return ListView.builder(
+            itemCount: orderedProductsList.length,
+            itemBuilder: (context, index) {
+              return buildOrderedProductItem(orderedProductsList, index);
+            },
+          );
+        } else if (snapshot.hasError) {
+          final error = snapshot.error;
+          Logger().w(error.toString());
+          return Center(
+            child: Text(
+              error.toString(),
+            ),
+          );
         } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          return Center(child: Icon(Icons.error));
         }
-        final orderedProductsList = snapshot.data;
-        return ListView.builder(
-          itemCount: orderedProductsList.length,
-          itemBuilder: (context, index) {
-            return buildOrderedProductItem(orderedProductsList, index);
-          },
-        );
       },
     );
   }

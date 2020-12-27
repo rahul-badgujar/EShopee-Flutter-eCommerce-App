@@ -3,6 +3,7 @@ import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
+import 'package:logger/logger.dart';
 
 import '../../../size_config.dart';
 
@@ -66,17 +67,29 @@ class _ChangePhoneNumberFormState extends State<ChangePhoneNumberForm> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      String status = await UserDatabaseHelper()
-          .updatePhoneForCurrentUser(newPhoneNumberController.text);
-      if (status == UserDatabaseHelper.PHONE_UPDATED_SUCCESSFULLY) {
-        print("Phone Number updated successfully");
+      bool status = false;
+      String snackbarMessage;
+      try {
+        status = await UserDatabaseHelper()
+            .updatePhoneForCurrentUser(newPhoneNumberController.text);
+        if (status == true) {
+          snackbarMessage = "Phone updated successfully";
+        } else {
+          throw "Coulnd't update phone due to unknown reason";
+        }
+      } on FirebaseException catch (e) {
+        Logger().w("Firebase Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } catch (e) {
+        Logger().w("Unknown Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } finally {
+        Logger().i(snackbarMessage);
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Phone Number updated successfully")));
-        Navigator.pop(context);
-      } else {
-        print("Exception Result: $status");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Something went wrong")));
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
       }
     }
   }
@@ -107,6 +120,10 @@ class _ChangePhoneNumberFormState extends State<ChangePhoneNumberForm> {
     return StreamBuilder<DocumentSnapshot>(
       stream: UserDatabaseHelper().currentUserDataStream,
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          final error = snapshot.error;
+          Logger().w(error.toString());
+        }
         String currentPhone;
         if (snapshot.hasData && snapshot.data != null)
           currentPhone = snapshot.data.data()[UserDatabaseHelper.PHONE_KEY];

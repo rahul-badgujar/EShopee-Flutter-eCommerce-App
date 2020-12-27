@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/components/top_rounded_container.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/components/product_description.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:logger/logger.dart';
 
 import '../../../size_config.dart';
 
@@ -24,11 +26,17 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
 
   @override
   void initState() {
-    UserDatabaseHelper().isProductFavourite(widget.product.id).then((value) {
-      setState(() {
-        productFavStatus = initProductFavStatus = value;
-      });
-    });
+    UserDatabaseHelper().isProductFavourite(widget.product.id).then(
+      (value) {
+        setState(() {
+          productFavStatus = initProductFavStatus = value;
+        });
+      },
+    ).catchError(
+      (e) {
+        Logger().w("$e");
+      },
+    );
     super.initState();
   }
 
@@ -36,8 +44,14 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
   Future<void> dispose() async {
     super.dispose();
     if (productFavStatus != initProductFavStatus) {
-      await UserDatabaseHelper()
-          .switchProductFavouriteStatus(widget.product.id);
+      try {
+        await UserDatabaseHelper()
+            .switchProductFavouriteStatus(widget.product.id);
+      } on FirebaseException catch (e) {
+        Logger().w("Firebase Exception: $e");
+      } catch (e) {
+        Logger().w("Unknown Exception: $e");
+      }
     }
   }
 

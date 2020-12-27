@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:string_validator/string_validator.dart';
 import '../../../constants.dart';
 
@@ -308,17 +310,29 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       final Address newAddress = generateAddressObject();
-      String status =
-          await UserDatabaseHelper().addAddressForCurrentUser(newAddress);
-      if (status == UserDatabaseHelper.NEW_ADDRESS_ADDED_SUCCESSFULLY) {
-        print("New Address added successfully");
+      bool status = false;
+      String snackbarMessage;
+      try {
+        status =
+            await UserDatabaseHelper().addAddressForCurrentUser(newAddress);
+        if (status == true) {
+          snackbarMessage = "Address saved successfully";
+        } else {
+          throw "Coundn't save the address due to unknown reason";
+        }
+      } on FirebaseException catch (e) {
+        Logger().w("Firebase Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } catch (e) {
+        Logger().w("Unknown Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } finally {
+        Logger().i(snackbarMessage);
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("New Address added successfully")));
-        Navigator.pop(context);
-      } else {
-        print("Exception result: $status");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Something went wrong")));
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
       }
     }
   }
@@ -329,17 +343,29 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
       final Address newAddress =
           generateAddressObject(id: widget.addressToEdit.id);
 
-      String status =
-          await UserDatabaseHelper().updateAddressForCurrentUser(newAddress);
-      if (status == UserDatabaseHelper.ADDRESS_UPDATED_SUCCESSFULLY) {
-        print("Address updated successfully");
+      bool status = false;
+      String snackbarMessage;
+      try {
+        status =
+            await UserDatabaseHelper().updateAddressForCurrentUser(newAddress);
+        if (status == true) {
+          snackbarMessage = "Address updated successfully";
+        } else {
+          throw "Couldn't update address due to unknown reason";
+        }
+      } on FirebaseException catch (e) {
+        Logger().w("Firebase Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } catch (e) {
+        Logger().w("Unknown Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } finally {
+        Logger().i(snackbarMessage);
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Address updated successfully")));
-        Navigator.pop(context);
-      } else {
-        print("Exception result: $status");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Something went wrong")));
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
       }
     }
   }

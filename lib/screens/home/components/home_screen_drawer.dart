@@ -12,6 +12,7 @@ import 'package:e_commerce_app_flutter/services/database/user_database_helper.da
 import 'package:e_commerce_app_flutter/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import '../../change_display_name/change_display_name_screen.dart';
 
 class HomeScreenDrawer extends StatelessWidget {
@@ -117,15 +118,22 @@ class HomeScreenDrawer extends StatelessWidget {
         future: UserDatabaseHelper().displayPictureForCurrentUser,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            if (snapshot.data != null) {
-              return CircleAvatar(
-                backgroundImage: NetworkImage(snapshot.data),
-              );
-            }
+            return CircleAvatar(
+              backgroundImage: NetworkImage(snapshot.data),
+            );
+          } else if (snapshot.hasError) {
+            final error = snapshot.error;
+            Logger().w(error.toString());
+            return CircleAvatar(
+              backgroundColor: kTextColor,
+            );
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return Center(child: Icon(Icons.error));
           }
-          return CircleAvatar(
-            backgroundColor: kTextColor,
-          );
         },
       ),
     );

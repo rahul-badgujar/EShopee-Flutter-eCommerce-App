@@ -2,7 +2,9 @@ import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
 import 'package:e_commerce_app_flutter/screens/edit_address/edit_address_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class AddressBox extends StatelessWidget {
   const AddressBox({
@@ -179,16 +181,29 @@ class AddressBox extends StatelessWidget {
     );
 
     if (confirmDeletion) {
-      String status =
-          await UserDatabaseHelper().deleteAddressForCurrentUser(address.id);
-      if (status == UserDatabaseHelper.ADDRESS_DELETED_SUCCESSFULLY) {
-        print("Address deleted successfully");
+      bool status = false;
+      String snackbarMessage;
+      try {
+        status =
+            await UserDatabaseHelper().deleteAddressForCurrentUser(address.id);
+        if (status == true) {
+          snackbarMessage = "Address deleted successfully";
+        } else {
+          throw "Coulnd't delete address due to unknown reason";
+        }
+      } on FirebaseException catch (e) {
+        Logger().w("Firebase Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } catch (e) {
+        Logger().w("Unknown Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } finally {
+        Logger().i(snackbarMessage);
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Address deleted successfully")));
-      } else {
-        print("Result Exception: $status");
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Something went wrong...")));
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
       }
     }
   }

@@ -9,6 +9,7 @@ import 'package:e_commerce_app_flutter/services/database/user_database_helper.da
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:logger/logger.dart';
 import '../components/home_header.dart';
 
 class Body extends StatelessWidget {
@@ -238,6 +239,14 @@ class ProductsSection extends StatelessWidget {
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          final error = snapshot.error;
+          Logger().w(error.toString());
+          return Center(
+            child: Text(
+              error.toString(),
+            ),
           );
         }
         return Center(

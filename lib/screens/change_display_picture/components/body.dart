@@ -6,7 +6,9 @@ import 'package:e_commerce_app_flutter/services/database/user_database_helper.da
 import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:e_commerce_app_flutter/services/local_files_access/local_files_access_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import '../provider_models/body_model.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
@@ -58,6 +60,10 @@ class Body extends StatelessWidget {
     return StreamBuilder(
       stream: UserDatabaseHelper().currentUserDataStream,
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          final error = snapshot.error;
+          Logger().w(error.toString());
+        }
         ImageProvider backImage;
         if (bodyState.chosenImage != null) {
           backImage = MemoryImage(bodyState.chosenImage.readAsBytesSync());
@@ -125,12 +131,34 @@ class Body extends StatelessWidget {
 
   Future<void> uploadImageToFirestorage(
       BuildContext context, BodyState bodyState) async {
-    final downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
-        bodyState.chosenImage,
-        UserDatabaseHelper().getPathForCurrentUserDisplayPicture());
-    print("Image uploaded at $downloadUrl");
+    bool uploadDisplayPictureStatus = false;
+    String snackbarMessage;
+    try {
+      final downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
+          bodyState.chosenImage,
+          UserDatabaseHelper().getPathForCurrentUserDisplayPicture());
 
-    UserDatabaseHelper().uploadDisplayPictureForCurrentUser(downloadUrl);
+      uploadDisplayPictureStatus = await UserDatabaseHelper()
+          .uploadDisplayPictureForCurrentUser(downloadUrl);
+      if (uploadDisplayPictureStatus == true) {
+        snackbarMessage = "Display Picture updated successfully";
+      } else {
+        throw "Coulnd't update display picture due to unknown reason";
+      }
+    } on FirebaseException catch (e) {
+      Logger().w("Firebase Exception: $e");
+      snackbarMessage = "Something went wrong";
+    } catch (e) {
+      Logger().w("Unknown Exception: $e");
+      snackbarMessage = "Something went wrong";
+    } finally {
+      Logger().i(snackbarMessage);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackbarMessage),
+        ),
+      );
+    }
   }
 
   Widget buildRemovePictureButton(BuildContext context, BodyState bodyState) {
@@ -159,6 +187,28 @@ class Body extends StatelessWidget {
       BuildContext context, BodyState bodyState) async {
     await FirestoreFilesAccess().deleteFileFromPath(
         UserDatabaseHelper().getPathForCurrentUserDisplayPicture());
-    await UserDatabaseHelper().removeDisplayPictureForCurrentUser();
+    bool status = false;
+    String snackbarMessage;
+    try {
+      status = await UserDatabaseHelper().removeDisplayPictureForCurrentUser();
+      if (status == true) {
+        snackbarMessage = "Picture removed successfully";
+      } else {
+        throw "Coulnd't removed successfully due to unknown reason";
+      }
+    } on FirebaseException catch (e) {
+      Logger().w("Firebase Exception: $e");
+      snackbarMessage = "Something went wrong";
+    } catch (e) {
+      Logger().w("Unknown Exception: $e");
+      snackbarMessage = "Something went wrong";
+    } finally {
+      Logger().i(snackbarMessage);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackbarMessage),
+        ),
+      );
+    }
   }
 }

@@ -5,6 +5,7 @@ import 'package:e_commerce_app_flutter/screens/edit_address/edit_address_screen.
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import '../components/address_box.dart';
 
 class Body extends StatelessWidget {
@@ -39,16 +40,7 @@ class Body extends StatelessWidget {
               StreamBuilder(
                 stream: UserDatabaseHelper().currentUserAddressesStream,
                 builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Icon(Icons.error),
-                    );
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasData) {
+                  if (snapshot.hasData) {
                     final addresses = snapshot.data.docs
                         .map((e) => Address.fromMap(e.data(), id: e.id))
                         .toList();
@@ -60,10 +52,22 @@ class Body extends StatelessWidget {
                         ),
                       ),
                     );
+                  } else if (snapshot.hasError) {
+                    final error = snapshot.error;
+                    Logger().w(error.toString());
+                    return Center(
+                      child: Text(
+                        error.toString(),
+                      ),
+                    );
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return Center(child: Icon(Icons.error));
                   }
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
                 },
               ),
               SizedBox(height: getProportionateScreenHeight(30)),

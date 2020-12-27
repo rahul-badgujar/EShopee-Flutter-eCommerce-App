@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/components/product_short_detail_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
@@ -12,6 +13,7 @@ import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
 import '../../../utils.dart';
 
@@ -53,17 +55,9 @@ class _BodyState extends State<Body> {
 
   Widget buildCartItemsList() {
     return StreamBuilder<List<CartItem>>(
-        stream: UserDatabaseHelper().allCartItemsStream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError || snapshot.data == null) {
-            return Center(
-              child: Icon(
-                Icons.error,
-              ),
-            );
-          }
+      stream: UserDatabaseHelper().allCartItemsStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
           cartItems = snapshot.data;
           cartTotal = 0.0;
           cartProducts = List<Product>.filled(cartItems.length, null);
@@ -96,7 +90,23 @@ class _BodyState extends State<Body> {
               ),
             ],
           );
-        });
+        } else if (snapshot.hasError) {
+          final error = snapshot.error;
+          Logger().w(error.toString());
+          return Center(
+            child: Text(
+              error.toString(),
+            ),
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          return Center(child: Icon(Icons.error));
+        }
+      },
+    );
   }
 
   Widget buildCartItemDismissible(
@@ -117,21 +127,31 @@ class _BodyState extends State<Body> {
           );
           if (confirmation) {
             if (direction == DismissDirection.startToEnd) {
-              final result =
-                  await UserDatabaseHelper().removeProductFromCart(cartItem.id);
-              if (result) {
+              bool result = false;
+              String snackbarMessage;
+              try {
+                result = await UserDatabaseHelper()
+                    .removeProductFromCart(cartItem.id);
+                if (result == true) {
+                  snackbarMessage = "Product removed from cart successfully";
+                } else {
+                  throw "Coulnd't remove product from cart due to unknown reason";
+                }
+              } on FirebaseException catch (e) {
+                Logger().w("Firebase Exception: $e");
+                snackbarMessage = "Something went wrong";
+              } catch (e) {
+                Logger().w("Unknown Exception: $e");
+                snackbarMessage = "Something went wrong";
+              } finally {
+                Logger().i(snackbarMessage);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("Product Removed from Cart"),
-                  ),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("Couldnt remove Product from Cart"),
+                    content: Text(snackbarMessage),
                   ),
                 );
               }
+
               return result;
             }
           }
@@ -318,14 +338,30 @@ class _BodyState extends State<Body> {
     String date = dateformat.format(datetime);
 
     for (int i = 0; i < cartItems.length; i++) {
-      final productAddedToOrderedList =
-          await UserDatabaseHelper().addOrderedProduct(OrderedProduct(
-        null,
-        productUid: cartItems[i].productID,
-        orderDate: date,
-      ));
-      if (productAddedToOrderedList) {
-        await UserDatabaseHelper().removeProductFromCart(cartItems[i].id);
+      bool productAddedToOrderedList = false;
+      try {
+        productAddedToOrderedList =
+            await UserDatabaseHelper().addOrderedProduct(
+          OrderedProduct(
+            null,
+            productUid: cartItems[i].productID,
+            orderDate: date,
+          ),
+        );
+      } on FirebaseException catch (e) {
+        Logger().d("FirebaseException: $e");
+      } catch (e) {
+        Logger().w("Unknown Exception: $e");
+      } finally {
+        if (productAddedToOrderedList) {
+          try {
+            await UserDatabaseHelper().removeProductFromCart(cartItems[i].id);
+          } on FirebaseException catch (e) {
+            Logger().d("FirebaseException: $e");
+          } catch (e) {
+            Logger().w("Unknown Exception: $e");
+          }
+        }
       }
     }
   }
