@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_app_flutter/models/Model.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/models/Review.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
@@ -23,114 +24,89 @@ class ProductDatabaseHelper {
   }
 
   Future<bool> addProductReview(String productId, Review review) async {
-    try {
-      final reviewesCollectionRef = firestore
-          .collection(PRODUCTS_COLLECTION_NAME)
-          .doc(productId)
-          .collection(REVIEWS_COLLECTOIN_NAME);
-      final reviewDoc = reviewesCollectionRef.doc(review.reviewerUid);
-      if ((await reviewDoc.get()).exists == false) {
-        reviewDoc.set(review.toMap());
-        return await addUsersRatingForProduct(
-          productId,
-          review.rating,
-        );
-      } else {
-        int oldRating = 0;
-        oldRating = (await reviewDoc.get()).data()[Product.RATING_KEY];
-        reviewDoc.update(review.toUpdateMap());
-        return await addUsersRatingForProduct(productId, review.rating,
-            oldRating: oldRating);
-      }
-    } on Exception catch (e) {
-      print(e.toString);
-      return false;
+    final reviewesCollectionRef = firestore
+        .collection(PRODUCTS_COLLECTION_NAME)
+        .doc(productId)
+        .collection(REVIEWS_COLLECTOIN_NAME);
+    final reviewDoc = reviewesCollectionRef.doc(review.reviewerUid);
+    if ((await reviewDoc.get()).exists == false) {
+      reviewDoc.set(review.toMap());
+      return await addUsersRatingForProduct(
+        productId,
+        review.rating,
+      );
+    } else {
+      int oldRating = 0;
+      oldRating = (await reviewDoc.get()).data()[Product.RATING_KEY];
+      reviewDoc.update(review.toUpdateMap());
+      return await addUsersRatingForProduct(productId, review.rating,
+          oldRating: oldRating);
     }
   }
 
   Future<bool> addUsersRatingForProduct(String productId, int rating,
       {int oldRating}) async {
-    try {
-      final productDocRef =
-          firestore.collection(PRODUCTS_COLLECTION_NAME).doc(productId);
-      final ratingsCount =
-          (await productDocRef.collection(REVIEWS_COLLECTOIN_NAME).get())
-              .docs
-              .length;
-      final productDoc = await productDocRef.get();
-      final prevRating = productDoc.data()[Review.RATING_KEY];
-      double newRating;
-      if (oldRating == null) {
-        newRating = (prevRating * (ratingsCount - 1) + rating) / ratingsCount;
-      } else {
-        newRating =
-            (prevRating * (ratingsCount) + rating - oldRating) / ratingsCount;
-      }
-      final newRatingRounded = double.parse(newRating.toStringAsFixed(1));
-      await productDocRef.update({Product.RATING_KEY: newRatingRounded});
-      return true;
-    } on Exception catch (e) {
-      print(e.toString);
-      return false;
+    final productDocRef =
+        firestore.collection(PRODUCTS_COLLECTION_NAME).doc(productId);
+    final ratingsCount =
+        (await productDocRef.collection(REVIEWS_COLLECTOIN_NAME).get())
+            .docs
+            .length;
+    final productDoc = await productDocRef.get();
+    final prevRating = productDoc.data()[Review.RATING_KEY];
+    double newRating;
+    if (oldRating == null) {
+      newRating = (prevRating * (ratingsCount - 1) + rating) / ratingsCount;
+    } else {
+      newRating =
+          (prevRating * (ratingsCount) + rating - oldRating) / ratingsCount;
     }
+    final newRatingRounded = double.parse(newRating.toStringAsFixed(1));
+    await productDocRef.update({Product.RATING_KEY: newRatingRounded});
+    return true;
   }
 
   Future<Review> getProductReviewWithID(
       String productId, String reviewId) async {
-    try {
-      final reviewesCollectionRef = firestore
-          .collection(PRODUCTS_COLLECTION_NAME)
-          .doc(productId)
-          .collection(REVIEWS_COLLECTOIN_NAME);
-      final reviewDoc = await reviewesCollectionRef.doc(reviewId).get();
-      if (reviewDoc.exists) {
-        return Review.fromMap(reviewDoc.data(), id: reviewDoc.id);
-      }
-      return null;
-    } on Exception catch (e) {
-      print(e.toString);
-      return null;
+    final reviewesCollectionRef = firestore
+        .collection(PRODUCTS_COLLECTION_NAME)
+        .doc(productId)
+        .collection(REVIEWS_COLLECTOIN_NAME);
+    final reviewDoc = await reviewesCollectionRef.doc(reviewId).get();
+    if (reviewDoc.exists) {
+      return Review.fromMap(reviewDoc.data(), id: reviewDoc.id);
     }
+    return null;
   }
 
   Stream<List<Review>> getAllReviewsStreamForProductId(
       String productId) async* {
-    try {
-      final reviewesQuerySnapshot = firestore
-          .collection(PRODUCTS_COLLECTION_NAME)
-          .doc(productId)
-          .collection(REVIEWS_COLLECTOIN_NAME)
-          .get()
-          .asStream();
-      await for (final querySnapshot in reviewesQuerySnapshot) {
-        List<Review> reviews = List<Review>();
-        for (final reviewDoc in querySnapshot.docs) {
-          Review review = Review.fromMap(reviewDoc.data(), id: reviewDoc.id);
-          reviews.add(review);
-        }
-        yield reviews;
+    final reviewesQuerySnapshot = firestore
+        .collection(PRODUCTS_COLLECTION_NAME)
+        .doc(productId)
+        .collection(REVIEWS_COLLECTOIN_NAME)
+        .get()
+        .asStream();
+    await for (final querySnapshot in reviewesQuerySnapshot) {
+      List<Review> reviews = List<Review>();
+      for (final reviewDoc in querySnapshot.docs) {
+        Review review = Review.fromMap(reviewDoc.data(), id: reviewDoc.id);
+        reviews.add(review);
       }
-    } on Exception catch (e) {
-      print(e.toString);
-      yield null;
+      yield reviews;
     }
   }
 
   Future<Product> getProductWithID(String productId) async {
-    try {
-      final docSnapshot = await firestore
-          .collection(PRODUCTS_COLLECTION_NAME)
-          .doc(productId)
-          .get();
+    final docSnapshot = await firestore
+        .collection(PRODUCTS_COLLECTION_NAME)
+        .doc(productId)
+        .get();
 
-      if (docSnapshot.exists) {
-        return Product.fromMap(docSnapshot.data(), id: docSnapshot.id);
-      }
-      return null;
-    } on Exception catch (e) {
-      print(e.toString);
-      return null;
+    if (docSnapshot.exists) {
+      return Product.fromMap(docSnapshot.data(), id: docSnapshot.id);
     }
+    return null;
   }
 
   Future<String> addUsersProduct(Product product) async {
@@ -142,10 +118,11 @@ class ProductDatabaseHelper {
     return docRef.id;
   }
 
-  Future<void> deleteUserProduct(String productId) async {
+  Future<bool> deleteUserProduct(String productId) async {
     final productsCollectionReference =
         firestore.collection(PRODUCTS_COLLECTION_NAME);
     await productsCollectionReference.doc(productId).delete();
+    return true;
   }
 
   Future<String> updateUsersProduct(Product product) async {
@@ -158,95 +135,82 @@ class ProductDatabaseHelper {
   }
 
   Stream<List<Product>> getCategoryProducts(ProductType productType) async* {
-    try {
-      final productsCollectionReference =
-          firestore.collection(PRODUCTS_COLLECTION_NAME);
-      final queryResult = productsCollectionReference
-          .where(Product.PRODUCT_TYPE_KEY,
-              isEqualTo: EnumToString.convertToString(productType))
-          .get()
-          .asStream();
-      await for (final QuerySnapshot querySnapshot in queryResult) {
-        List<Product> products = List<Product>();
-        for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
-          Product product = Product.fromMap(doc.data(), id: doc.id);
-          products.add(product);
-        }
-        yield products;
+    final productsCollectionReference =
+        firestore.collection(PRODUCTS_COLLECTION_NAME);
+    final queryResult = productsCollectionReference
+        .where(Product.PRODUCT_TYPE_KEY,
+            isEqualTo: EnumToString.convertToString(productType))
+        .get()
+        .asStream();
+    await for (final QuerySnapshot querySnapshot in queryResult) {
+      List<Product> products = List<Product>();
+      for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
+        Product product = Product.fromMap(doc.data(), id: doc.id);
+        products.add(product);
       }
-    } on Exception catch (e) {
-      print(e.toString());
-      yield null;
+      yield products;
     }
   }
 
   Future<List> getUsersProductsList() async {
     String uid = AuthentificationService().currentUser.uid;
-    try {
-      final productsCollectionReference =
-          firestore.collection(PRODUCTS_COLLECTION_NAME);
-      final queryResult = await productsCollectionReference
-          .where(Product.OWNER_KEY, isEqualTo: uid)
-          .get();
-      List<Product> products = queryResult.docs
-          .map(
-            (e) => Product.fromMap(
-              e.data(),
-              id: e.id,
-            ),
-          )
-          .toList();
+    final productsCollectionReference =
+        firestore.collection(PRODUCTS_COLLECTION_NAME);
+    final queryResult = await productsCollectionReference
+        .where(Product.OWNER_KEY, isEqualTo: uid)
+        .get();
+    List<Product> products = queryResult.docs
+        .map(
+          (e) => Product.fromMap(
+            e.data(),
+            id: e.id,
+          ),
+        )
+        .toList();
 
-      return products;
-    } on Exception catch (e) {
-      print(e.toString());
-      return null;
-    }
+    return products;
   }
 
-  Stream<QuerySnapshot> get usersProductListStream {
+  Stream<List<Product>> get usersProductListStream async* {
     String uid = AuthentificationService().currentUser.uid;
-
-    try {
-      final productsCollectionReference =
-          firestore.collection(PRODUCTS_COLLECTION_NAME);
-      final queryStream = productsCollectionReference
-          .where(Product.OWNER_KEY, isEqualTo: uid)
-          .get()
-          .asStream();
-      return queryStream;
-    } on Exception catch (e) {
-      print(e.toString());
-      return null;
+    final productsCollectionReference =
+        firestore.collection(PRODUCTS_COLLECTION_NAME);
+    final queryStream = productsCollectionReference
+        .where(Product.OWNER_KEY, isEqualTo: uid)
+        .get()
+        .asStream();
+    await for (final querySnapshot in queryStream) {
+      List<Model> usersProducts = List<Product>();
+      for (final doc in querySnapshot.docs) {
+        Product product = Product.fromMap(doc.data(), id: doc.id);
+        usersProducts.add(product);
+      }
+      yield usersProducts;
     }
   }
 
   Stream<List<Product>> get allProductsListStream async* {
-    try {
-      final productsCollectionReference =
-          firestore.collection(PRODUCTS_COLLECTION_NAME);
+    final productsCollectionReference =
+        firestore.collection(PRODUCTS_COLLECTION_NAME);
 
-      final productsStream = productsCollectionReference.get().asStream();
-      await for (final QuerySnapshot querySnapshot in productsStream) {
-        List<Product> productsList = List<Product>();
-        for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
-          Product product = Product.fromMap(doc.data(), id: doc.id);
-          productsList.add(product);
-        }
-        yield productsList;
+    final productsStream = productsCollectionReference.get().asStream();
+    await for (final QuerySnapshot querySnapshot in productsStream) {
+      List<Product> productsList = List<Product>();
+      for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
+        Product product = Product.fromMap(doc.data(), id: doc.id);
+        productsList.add(product);
       }
-    } on Exception catch (e) {
-      print(e.toString());
-      yield null;
+      yield productsList;
     }
   }
 
-  Future<void> updateProductsImages(
+  Future<bool> updateProductsImages(
       String productId, List<String> imgUrl) async {
     final Product updateProduct = Product(null, images: imgUrl);
     final docRef =
         firestore.collection(PRODUCTS_COLLECTION_NAME).doc(productId);
     await docRef.update(updateProduct.toUpdateMap());
+    return true;
   }
 
   String getPathForProductImage(String id, int index) {

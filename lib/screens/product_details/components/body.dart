@@ -7,6 +7,7 @@ import 'package:e_commerce_app_flutter/screens/product_details/components/produc
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class Body extends StatelessWidget {
   final Product product;
@@ -64,25 +65,36 @@ class ProductReviewsSection extends StatelessWidget {
                 stream: ProductDatabaseHelper()
                     .getAllReviewsStreamForProductId(product.id),
                 builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Icon(Icons.error),
+                  if (snapshot.hasData) {
+                    final reviewsList = snapshot.data;
+                    return ListView.builder(
+                      itemCount: reviewsList.length,
+                      itemBuilder: (context, index) {
+                        return ReviewBox(
+                          review: reviewsList[index],
+                        );
+                      },
                     );
                   } else if (snapshot.connectionState ==
                       ConnectionState.waiting) {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
+                  } else if (snapshot.hasError) {
+                    final error = snapshot.error;
+                    Logger().w(error.toString());
+                    return Center(
+                      child: Text(
+                        error.toString(),
+                      ),
+                    );
+                  } else {
+                    return Center(
+                      child: Icon(
+                        Icons.error,
+                      ),
+                    );
                   }
-                  final reviewsList = snapshot.data;
-                  return ListView.builder(
-                    itemCount: reviewsList.length,
-                    itemBuilder: (context, index) {
-                      return ReviewBox(
-                        review: reviewsList[index],
-                      );
-                    },
-                  );
                 },
               ),
             ),

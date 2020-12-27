@@ -177,83 +177,94 @@ class _BodyState extends State<Body> {
       child: FutureBuilder<Product>(
         future: ProductDatabaseHelper().getProductWithID(cartItem.productID),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError || snapshot.data == null) {
+          if (snapshot.hasData) {
+            Product product = snapshot.data;
+            cartProducts[index] = product;
+            cartTotal += (cartItem.itemCount * product.discountPrice);
+            return Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 8,
+                  child: ProductShortDetailCard(
+                    product: product,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailsScreen(
+                            product: product,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 2,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: kTextColor.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          child: Icon(
+                            Icons.arrow_drop_up,
+                            color: kTextColor,
+                          ),
+                          onTap: () {},
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          "${cartItem.itemCount}",
+                          style: TextStyle(
+                            color: kPrimaryColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        InkWell(
+                          child: Icon(
+                            Icons.arrow_drop_down,
+                            color: kTextColor,
+                          ),
+                          onTap: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            final error = snapshot.error;
+            Logger().w(error.toString());
+            return Center(
+              child: Text(
+                error.toString(),
+              ),
+            );
+          } else {
             return Center(
               child: Icon(
                 Icons.error,
               ),
             );
           }
-          Product product = snapshot.data;
-          cartProducts[index] = product;
-          cartTotal += (cartItem.itemCount * product.discountPrice);
-          return Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 8,
-                child: ProductShortDetailCard(
-                  product: product,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetailsScreen(
-                          product: product,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                flex: 1,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 2,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: kTextColor.withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        child: Icon(
-                          Icons.arrow_drop_up,
-                          color: kTextColor,
-                        ),
-                        onTap: () {},
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "${cartItem.itemCount}",
-                        style: TextStyle(
-                          color: kPrimaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      InkWell(
-                        child: Icon(
-                          Icons.arrow_drop_down,
-                          color: kTextColor,
-                        ),
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
         },
       ),
     );

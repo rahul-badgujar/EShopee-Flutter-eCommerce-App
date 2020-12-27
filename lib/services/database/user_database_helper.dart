@@ -7,14 +7,6 @@ import 'package:e_commerce_app_flutter/services/authentification/authentificatio
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 
 class UserDatabaseHelper {
-  static const String NEW_ADDRESS_ADDED_SUCCESSFULLY =
-      "New address added successfully";
-  static const String ADDRESS_DELETED_SUCCESSFULLY =
-      "Address deleted successfully";
-  static const String ADDRESS_UPDATED_SUCCESSFULLY =
-      "Address updated successfully";
-  static const String PHONE_UPDATED_SUCCESSFULLY = "Phone updated successfully";
-
   static const String USERS_COLLECTION_NAME = "users";
   static const String ADDRESSES_COLLECTION_NAME = "addresses";
   static const String CART_COLLECTION_NAME = "cart";

@@ -9,6 +9,7 @@ import 'package:e_commerce_app_flutter/services/authentification/authentificatio
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:logger/logger.dart';
@@ -75,137 +76,171 @@ class Body extends StatelessWidget {
       future: ProductDatabaseHelper()
           .getProductWithID(orderedProductsList[index].productUid),
       builder: (context, snapshot) {
-        if (snapshot.hasError || snapshot.data == null) {
-          return Center(child: Icon(Icons.error));
-        } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-        final product = snapshot.data;
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: 6),
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 16,
-                ),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: kTextColor.withOpacity(0.12),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
+        if (snapshot.hasData) {
+          final product = snapshot.data;
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 6),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
                   ),
-                ),
-                child: Text.rich(
-                  TextSpan(
-                    text: "Ordered on:  ",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: kTextColor.withOpacity(0.12),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
                     ),
-                    children: [
-                      TextSpan(
-                        text: orderedProductsList[index].orderDate,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
                   ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 4,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.symmetric(
-                    vertical: BorderSide(
-                      color: kTextColor.withOpacity(0.15),
+                  child: Text.rich(
+                    TextSpan(
+                      text: "Ordered on:  ",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: orderedProductsList[index].orderDate,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                child: ProductShortDetailCard(
-                  product: product,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetailsScreen(
-                          product: product,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 2,
-                ),
-                decoration: BoxDecoration(
-                  color: kPrimaryColor,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(16),
-                    bottomRight: Radius.circular(16),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 8,
                   ),
-                ),
-                child: FlatButton(
-                  onPressed: () async {
-                    String currentUserUid =
-                        AuthentificationService().currentUser.uid;
-                    Review prevReview = await ProductDatabaseHelper()
-                        .getProductReviewWithID(product.id, currentUserUid);
-                    if (prevReview == null) {
-                      prevReview = Review(
-                        currentUserUid,
-                        reviewerUid: currentUserUid,
+                  decoration: BoxDecoration(
+                    border: Border.symmetric(
+                      vertical: BorderSide(
+                        color: kTextColor.withOpacity(0.15),
+                      ),
+                    ),
+                  ),
+                  child: ProductShortDetailCard(
+                    product: product,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailsScreen(
+                            product: product,
+                          ),
+                        ),
                       );
-                    }
-                    final result = await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return ProductReviewDialog(
-                          review: prevReview,
-                        );
-                      },
-                    );
-                    if (result is Review) {
-                      final reviewAdded = await ProductDatabaseHelper()
-                          .addProductReview(product.id, result);
-                      if (reviewAdded) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Review updated Successfully"),
-                          ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Review cannot updated"),
-                          ),
-                        );
+                    },
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: kPrimaryColor,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(16),
+                      bottomRight: Radius.circular(16),
+                    ),
+                  ),
+                  child: FlatButton(
+                    onPressed: () async {
+                      String currentUserUid =
+                          AuthentificationService().currentUser.uid;
+                      Review prevReview;
+                      try {
+                        prevReview = await ProductDatabaseHelper()
+                            .getProductReviewWithID(product.id, currentUserUid);
+                      } on FirebaseException catch (e) {
+                        Logger().w("Firebase Exception: $e");
+                      } catch (e) {
+                        Logger().w("Unknown Exception: $e");
+                      } finally {
+                        if (prevReview == null) {
+                          prevReview = Review(
+                            currentUserUid,
+                            reviewerUid: currentUserUid,
+                          );
+                        }
                       }
-                    }
-                  },
-                  child: Text(
-                    "Give Product Review",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+
+                      final result = await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return ProductReviewDialog(
+                            review: prevReview,
+                          );
+                        },
+                      );
+                      if (result is Review) {
+                        bool reviewAdded = false;
+                        String snackbarMessage;
+                        try {
+                          reviewAdded = await ProductDatabaseHelper()
+                              .addProductReview(product.id, result);
+                          if (reviewAdded == true) {
+                            snackbarMessage =
+                                "Product review added successfully";
+                          } else {
+                            throw "Coulnd't add product review due to unknown reason";
+                          }
+                        } on FirebaseException catch (e) {
+                          Logger().w("Firebase Exception: $e");
+                          snackbarMessage = e.toString();
+                        } catch (e) {
+                          Logger().w("Unknown Exception: $e");
+                          snackbarMessage = e.toString();
+                        } finally {
+                          Logger().i(snackbarMessage);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(snackbarMessage),
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    child: Text(
+                      "Give Product Review",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          final error = snapshot.error;
+          Logger().w(error.toString());
+          return Center(
+            child: Text(
+              error.toString(),
+            ),
+          );
+        } else {
+          return Center(
+            child: Icon(
+              Icons.error,
+            ),
+          );
+        }
       },
     );
   }

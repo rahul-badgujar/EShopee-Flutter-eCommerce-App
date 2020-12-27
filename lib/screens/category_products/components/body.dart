@@ -11,6 +11,7 @@ import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:logger/logger.dart';
 
 class Body extends StatelessWidget {
   final ProductType productType;
@@ -46,38 +47,53 @@ class Body extends StatelessWidget {
               SizedBox(height: getProportionateScreenHeight(20)),
               Expanded(
                 child: StreamBuilder<List<Product>>(
-                    stream: ProductDatabaseHelper()
-                        .getCategoryProducts(productType),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<Product> products = snapshot.data;
-                        int uptoDiscount = 0;
-                        products.forEach((product) {
+                  stream:
+                      ProductDatabaseHelper().getCategoryProducts(productType),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<Product> products = snapshot.data;
+                      int uptoDiscount = 0;
+                      products.forEach(
+                        (product) {
                           uptoDiscount = max(uptoDiscount,
                               product.calculatePercentageDiscount());
-                        });
-                        return Column(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: buildCategoryBanner(uptoDiscount),
-                            ),
-                            SizedBox(height: getProportionateScreenHeight(20)),
-                            Expanded(
-                              flex: 10,
-                              child: buildProductsGrid(products),
-                            ),
-                          ],
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Icon(Icons.error),
-                        );
-                      }
+                        },
+                      );
+                      return Column(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: buildCategoryBanner(uptoDiscount),
+                          ),
+                          SizedBox(height: getProportionateScreenHeight(20)),
+                          Expanded(
+                            flex: 10,
+                            child: buildProductsGrid(products),
+                          ),
+                        ],
+                      );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
                       return Center(
                         child: CircularProgressIndicator(),
                       );
-                    }),
+                    } else if (snapshot.hasError) {
+                      final error = snapshot.error;
+                      Logger().w(error.toString());
+                      return Center(
+                        child: Text(
+                          error.toString(),
+                        ),
+                      );
+                    } else {
+                      return Center(
+                        child: Icon(
+                          Icons.error,
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
               SizedBox(height: getProportionateScreenHeight(20)),
             ],

@@ -196,7 +196,7 @@ class AddressBox extends StatelessWidget {
         snackbarMessage = "Something went wrong";
       } catch (e) {
         Logger().w("Unknown Exception: $e");
-        snackbarMessage = "Something went wrong";
+        snackbarMessage = e.toString();
       } finally {
         Logger().i(snackbarMessage);
         ScaffoldMessenger.of(context).showSnackBar(

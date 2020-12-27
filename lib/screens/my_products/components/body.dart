@@ -6,8 +6,10 @@ import 'package:e_commerce_app_flutter/screens/product_details/product_details_s
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
+import 'package:logger/logger.dart';
 
 import '../../../utils.dart';
 
@@ -34,25 +36,35 @@ class _BodyState extends State<Body> {
               ),
               SizedBox(height: getProportionateScreenHeight(30)),
               Expanded(
-                child: StreamBuilder(
+                child: StreamBuilder<List<Product>>(
                   stream: ProductDatabaseHelper().usersProductListStream,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      final products = snapshot.data.docs
-                          .map((e) => Product.fromMap(e.data(), id: e.id))
-                          .toList();
+                      final products = snapshot.data;
                       return ListView.builder(
                         itemCount: products.length,
                         itemBuilder: (context, index) {
                           return buildProductsCard(products[index]);
                         },
                       );
-                    } else if (snapshot.hasError) {
-                      print(snapshot.error);
-                      return Icon(Icons.error);
-                    } else {
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
                       return Center(
                         child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      final error = snapshot.error;
+                      Logger().w(error.toString());
+                      return Center(
+                        child: Text(
+                          error.toString(),
+                        ),
+                      );
+                    } else {
+                      return Center(
+                        child: Icon(
+                          Icons.error,
+                        ),
                       );
                     }
                   },
@@ -109,17 +121,40 @@ class _BodyState extends State<Body> {
                   },
                 );
               }
-              final deleteProductFuture =
-                  ProductDatabaseHelper().deleteUserProduct(product.id);
-              await showDialog(
-                context: context,
-                builder: (context) {
-                  return FutureProgressDialog(
-                    deleteProductFuture,
-                    message: Text("Deleting Product"),
-                  );
-                },
-              );
+
+              bool productInfoDeleted = false;
+              String snackbarMessage;
+              try {
+                final deleteProductFuture =
+                    ProductDatabaseHelper().deleteUserProduct(product.id);
+                productInfoDeleted = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return FutureProgressDialog(
+                      deleteProductFuture,
+                      message: Text("Deleting Product"),
+                    );
+                  },
+                );
+                if (productInfoDeleted == true) {
+                  snackbarMessage = "Product deleted successfully";
+                } else {
+                  throw "Coulnd't delete product, please retry";
+                }
+              } on FirebaseException catch (e) {
+                Logger().w("Firebase Exception: $e");
+                snackbarMessage = "Something went wrong";
+              } catch (e) {
+                Logger().w("Unknown Exception: $e");
+                snackbarMessage = e.toString();
+              } finally {
+                Logger().i(snackbarMessage);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(snackbarMessage),
+                  ),
+                );
+              }
             }
             return confirmation;
           } else if (direction == DismissDirection.endToStart) {

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
@@ -8,6 +9,7 @@ import 'package:e_commerce_app_flutter/services/local_files_access/local_files_a
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
+import 'package:logger/logger.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -441,37 +443,100 @@ class _EditProductFormState extends State<EditProductForm> {
     if (basicDetailsFormValidated == true &&
         describeProductFormValidated == true) {
       product.productType = productType;
-      final productUploadFuture = newProduct
-          ? ProductDatabaseHelper().addUsersProduct(product)
-          : ProductDatabaseHelper().updateUsersProduct(product);
-      String productId = await showDialog(
-        context: context,
-        builder: (context) {
-          return FutureProgressDialog(
-            productUploadFuture,
-            message:
-                Text(newProduct ? "Uploading Product" : "Updating Product"),
-          );
-        },
-      );
-      await uploadProductImages(productId);
-      List<String> downloadUrls = selectedImages.map((e) => e.path).toList();
-      final updateProductFuture =
-          ProductDatabaseHelper().updateProductsImages(productId, downloadUrls);
-      await showDialog(
-        context: context,
-        builder: (context) {
-          return FutureProgressDialog(
-            updateProductFuture,
-            message: Text("Saving Product"),
-          );
-        },
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Product Saved"),
-        ),
-      );
+
+      String productId;
+      String snackbarMessage;
+      try {
+        final productUploadFuture = newProduct
+            ? ProductDatabaseHelper().addUsersProduct(product)
+            : ProductDatabaseHelper().updateUsersProduct(product);
+        productId = await showDialog(
+          context: context,
+          builder: (context) {
+            return FutureProgressDialog(
+              productUploadFuture,
+              message:
+                  Text(newProduct ? "Uploading Product" : "Updating Product"),
+            );
+          },
+        );
+        if (productId != null) {
+          snackbarMessage = "Product Info updated successfully";
+        } else {
+          throw "Couldn't update product info due to some unknown issue";
+        }
+      } on FirebaseException catch (e) {
+        Logger().w("Firebase Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } catch (e) {
+        Logger().w("Unknown Exception: $e");
+        snackbarMessage = e.toString();
+      } finally {
+        Logger().i(snackbarMessage);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+      }
+      if (productId == null) return;
+      bool allImagesUploaded = false;
+      try {
+        allImagesUploaded = await uploadProductImages(productId);
+        if (allImagesUploaded == true) {
+          snackbarMessage = "All images uploaded successfully";
+        } else {
+          throw "Some images couldn't be uploaded, please try again";
+        }
+      } on FirebaseException catch (e) {
+        Logger().w("Firebase Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } catch (e) {
+        Logger().w("Unknown Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } finally {
+        Logger().i(snackbarMessage);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+      }
+      List<String> downloadUrls = selectedImages
+          .map((e) => e.imgType == ImageType.network ? e.path : null)
+          .toList();
+      bool productFinalizeUpdate = false;
+      try {
+        final updateProductFuture = ProductDatabaseHelper()
+            .updateProductsImages(productId, downloadUrls);
+        productFinalizeUpdate = await showDialog(
+          context: context,
+          builder: (context) {
+            return FutureProgressDialog(
+              updateProductFuture,
+              message: Text("Saving Product"),
+            );
+          },
+        );
+        if (productFinalizeUpdate == true) {
+          snackbarMessage = "Product uploaded successfully";
+        } else {
+          throw "Couldn't upload product properly, please retry";
+        }
+      } on FirebaseException catch (e) {
+        Logger().w("Firebase Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } catch (e) {
+        Logger().w("Unknown Exception: $e");
+        snackbarMessage = e.toString();
+      } finally {
+        Logger().i(snackbarMessage);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+      }
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -482,27 +547,47 @@ class _EditProductFormState extends State<EditProductForm> {
     }
   }
 
-  Future<void> uploadProductImages(String productId) async {
+  Future<bool> uploadProductImages(String productId) async {
+    bool allImagesUpdated = true;
     for (int i = 0; i < selectedImages.length; i++) {
       if (selectedImages[i].imgType == ImageType.local) {
         print("Image being uploaded: " + selectedImages[i].path);
-        final imgUploadFuture = FirestoreFilesAccess().uploadFileToPath(
-            File(selectedImages[i].path),
-            ProductDatabaseHelper().getPathForProductImage(productId, i));
-        String downloadUrl = await showDialog(
-          context: context,
-          builder: (context) {
-            return FutureProgressDialog(
-              imgUploadFuture,
-              message:
-                  Text("Uploading Images ${i + 1}/${selectedImages.length}"),
+        String downloadUrl;
+        try {
+          final imgUploadFuture = FirestoreFilesAccess().uploadFileToPath(
+              File(selectedImages[i].path),
+              ProductDatabaseHelper().getPathForProductImage(productId, i));
+          downloadUrl = await showDialog(
+            context: context,
+            builder: (context) {
+              return FutureProgressDialog(
+                imgUploadFuture,
+                message:
+                    Text("Uploading Images ${i + 1}/${selectedImages.length}"),
+              );
+            },
+          );
+        } on FirebaseException catch (e) {
+          Logger().w("Firebase Exception: $e");
+        } catch (e) {
+          Logger().w("Firebase Exception: $e");
+        } finally {
+          if (downloadUrl != null) {
+            selectedImages[i] =
+                CustomImage(imgType: ImageType.network, path: downloadUrl);
+          } else {
+            allImagesUpdated = false;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content:
+                    Text("Couldn't upload image ${i + 1} due to some issue"),
+              ),
             );
-          },
-        );
-        selectedImages[i] =
-            CustomImage(imgType: ImageType.network, path: downloadUrl);
+          }
+        }
       }
     }
+    return allImagesUpdated;
   }
 
   Future<void> addImageButtonCallback({int index}) async {
