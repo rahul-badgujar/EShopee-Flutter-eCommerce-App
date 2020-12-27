@@ -25,8 +25,9 @@ class FirestoreFilesAccess {
     return downloadUrl;
   }
 
-  Future<void> deleteFileFromPath(String path) async {
+  Future<bool> deleteFileFromPath(String path) async {
     final Reference firestorageRef = FirebaseStorage.instance.ref();
     await firestorageRef.child(path).delete();
+    return true;
   }
 }

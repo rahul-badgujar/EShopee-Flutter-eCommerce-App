@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
+import 'package:e_commerce_app_flutter/exceptions/local_files_handling/image_picking_exceptions.dart';
+import 'package:e_commerce_app_flutter/exceptions/local_files_handling/local_file_handling_exception.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:e_commerce_app_flutter/services/local_files_access/local_files_access_service.dart';
@@ -81,19 +83,25 @@ class Body extends StatelessWidget {
   }
 
   void getImageFromUser(BuildContext context, BodyState bodyState) async {
-    final path = await choseImageFromLocalFiles(context);
-    if (path == null) return;
-    if (path == READ_STORAGE_PERMISSION_DENIED) {
+    String path;
+    String snackbarMessage;
+    try {
+      path = await choseImageFromLocalFiles(context);
+      if (path == null) {
+        throw LocalImagePickingUnknownReasonFailureException();
+      }
+    } on LocalFileHandlingException catch (e) {
+      Logger().i("$e");
+      snackbarMessage = e.toString();
+    } finally {
+      Logger().i(snackbarMessage);
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Storage permissions required")));
-      return;
-    } else if (path == INVALID_FILE_CHOSEN) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Invalid Image")));
-      return;
-    } else if (path == FILE_SIZE_OUT_OF_BOUNDS) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("File size should be within 5KB to 1MB only")));
+        SnackBar(
+          content: Text(snackbarMessage),
+        ),
+      );
+    }
+    if (path == null) {
       return;
     }
     bodyState.setChosenImage = File(path);
@@ -185,16 +193,21 @@ class Body extends StatelessWidget {
 
   Future<void> removeImageFromFirestore(
       BuildContext context, BodyState bodyState) async {
-    await FirestoreFilesAccess().deleteFileFromPath(
-        UserDatabaseHelper().getPathForCurrentUserDisplayPicture());
     bool status = false;
     String snackbarMessage;
     try {
+      bool fileDeletedFromFirestore = false;
+      fileDeletedFromFirestore = await FirestoreFilesAccess()
+          .deleteFileFromPath(
+              UserDatabaseHelper().getPathForCurrentUserDisplayPicture());
+      if (fileDeletedFromFirestore == false) {
+        throw "Couldn't delete file from Storage, please retry";
+      }
       status = await UserDatabaseHelper().removeDisplayPictureForCurrentUser();
       if (status == true) {
         snackbarMessage = "Picture removed successfully";
       } else {
-        throw "Coulnd't removed successfully due to unknown reason";
+        throw "Coulnd't removed due to unknown reason";
       }
     } on FirebaseException catch (e) {
       Logger().w("Firebase Exception: $e");

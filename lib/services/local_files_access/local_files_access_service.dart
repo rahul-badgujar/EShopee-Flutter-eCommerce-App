@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:e_commerce_app_flutter/exceptions/local_files_handling/image_picking_exceptions.dart';
+import 'package:e_commerce_app_flutter/exceptions/local_files_handling/local_file_handling_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -16,7 +18,8 @@ Future<String> choseImageFromLocalFiles(
   final PermissionStatus photoPermissionStatus =
       await Permission.photos.request();
   if (!photoPermissionStatus.isGranted) {
-    return READ_STORAGE_PERMISSION_DENIED;
+    throw LocalFileHandlingStorageReadPermissionDeniedException(
+        message: "Permission required to read storage, please give permission");
   }
 
   final imgPicker = ImagePicker();
@@ -42,15 +45,18 @@ Future<String> choseImageFromLocalFiles(
     },
     context: context,
   );
-  if (imgSource == null) return null;
+  if (imgSource == null)
+    throw LocalImagePickingInvalidImageException(
+        message: "No image source selected");
   final PickedFile imagePicked = await imgPicker.getImage(source: imgSource);
   if (imagePicked == null) {
-    return INVALID_FILE_CHOSEN;
+    throw LocalImagePickingInvalidImageException();
   } else {
     final fileLength = await File(imagePicked.path).length();
     if (fileLength > (maxSizeInKB * 1024) ||
         fileLength < (minSizeInKB * 1024)) {
-      return FILE_SIZE_OUT_OF_BOUNDS;
+      throw LocalImagePickingFileSizeOutOfBoundsException(
+          message: "Image size should not exceed 1MB");
     }
   }
   return imagePicked.path;

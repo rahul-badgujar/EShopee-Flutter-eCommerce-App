@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
+import 'package:e_commerce_app_flutter/exceptions/local_files_handling/image_picking_exceptions.dart';
+import 'package:e_commerce_app_flutter/exceptions/local_files_handling/local_file_handling_exception.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
@@ -596,21 +598,27 @@ class _EditProductFormState extends State<EditProductForm> {
           SnackBar(content: Text("Max 3 images can be uploaded")));
       return;
     }
-    final path = await choseImageFromLocalFiles(context);
-    if (path == READ_STORAGE_PERMISSION_DENIED) {
+    String path;
+    String snackbarMessage;
+    try {
+      path = await choseImageFromLocalFiles(context);
+      if (path == null) {
+        throw LocalImagePickingUnknownReasonFailureException();
+      }
+    } on LocalFileHandlingException catch (e) {
+      Logger().i("$e");
+      snackbarMessage = e.toString();
+    } finally {
+      Logger().i(snackbarMessage);
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Storage permissions required")));
-      return;
-    } else if (path == INVALID_FILE_CHOSEN) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Invalid Image")));
-      return;
-    } else if (path == FILE_SIZE_OUT_OF_BOUNDS) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("File size should be within 5KB to 1MB only")));
+        SnackBar(
+          content: Text(snackbarMessage),
+        ),
+      );
+    }
+    if (path == null) {
       return;
     }
-
     setState(() {
       if (index == null) {
         selectedImages.add(CustomImage(imgType: ImageType.local, path: path));
