@@ -6,10 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-const String READ_STORAGE_PERMISSION_DENIED = "Read Storage restricted";
-const String INVALID_FILE_CHOSEN = "Invalid File chosen";
-const String FILE_SIZE_OUT_OF_BOUNDS = "File Size out of bounds";
-
 Future<String> choseImageFromLocalFiles(
   BuildContext context, {
   int maxSizeInKB = 1024,
@@ -57,7 +53,8 @@ Future<String> choseImageFromLocalFiles(
         fileLength < (minSizeInKB * 1024)) {
       throw LocalImagePickingFileSizeOutOfBoundsException(
           message: "Image size should not exceed 1MB");
+    } else {
+      return imagePicked.path;
     }
   }
-  return imagePicked.path;
 }

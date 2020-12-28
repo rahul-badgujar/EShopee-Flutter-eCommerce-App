@@ -91,15 +91,20 @@ class Body extends StatelessWidget {
         throw LocalImagePickingUnknownReasonFailureException();
       }
     } on LocalFileHandlingException catch (e) {
-      Logger().i("$e");
+      Logger().i("LocalFileHandlingException: $e");
+      snackbarMessage = e.toString();
+    } catch (e) {
+      Logger().i("LocalFileHandlingException: $e");
       snackbarMessage = e.toString();
     } finally {
-      Logger().i(snackbarMessage);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(snackbarMessage),
-        ),
-      );
+      if (snackbarMessage != null) {
+        Logger().i(snackbarMessage);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+      }
     }
     if (path == null) {
       return;

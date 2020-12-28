@@ -606,15 +606,20 @@ class _EditProductFormState extends State<EditProductForm> {
         throw LocalImagePickingUnknownReasonFailureException();
       }
     } on LocalFileHandlingException catch (e) {
-      Logger().i("$e");
+      Logger().i("Local File Handling Exception: $e");
+      snackbarMessage = e.toString();
+    } catch (e) {
+      Logger().i("Unknown Exception: $e");
       snackbarMessage = e.toString();
     } finally {
-      Logger().i(snackbarMessage);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(snackbarMessage),
-        ),
-      );
+      if (snackbarMessage != null) {
+        Logger().i(snackbarMessage);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+      }
     }
     if (path == null) {
       return;
