@@ -64,6 +64,7 @@ class ProductsSection extends StatelessWidget {
   Widget buildHorizontalProductsList(List<Product> products) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
+      physics: BouncingScrollPhysics(),
       itemCount: products.length,
       itemBuilder: (context, index) {
         return ProductCard(

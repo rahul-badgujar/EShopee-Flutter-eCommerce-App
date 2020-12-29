@@ -78,6 +78,7 @@ class _BodyState extends State<Body> {
               Expanded(
                 child: ListView.builder(
                   padding: EdgeInsets.symmetric(vertical: 16),
+                  physics: BouncingScrollPhysics(),
                   itemCount: cartItems.length,
                   itemBuilder: (context, index) {
                     if (index >= cartItems.length) {

@@ -24,6 +24,7 @@ class HomeScreenDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
+        physics: BouncingScrollPhysics(),
         children: [
           StreamBuilder<User>(
               stream: AuthentificationService().userChanges,

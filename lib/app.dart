@@ -7,10 +7,11 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: appName,
-      debugShowCheckedModeBanner: false,
-      theme: theme(),
-      home: AuthentificationWrapper(),
-    );
+        title: appName,
+        debugShowCheckedModeBanner: false,
+        theme: theme(),
+        home: AuthentificationWrapper()
+        //home: AuthentificationWrapper(),
+        );
   }
 }

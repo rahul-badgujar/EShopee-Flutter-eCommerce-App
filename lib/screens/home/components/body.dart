@@ -27,6 +27,7 @@ class Body extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: ListView(
                   scrollDirection: Axis.horizontal,
+                  physics: BouncingScrollPhysics(),
                   children: [
                     SizedBox(width: 8),
                     ProductTypeBox(

@@ -21,6 +21,7 @@ class Body extends StatelessWidget {
     return ChangeNotifierProvider<BodyState>(
       create: (context) => BodyState(),
       child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Padding(
           padding:
               EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),

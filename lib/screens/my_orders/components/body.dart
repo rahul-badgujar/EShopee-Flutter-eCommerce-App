@@ -46,6 +46,7 @@ class Body extends StatelessWidget {
         if (snapshot.hasData) {
           final orderedProductsList = snapshot.data;
           return ListView.builder(
+            physics: BouncingScrollPhysics(),
             itemCount: orderedProductsList.length,
             itemBuilder: (context, index) {
               return buildOrderedProductItem(orderedProductsList, index);

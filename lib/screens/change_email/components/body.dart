@@ -9,6 +9,7 @@ class Body extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Padding(
           padding:
               EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),

@@ -29,6 +29,7 @@ dependencies:
   firebase_auth: ^0.18.4+1
   firebase_core: ^0.5.3
   firebase_storage: ^5.2.0
+  flutter_launcher_icons: ^0.8.1
   flutter_rating_bar: ^3.2.0+1
   flutter_svg: ^0.19.2+1
   future_progress_dialog: ^0.1.1
@@ -36,15 +37,18 @@ dependencies:
   intl: ^0.16.1
   logger: ^0.9.4
   permission_handler: ^5.0.1+1
-  pin_code_fields: ^6.0.1
   pinch_zoom_image_updated: ^0.2.6
   provider: ^4.3.2+3
-  shared_preferences: ^0.5.12+4
   string_validator: ^0.1.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/launcher_icon_with_bg.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

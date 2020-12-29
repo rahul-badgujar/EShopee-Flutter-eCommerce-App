@@ -22,6 +22,7 @@ class Body extends StatelessWidget {
       padding:
           EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
       child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Column(
           children: [
             ProductImages(product: product),
@@ -68,6 +69,7 @@ class ProductReviewsSection extends StatelessWidget {
                   if (snapshot.hasData) {
                     final reviewsList = snapshot.data;
                     return ListView.builder(
+                      physics: BouncingScrollPhysics(),
                       itemCount: reviewsList.length,
                       itemBuilder: (context, index) {
                         return ReviewBox(

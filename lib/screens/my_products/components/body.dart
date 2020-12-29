@@ -42,6 +42,7 @@ class _BodyState extends State<Body> {
                     if (snapshot.hasData) {
                       final products = snapshot.data;
                       return ListView.builder(
+                        physics: BouncingScrollPhysics(),
                         itemCount: products.length,
                         itemBuilder: (context, index) {
                           return buildProductsCard(products[index]);

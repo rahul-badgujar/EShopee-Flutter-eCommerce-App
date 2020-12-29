@@ -150,6 +150,7 @@ class Body extends StatelessWidget {
 
   Widget buildProductsGrid(List<Product> products) {
     return GridView.builder(
+      physics: BouncingScrollPhysics(),
       itemCount: products.length,
       shrinkWrap: true,
       itemBuilder: (context, index) {
