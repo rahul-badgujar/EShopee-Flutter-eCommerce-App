@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_card.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/home/components/section_tile.dart';
@@ -10,10 +11,12 @@ import '../../../size_config.dart';
 class ProductsSection extends StatelessWidget {
   final String sectionTitle;
   final Stream productsStream;
+  final String emptyListMessage;
   const ProductsSection({
     Key key,
     @required this.sectionTitle,
     @required this.productsStream,
+    this.emptyListMessage = "No Products to show here",
   }) : super(key: key);
 
   @override
@@ -37,6 +40,13 @@ class ProductsSection extends StatelessWidget {
       stream: stream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          if (snapshot.data.length == 0) {
+            return Center(
+              child: NothingToShowContainer.noProductToShowHere(
+                message: emptyListMessage,
+              ),
+            );
+          }
           return buildHorizontalProductsList(snapshot.data);
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -46,9 +56,7 @@ class ProductsSection extends StatelessWidget {
           final error = snapshot.error;
           Logger().w(error.toString());
           return Center(
-            child: Text(
-              error.toString(),
-            ),
+            child: NothingToShowContainer.error(),
           );
         } else {
           return Center(

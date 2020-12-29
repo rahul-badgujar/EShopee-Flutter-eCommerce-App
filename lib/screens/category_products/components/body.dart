@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_card.dart';
 import 'package:e_commerce_app_flutter/components/rounded_icon_button.dart';
 import 'package:e_commerce_app_flutter/components/search_field.dart';
@@ -52,6 +53,14 @@ class Body extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Product> products = snapshot.data;
+                      if (products.length == 0) {
+                        return Center(
+                          child: NothingToShowContainer.noProductToShowHere(
+                            message:
+                                "No Products in ${EnumToString.convertToString(productType)}",
+                          ),
+                        );
+                      }
                       int uptoDiscount = 0;
                       products.forEach(
                         (product) {
@@ -81,9 +90,7 @@ class Body extends StatelessWidget {
                       final error = snapshot.error;
                       Logger().w(error.toString());
                       return Center(
-                        child: Text(
-                          error.toString(),
-                        ),
+                        child: NothingToShowContainer.error(),
                       );
                     } else {
                       return Center(

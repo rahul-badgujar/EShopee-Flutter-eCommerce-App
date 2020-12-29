@@ -66,7 +66,9 @@ class _BodyState extends State<Body> {
         if (snapshot.hasData) {
           cartItems = snapshot.data;
           if (cartItems.length == 0) {
-            return NothingToShowContainer.emptyCart();
+            return Center(
+              child: NothingToShowContainer.emptyCart(),
+            );
           }
           cartTotal = 0.0;
           cartProducts = List<Product>.filled(cartItems.length, null);
@@ -76,9 +78,11 @@ class _BodyState extends State<Body> {
                 text: "Proceed to Payment",
                 press: () {
                   Scaffold.of(context).showBottomSheet((context) {
-                    return CheckoutCard(
-                      cartTotal: cartTotal,
-                      onCheckoutPressed: checkoutButtonCallback,
+                    return Center(
+                      child: CheckoutCard(
+                        cartTotal: cartTotal,
+                        onCheckoutPressed: checkoutButtonCallback,
+                      ),
                     );
                   });
                 },
@@ -104,9 +108,7 @@ class _BodyState extends State<Body> {
           final error = snapshot.error;
           Logger().w(error.toString());
           return Center(
-            child: Text(
-              error.toString(),
-            ),
+            child: NothingToShowContainer.error(),
           );
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(

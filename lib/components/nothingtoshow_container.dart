@@ -39,30 +39,65 @@ class NothingToShowContainer {
   static Widget error({String message = "Can't connect to Database"}) {
     return SizedBox(
       width: SizeConfig.screenWidth * 0.75,
-      height: SizeConfig.screenHeight * 0.3,
-      child: Column(children: [
-        SvgPicture.asset(
-          "assets/icons/network_error.svg",
-          color: kTextColor,
-          width: getProportionateScreenWidth(75),
-        ),
-        SizedBox(height: 16),
-        Text(
-          "Something went wrong",
-          style: TextStyle(
+      height: SizeConfig.screenHeight * 0.2,
+      child: Column(
+        children: [
+          SvgPicture.asset(
+            "assets/icons/network_error.svg",
             color: kTextColor,
-            fontSize: 15,
+            width: getProportionateScreenWidth(75),
           ),
-        ),
-        Text(
-          "$message",
-          style: TextStyle(
+          SizedBox(height: 16),
+          Text(
+            "Something went wrong",
+            style: TextStyle(
+              color: kTextColor,
+              fontSize: 15,
+            ),
+          ),
+          Text(
+            "$message",
+            style: TextStyle(
+              color: kTextColor,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Widget noProductToShowHere(
+      {String message = "No Product to show here"}) {
+    return SizedBox(
+      width: SizeConfig.screenWidth * 0.75,
+      height: SizeConfig.screenHeight * 0.2,
+      child: Column(
+        children: [
+          SvgPicture.asset(
+            "assets/icons/empty_box.svg",
             color: kTextColor,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+            width: getProportionateScreenWidth(75),
           ),
-        ),
-      ]),
+          SizedBox(height: 16),
+          Text(
+            "Nothing to show",
+            style: TextStyle(
+              color: kTextColor,
+              fontSize: 15,
+            ),
+          ),
+          Text(
+            "$message",
+            style: TextStyle(
+              color: kTextColor,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
