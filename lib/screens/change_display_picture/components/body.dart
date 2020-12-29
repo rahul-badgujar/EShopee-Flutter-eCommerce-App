@@ -72,12 +72,12 @@ class Body extends StatelessWidget {
           backImage = MemoryImage(bodyState.chosenImage.readAsBytesSync());
         } else if (snapshot.hasData && snapshot.data != null) {
           final String url = snapshot.data.data()[UserDatabaseHelper.DP_KEY];
-          backImage = NetworkImage(url);
+          if (url != null) backImage = NetworkImage(url);
         }
         return CircleAvatar(
           radius: SizeConfig.screenWidth * 0.3,
-          backgroundColor: kTextColor.withOpacity(0.15),
-          backgroundImage: backImage,
+          backgroundColor: kTextColor.withOpacity(0.5),
+          backgroundImage: backImage ?? null,
         );
       },
     );

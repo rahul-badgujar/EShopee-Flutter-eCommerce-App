@@ -122,19 +122,17 @@ class HomeScreenDrawer extends StatelessWidget {
             return CircleAvatar(
               backgroundImage: NetworkImage(snapshot.data),
             );
-          } else if (snapshot.hasError) {
-            final error = snapshot.error;
-            Logger().w(error.toString());
-            return CircleAvatar(
-              backgroundColor: kTextColor,
-            );
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
-          } else {
-            return Center(child: Icon(Icons.error));
+          } else if (snapshot.hasError) {
+            final error = snapshot.error;
+            Logger().w(error.toString());
           }
+          return CircleAvatar(
+            backgroundColor: kTextColor,
+          );
         },
       ),
     );
