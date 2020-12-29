@@ -55,8 +55,8 @@ class Body extends StatelessWidget {
                       List<Product> products = snapshot.data;
                       if (products.length == 0) {
                         return Center(
-                          child: NothingToShowContainer.noProductToShowHere(
-                            message:
+                          child: NothingToShowContainer(
+                            secondaryMessage:
                                 "No Products in ${EnumToString.convertToString(productType)}",
                           ),
                         );
@@ -89,16 +89,14 @@ class Body extends StatelessWidget {
                     } else if (snapshot.hasError) {
                       final error = snapshot.error;
                       Logger().w(error.toString());
-                      return Center(
-                        child: NothingToShowContainer.error(),
-                      );
-                    } else {
-                      return Center(
-                        child: Icon(
-                          Icons.error,
-                        ),
-                      );
                     }
+                    return Center(
+                      child: NothingToShowContainer(
+                        iconPath: "assets/icons/network_error.svg",
+                        primaryMessage: "Something went wrong",
+                        secondaryMessage: "Unable to connect to Database",
+                      ),
+                    );
                   },
                 ),
               ),

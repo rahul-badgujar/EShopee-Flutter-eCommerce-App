@@ -7,6 +7,7 @@ import 'package:e_commerce_app_flutter/screens/product_details/components/produc
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 
 class Body extends StatelessWidget {
@@ -68,6 +69,25 @@ class ProductReviewsSection extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final reviewsList = snapshot.data;
+                    if (reviewsList.length == 0) {
+                      return Center(
+                        child: Column(
+                          children: [
+                            SvgPicture.asset(
+                              "assets/icons/review.svg",
+                              color: kTextColor,
+                              width: 40,
+                            ),
+                            Text(
+                              "No reviews yet",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                     return ListView.builder(
                       physics: BouncingScrollPhysics(),
                       itemCount: reviewsList.length,
@@ -85,18 +105,14 @@ class ProductReviewsSection extends StatelessWidget {
                   } else if (snapshot.hasError) {
                     final error = snapshot.error;
                     Logger().w(error.toString());
-                    return Center(
-                      child: Text(
-                        error.toString(),
-                      ),
-                    );
-                  } else {
-                    return Center(
-                      child: Icon(
-                        Icons.error,
-                      ),
-                    );
                   }
+                  return Center(
+                    child: Icon(
+                      Icons.error,
+                      color: kTextColor,
+                      size: 50,
+                    ),
+                  );
                 },
               ),
             ),

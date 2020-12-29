@@ -42,8 +42,8 @@ class ProductsSection extends StatelessWidget {
         if (snapshot.hasData) {
           if (snapshot.data.length == 0) {
             return Center(
-              child: NothingToShowContainer.noProductToShowHere(
-                message: emptyListMessage,
+              child: NothingToShowContainer(
+                secondaryMessage: emptyListMessage,
               ),
             );
           }
@@ -55,16 +55,14 @@ class ProductsSection extends StatelessWidget {
         } else if (snapshot.hasError) {
           final error = snapshot.error;
           Logger().w(error.toString());
-          return Center(
-            child: NothingToShowContainer.error(),
-          );
-        } else {
-          return Center(
-            child: Icon(
-              Icons.error,
-            ),
-          );
         }
+        return Center(
+          child: NothingToShowContainer(
+            iconPath: "assets/icons/network_error.svg",
+            primaryMessage: "Something went wrong",
+            secondaryMessage: "Unable to connect to Database",
+          ),
+        );
       },
     );
   }

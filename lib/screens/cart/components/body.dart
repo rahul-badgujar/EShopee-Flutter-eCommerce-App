@@ -67,7 +67,10 @@ class _BodyState extends State<Body> {
           cartItems = snapshot.data;
           if (cartItems.length == 0) {
             return Center(
-              child: NothingToShowContainer.emptyCart(),
+              child: NothingToShowContainer(
+                iconPath: "assets/icons/empty_cart.svg",
+                secondaryMessage: "Your cart is empty",
+              ),
             );
           }
           cartTotal = 0.0;
@@ -104,19 +107,21 @@ class _BodyState extends State<Body> {
               ),
             ],
           );
-        } else if (snapshot.hasError) {
-          final error = snapshot.error;
-          Logger().w(error.toString());
-          return Center(
-            child: NothingToShowContainer.error(),
-          );
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(),
           );
-        } else {
-          return Center(child: Icon(Icons.error));
+        } else if (snapshot.hasError) {
+          final error = snapshot.error;
+          Logger().w(error.toString());
         }
+        return Center(
+          child: NothingToShowContainer(
+            iconPath: "assets/icons/network_error.svg",
+            primaryMessage: "Something went wrong",
+            secondaryMessage: "Unable to connect to Database",
+          ),
+        );
       },
     );
   }

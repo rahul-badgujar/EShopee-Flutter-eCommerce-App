@@ -1,4 +1,5 @@
 import 'package:e_commerce_app_flutter/components/default_button.dart';
+import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
 import 'package:e_commerce_app_flutter/screens/edit_address/edit_address_screen.dart';
@@ -45,6 +46,14 @@ class Body extends StatelessWidget {
                     final addresses = snapshot.data.docs
                         .map((e) => Address.fromMap(e.data(), id: e.id))
                         .toList();
+                    if (addresses.length == 0) {
+                      return Center(
+                        child: NothingToShowContainer(
+                          iconPath: "assets/icons/add-location.svg",
+                          secondaryMessage: "Add your first Address",
+                        ),
+                      );
+                    }
                     return Column(
                       children: List.generate(
                         addresses.length,
@@ -53,22 +62,22 @@ class Body extends StatelessWidget {
                         ),
                       ),
                     );
-                  } else if (snapshot.hasError) {
-                    final error = snapshot.error;
-                    Logger().w(error.toString());
-                    return Center(
-                      child: Text(
-                        error.toString(),
-                      ),
-                    );
                   } else if (snapshot.connectionState ==
                       ConnectionState.waiting) {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else {
-                    return Center(child: Icon(Icons.error));
+                  } else if (snapshot.hasError) {
+                    final error = snapshot.error;
+                    Logger().w(error.toString());
                   }
+                  return Center(
+                    child: NothingToShowContainer(
+                      iconPath: "assets/icons/network_error.svg",
+                      primaryMessage: "Something went wrong",
+                      secondaryMessage: "Unable to connect to Database",
+                    ),
+                  );
                 },
               ),
               SizedBox(height: getProportionateScreenHeight(30)),

@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_short_detail_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
@@ -41,6 +42,13 @@ class _BodyState extends State<Body> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       final products = snapshot.data;
+                      if (products.length == 0) {
+                        return Center(
+                          child: NothingToShowContainer(
+                            secondaryMessage: "Add your first Product to Sell",
+                          ),
+                        );
+                      }
                       return ListView.builder(
                         physics: BouncingScrollPhysics(),
                         itemCount: products.length,
@@ -56,18 +64,14 @@ class _BodyState extends State<Body> {
                     } else if (snapshot.hasError) {
                       final error = snapshot.error;
                       Logger().w(error.toString());
-                      return Center(
-                        child: Text(
-                          error.toString(),
-                        ),
-                      );
-                    } else {
-                      return Center(
-                        child: Icon(
-                          Icons.error,
-                        ),
-                      );
                     }
+                    return Center(
+                      child: NothingToShowContainer(
+                        iconPath: "assets/icons/network_error.svg",
+                        primaryMessage: "Something went wrong",
+                        secondaryMessage: "Unable to connect to Database",
+                      ),
+                    );
                   },
                 ),
               ),
