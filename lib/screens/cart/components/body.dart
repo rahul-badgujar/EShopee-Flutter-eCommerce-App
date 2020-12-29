@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
+import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_short_detail_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/CartItem.dart';
@@ -37,18 +38,23 @@ class _BodyState extends State<Body> {
     return Padding(
       padding:
           EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-      child: Column(
-        children: [
-          SizedBox(height: getProportionateScreenHeight(10)),
-          Text(
-            "Your Cart",
-            style: headingStyle,
-          ),
-          SizedBox(height: getProportionateScreenHeight(20)),
-          Expanded(
-            child: buildCartItemsList(),
-          ),
-        ],
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          children: [
+            SizedBox(height: getProportionateScreenHeight(10)),
+            Text(
+              "Your Cart",
+              style: headingStyle,
+            ),
+            SizedBox(height: getProportionateScreenHeight(20)),
+            Expanded(
+              child: Center(
+                child: buildCartItemsList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -59,6 +65,9 @@ class _BodyState extends State<Body> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           cartItems = snapshot.data;
+          if (cartItems.length == 0) {
+            return NothingToShowContainer.emptyCart();
+          }
           cartTotal = 0.0;
           cartProducts = List<Product>.filled(cartItems.length, null);
           return Column(
