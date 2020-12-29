@@ -6,7 +6,6 @@
          FlutterApplication and put your custom class here. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application android:name="io.flutter.app.FlutterApplication" android:label="EShopee" android:icon="@mipmap/ic_launcher" android:requestLegacyExternalStorage="true">
 
