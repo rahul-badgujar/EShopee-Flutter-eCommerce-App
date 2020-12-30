@@ -14,13 +14,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logger/logger.dart';
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
   final ProductType productType;
 
   Body({
     Key key,
     @required this.productType,
   }) : super(key: key);
+
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  num uptoDiscount;
+
+  @override
+  void initState() {
+    super.initState();
+    uptoDiscount = 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -47,9 +61,15 @@ class Body extends StatelessWidget {
               ),
               SizedBox(height: getProportionateScreenHeight(20)),
               Expanded(
+                flex: 2,
+                child: buildCategoryBanner(uptoDiscount),
+              ),
+              SizedBox(height: getProportionateScreenHeight(20)),
+              Expanded(
+                flex: 10,
                 child: StreamBuilder<List<Product>>(
-                  stream:
-                      ProductDatabaseHelper().getCategoryProducts(productType),
+                  stream: ProductDatabaseHelper()
+                      .getCategoryProducts(widget.productType),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Product> products = snapshot.data;
@@ -57,30 +77,18 @@ class Body extends StatelessWidget {
                         return Center(
                           child: NothingToShowContainer(
                             secondaryMessage:
-                                "No Products in ${EnumToString.convertToString(productType)}",
+                                "No Products in ${EnumToString.convertToString(widget.productType)}",
                           ),
                         );
                       }
-                      int uptoDiscount = 0;
+                      uptoDiscount = 0;
                       products.forEach(
                         (product) {
                           uptoDiscount = max(uptoDiscount,
                               product.calculatePercentageDiscount());
                         },
                       );
-                      return Column(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: buildCategoryBanner(uptoDiscount),
-                          ),
-                          SizedBox(height: getProportionateScreenHeight(20)),
-                          Expanded(
-                            flex: 10,
-                            child: buildProductsGrid(products),
-                          ),
-                        ],
-                      );
+                      return buildProductsGrid(products);
                     } else if (snapshot.connectionState ==
                         ConnectionState.waiting) {
                       return Center(
@@ -130,7 +138,7 @@ class Body extends StatelessWidget {
             padding: const EdgeInsets.only(left: 16),
             child: Text.rich(
               TextSpan(
-                text: EnumToString.convertToString(productType),
+                text: EnumToString.convertToString(widget.productType),
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w900,
@@ -187,7 +195,7 @@ class Body extends StatelessWidget {
   }
 
   String bannerFromProductType() {
-    switch (productType) {
+    switch (widget.productType) {
       case ProductType.Electronics:
         return "assets/images/electronics_banner.jpg";
       case ProductType.Books:

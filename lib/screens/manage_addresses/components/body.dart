@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
@@ -39,7 +40,7 @@ class Body extends StatelessWidget {
                 },
               ),
               SizedBox(height: getProportionateScreenHeight(30)),
-              StreamBuilder(
+              StreamBuilder<QuerySnapshot>(
                 stream: UserDatabaseHelper().currentUserAddressesStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -49,7 +50,7 @@ class Body extends StatelessWidget {
                     if (addresses.length == 0) {
                       return Center(
                         child: NothingToShowContainer(
-                          iconPath: "assets/icons/add-location.svg",
+                          iconPath: "assets/icons/add_location.svg",
                           secondaryMessage: "Add your first Address",
                         ),
                       );
