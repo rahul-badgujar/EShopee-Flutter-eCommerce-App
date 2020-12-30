@@ -1,9 +1,11 @@
+import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/components/product_actions_section.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/components/product_images.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'product_review_section.dart';
 
 class Body extends StatelessWidget {
@@ -35,8 +37,19 @@ class Body extends StatelessWidget {
                   SizedBox(height: getProportionateScreenHeight(100)),
                 ],
               );
+            } else if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              final error = snapshot.error.toString();
+              Logger().e(error);
             }
-            return Center(child: Icon(Icons.error));
+            return Center(
+              child: Icon(
+                Icons.error,
+                color: kTextColor,
+                size: 60,
+              ),
+            );
           },
         ),
       ),

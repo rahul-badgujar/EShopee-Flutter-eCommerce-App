@@ -80,14 +80,16 @@ class _BodyState extends State<Body> {
               DefaultButton(
                 text: "Proceed to Payment",
                 press: () {
-                  Scaffold.of(context).showBottomSheet((context) {
-                    return Center(
-                      child: CheckoutCard(
-                        cartTotal: cartTotal,
-                        onCheckoutPressed: checkoutButtonCallback,
-                      ),
+                  if (cartTotal > 0.0) {
+                    Scaffold.of(context).showBottomSheet(
+                      (context) {
+                        return CheckoutCard(
+                          cartTotal: cartTotal,
+                          onCheckoutPressed: checkoutButtonCallback,
+                        );
+                      },
                     );
-                  });
+                  }
                 },
               ),
               SizedBox(height: getProportionateScreenHeight(20)),

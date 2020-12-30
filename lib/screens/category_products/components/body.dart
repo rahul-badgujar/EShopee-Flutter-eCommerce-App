@@ -5,6 +5,7 @@ import 'package:e_commerce_app_flutter/components/search_field.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
+import 'package:e_commerce_app_flutter/services/data_streams/category_products_stream.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:enum_to_string/enum_to_string.dart';
@@ -12,86 +13,119 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logger/logger.dart';
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
   final ProductType productType;
 
   Body({
     Key key,
     @required this.productType,
   }) : super(key: key);
+
+  @override
+  _BodyState createState() =>
+      _BodyState(categoryProductsStream: CategoryProductsStream(productType));
+}
+
+class _BodyState extends State<Body> {
+  final CategoryProductsStream categoryProductsStream;
+
+  _BodyState({@required this.categoryProductsStream});
+
+  @override
+  void initState() {
+    super.initState();
+    categoryProductsStream.init();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    categoryProductsStream.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding:
-            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            children: [
-              SizedBox(height: getProportionateScreenHeight(20)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: RefreshIndicator(
+        onRefresh: refreshPage,
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: getProportionateScreenWidth(20)),
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
                 children: [
-                  RoundedIconButton(
-                    iconData: Icons.arrow_back_ios,
-                    press: () {
-                      Navigator.pop(context);
-                    },
+                  SizedBox(height: getProportionateScreenHeight(20)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      RoundedIconButton(
+                        iconData: Icons.arrow_back_ios,
+                        press: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      SizedBox(width: 5),
+                      Expanded(child: SearchField()),
+                    ],
                   ),
-                  SizedBox(width: 5),
-                  Expanded(child: SearchField()),
-                ],
-              ),
-              SizedBox(height: getProportionateScreenHeight(20)),
-              Expanded(
-                flex: 2,
-                child: buildCategoryBanner(),
-              ),
-              SizedBox(height: getProportionateScreenHeight(20)),
-              Expanded(
-                flex: 10,
-                child: FutureBuilder<List<String>>(
-                  future: ProductDatabaseHelper()
-                      .getCategoryProductsList(productType),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<String> productsId = snapshot.data;
-                      if (productsId.length == 0) {
+                  SizedBox(height: getProportionateScreenHeight(20)),
+                  SizedBox(
+                    height: SizeConfig.screenHeight * 0.13,
+                    child: buildCategoryBanner(),
+                  ),
+                  SizedBox(height: getProportionateScreenHeight(20)),
+                  SizedBox(
+                    height: SizeConfig.screenHeight * 0.68,
+                    child: StreamBuilder<List<String>>(
+                      stream: categoryProductsStream.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          List<String> productsId = snapshot.data;
+                          if (productsId.length == 0) {
+                            return Center(
+                              child: NothingToShowContainer(
+                                secondaryMessage:
+                                    "No Products in ${EnumToString.convertToString(widget.productType)}",
+                              ),
+                            );
+                          }
+
+                          return buildProductsGrid(productsId);
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          final error = snapshot.error;
+                          Logger().w(error.toString());
+                        }
                         return Center(
                           child: NothingToShowContainer(
-                            secondaryMessage:
-                                "No Products in ${EnumToString.convertToString(productType)}",
+                            iconPath: "assets/icons/network_error.svg",
+                            primaryMessage: "Something went wrong",
+                            secondaryMessage: "Unable to connect to Database",
                           ),
                         );
-                      }
-
-                      return buildProductsGrid(productsId);
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      final error = snapshot.error;
-                      Logger().w(error.toString());
-                    }
-                    return Center(
-                      child: NothingToShowContainer(
-                        iconPath: "assets/icons/network_error.svg",
-                        primaryMessage: "Something went wrong",
-                        secondaryMessage: "Unable to connect to Database",
-                      ),
-                    );
-                  },
-                ),
+                      },
+                    ),
+                  ),
+                  SizedBox(height: getProportionateScreenHeight(20)),
+                ],
               ),
-              SizedBox(height: getProportionateScreenHeight(20)),
-            ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> refreshPage() {
+    categoryProductsStream.reload();
+    return Future<void>.value();
   }
 
   Widget buildCategoryBanner() {
@@ -115,7 +149,7 @@ class Body extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(left: 16),
             child: Text(
-              EnumToString.convertToString(productType),
+              EnumToString.convertToString(widget.productType),
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,
@@ -129,40 +163,54 @@ class Body extends StatelessWidget {
   }
 
   Widget buildProductsGrid(List<String> productsId) {
-    return GridView.builder(
-      physics: BouncingScrollPhysics(),
-      itemCount: productsId.length,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return ProductCard(
-          productId: productsId[index],
-          press: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProductDetailsScreen(
-                  productId: productsId[index],
-                ),
-              ),
-            );
-          },
-        );
-      },
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.75,
-        crossAxisSpacing: 2,
-        mainAxisSpacing: 8,
-      ),
+    return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: 4,
-        vertical: 12,
+        vertical: 16,
+        horizontal: 8,
+      ),
+      decoration: BoxDecoration(
+        color: Color(0xFFF5F6F9),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: GridView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: productsId.length,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return ProductCard(
+            productId: productsId[index],
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetailsScreen(
+                    productId: productsId[index],
+                  ),
+                ),
+              ).then(
+                (_) {
+                  refreshPage();
+                },
+              );
+            },
+          );
+        },
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.75,
+          crossAxisSpacing: 2,
+          mainAxisSpacing: 8,
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: 4,
+          vertical: 12,
+        ),
       ),
     );
   }
 
   String bannerFromProductType() {
-    switch (productType) {
+    switch (widget.productType) {
       case ProductType.Electronics:
         return "assets/images/electronics_banner.jpg";
       case ProductType.Books:

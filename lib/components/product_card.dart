@@ -36,14 +36,18 @@ class ProductCard extends StatelessWidget {
                 return buildProductCardItems(product);
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: Center(child: CircularProgressIndicator()),
                 );
               } else if (snapshot.hasError) {
                 final error = snapshot.error.toString();
                 Logger().e(error);
               }
               return Center(
-                child: Icon(Icons.error),
+                child: Icon(
+                  Icons.error,
+                  color: kTextColor,
+                  size: 60,
+                ),
               );
             },
           ),
@@ -77,7 +81,9 @@ class ProductCard extends StatelessWidget {
                 child: Text(
                   "${product.title}\n",
                   style: TextStyle(
-                    color: Colors.black,
+                    color: kTextColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

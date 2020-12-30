@@ -91,6 +91,8 @@ class ProductShortDetailCard extends StatelessWidget {
           return Center(
             child: Icon(
               Icons.error,
+              color: kTextColor,
+              size: 60,
             ),
           );
         },
