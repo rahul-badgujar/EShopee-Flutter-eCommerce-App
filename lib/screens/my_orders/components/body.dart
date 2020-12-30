@@ -47,9 +47,11 @@ class Body extends StatelessWidget {
         if (snapshot.hasData) {
           final orderedProductsList = snapshot.data;
           if (orderedProductsList.length == 0) {
-            return NothingToShowContainer(
-              iconPath: "assets/icons/empty_bag.svg",
-              secondaryMessage: "Order something to show here",
+            return Center(
+              child: NothingToShowContainer(
+                iconPath: "assets/icons/empty_bag.svg",
+                secondaryMessage: "Order something to show here",
+              ),
             );
           }
           return ListView.builder(

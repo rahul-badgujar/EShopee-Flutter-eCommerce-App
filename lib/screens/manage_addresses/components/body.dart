@@ -13,34 +13,33 @@ import '../components/address_box.dart';
 class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
-      child: Padding(
-        padding:
-            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            children: [
-              SizedBox(height: getProportionateScreenHeight(10)),
-              Text(
-                "Manage Addresses",
-                style: headingStyle,
-              ),
-              SizedBox(height: getProportionateScreenHeight(20)),
-              DefaultButton(
-                text: "Add New Address",
-                press: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditAddressScreen(),
-                    ),
-                  );
-                },
-              ),
-              SizedBox(height: getProportionateScreenHeight(30)),
-              StreamBuilder<QuerySnapshot>(
+    return Padding(
+      padding:
+          EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          children: [
+            SizedBox(height: getProportionateScreenHeight(10)),
+            Text(
+              "Manage Addresses",
+              style: headingStyle,
+            ),
+            SizedBox(height: getProportionateScreenHeight(20)),
+            DefaultButton(
+              text: "Add New Address",
+              press: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditAddressScreen(),
+                  ),
+                );
+              },
+            ),
+            SizedBox(height: getProportionateScreenHeight(30)),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
                 stream: UserDatabaseHelper().currentUserAddressesStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -55,12 +54,11 @@ class Body extends StatelessWidget {
                         ),
                       );
                     }
-                    return Column(
-                      children: List.generate(
-                        addresses.length,
-                        (index) => AddressBox(
-                          address: addresses[index],
-                        ),
+                    return ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      itemCount: addresses.length,
+                      itemBuilder: (context, index) => AddressBox(
+                        address: addresses[index],
                       ),
                     );
                   } else if (snapshot.connectionState ==
@@ -81,9 +79,9 @@ class Body extends StatelessWidget {
                   );
                 },
               ),
-              SizedBox(height: getProportionateScreenHeight(30)),
-            ],
-          ),
+            ),
+            SizedBox(height: getProportionateScreenHeight(30)),
+          ],
         ),
       ),
     );

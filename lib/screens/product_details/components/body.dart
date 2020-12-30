@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 
+import 'product_review_section.dart';
+
 class Body extends StatelessWidget {
   final Product product;
 
@@ -33,146 +35,6 @@ class Body extends StatelessWidget {
             SizedBox(height: getProportionateScreenHeight(90)),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ProductReviewsSection extends StatelessWidget {
-  const ProductReviewsSection({
-    Key key,
-    @required this.product,
-  }) : super(key: key);
-
-  final Product product;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: getProportionateScreenHeight(320),
-      child: TopRoundedContainer(
-        child: Column(
-          children: [
-            Text(
-              "Product Reviews",
-              style: TextStyle(
-                fontSize: 21,
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            SizedBox(height: getProportionateScreenHeight(20)),
-            Expanded(
-              child: StreamBuilder<List<Review>>(
-                stream: ProductDatabaseHelper()
-                    .getAllReviewsStreamForProductId(product.id),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final reviewsList = snapshot.data;
-                    if (reviewsList.length == 0) {
-                      return Center(
-                        child: Column(
-                          children: [
-                            SvgPicture.asset(
-                              "assets/icons/review.svg",
-                              color: kTextColor,
-                              width: 40,
-                            ),
-                            Text(
-                              "No reviews yet",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      itemCount: reviewsList.length,
-                      itemBuilder: (context, index) {
-                        return ReviewBox(
-                          review: reviewsList[index],
-                        );
-                      },
-                    );
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    final error = snapshot.error;
-                    Logger().w(error.toString());
-                  }
-                  return Center(
-                    child: Icon(
-                      Icons.error,
-                      color: kTextColor,
-                      size: 50,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ReviewBox extends StatelessWidget {
-  final Review review;
-  const ReviewBox({
-    Key key,
-    @required this.review,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
-      ),
-      margin: EdgeInsets.symmetric(
-        vertical: 4,
-      ),
-      decoration: BoxDecoration(
-        color: kTextColor.withOpacity(0.075),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              review.feedback,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 14,
-              ),
-            ),
-          ),
-          SizedBox(width: 16),
-          Column(
-            children: [
-              Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              Text(
-                "${review.rating}",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
