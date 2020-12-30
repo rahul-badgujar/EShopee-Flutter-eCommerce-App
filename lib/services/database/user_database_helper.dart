@@ -102,29 +102,22 @@ class UserDatabaseHelper {
     }
   }
 
-  Future<void> switchProductFavouriteStatus(String productId) async {
+  Future<bool> switchProductFavouriteStatus(
+      String productId, bool newState) async {
     String uid = AuthentificationService().currentUser.uid;
     final userDocSnapshot =
         firestore.collection(USERS_COLLECTION_NAME).doc(uid);
-    final userDocData = (await userDocSnapshot.get()).data();
-    final listPresent = userDocData.containsKey(FAV_PRODUCTS_KEY);
 
-    if (listPresent == false) {
-      List<String> fv = List<String>();
-      fv.add(productId);
-      userDocSnapshot.update({FAV_PRODUCTS_KEY: fv});
+    if (newState == true) {
+      userDocSnapshot.update({
+        FAV_PRODUCTS_KEY: FieldValue.arrayUnion([productId])
+      });
     } else {
-      final favList = userDocData[FAV_PRODUCTS_KEY].cast<String>();
-      if (favList.contains(productId)) {
-        userDocSnapshot.update({
-          FAV_PRODUCTS_KEY: FieldValue.arrayRemove([productId])
-        });
-      } else {
-        userDocSnapshot.update({
-          FAV_PRODUCTS_KEY: FieldValue.arrayUnion([productId])
-        });
-      }
+      userDocSnapshot.update({
+        FAV_PRODUCTS_KEY: FieldValue.arrayRemove([productId])
+      });
     }
+    return true;
   }
 
   Future<List> getAddressesListForCurrentUser() async {

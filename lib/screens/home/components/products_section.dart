@@ -2,6 +2,7 @@ import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_card.dart';
 import 'package:e_commerce_app_flutter/screens/home/components/section_tile.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
+import 'package:e_commerce_app_flutter/services/data_streams/data_stream.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -9,13 +10,15 @@ import '../../../size_config.dart';
 
 class ProductsSection extends StatelessWidget {
   final String sectionTitle;
-  final Future productsFuture;
+  final DataStream productsStreamController;
   final String emptyListMessage;
+  final Function refreshCallback;
   const ProductsSection({
     Key key,
     @required this.sectionTitle,
-    @required this.productsFuture,
+    @required this.productsStreamController,
     this.emptyListMessage = "No Products to show here",
+    @required this.refreshCallback,
   }) : super(key: key);
 
   @override
@@ -45,8 +48,8 @@ class ProductsSection extends StatelessWidget {
   }
 
   Widget buildProductsList() {
-    return FutureBuilder<List<String>>(
-      future: productsFuture,
+    return StreamBuilder<List<String>>(
+      stream: productsStreamController.stream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data.length == 0) {
@@ -90,14 +93,16 @@ class ProductsSection extends StatelessWidget {
       itemBuilder: (context, index) {
         return ProductCard(
           productId: productsId[index],
-          press: () async {
+          press: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) =>
                     ProductDetailsScreen(productId: productsId[index]),
               ),
-            );
+            ).then((_) {
+              refreshCallback.call();
+            });
           },
         );
       },

@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/components/top_rounded_container.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/components/product_description.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:logger/logger.dart';
 
 import '../../../size_config.dart';
@@ -21,14 +21,13 @@ class ProductActionsSection extends StatefulWidget {
 
 class _ProductActionsSectionState extends State<ProductActionsSection> {
   bool productFavStatus = false;
-  bool initProductFavStatus = false;
 
   @override
   void initState() {
     UserDatabaseHelper().isProductFavourite(widget.product.id).then(
       (value) {
         setState(() {
-          productFavStatus = initProductFavStatus = value;
+          productFavStatus = value;
         });
       },
     ).catchError(
@@ -40,18 +39,8 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
   }
 
   @override
-  Future<void> dispose() async {
+  void dispose() {
     super.dispose();
-    if (productFavStatus != initProductFavStatus) {
-      try {
-        await UserDatabaseHelper()
-            .switchProductFavouriteStatus(widget.product.id);
-      } on FirebaseException catch (e) {
-        Logger().w("Firebase Exception: $e");
-      } catch (e) {
-        Logger().w("Unknown Exception: $e");
-      }
-    }
   }
 
   @override
@@ -76,9 +65,39 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
   Widget buildFavouriteButton() {
     return InkWell(
       onTap: () async {
-        setState(() {
-          productFavStatus ^= true;
-        });
+        bool success = false;
+        final future = UserDatabaseHelper()
+            .switchProductFavouriteStatus(widget.product.id, !productFavStatus)
+            .then(
+          (status) {
+            success = status;
+          },
+        ).catchError(
+          (e) {
+            Logger().e(e.toString());
+            success = false;
+          },
+        );
+        await showDialog(
+          context: context,
+          builder: (context) {
+            return FutureProgressDialog(
+              future,
+              message: Text(
+                productFavStatus
+                    ? "Removing from Favourites"
+                    : "Adding to Favourites",
+              ),
+            );
+          },
+        );
+        if (success) {
+          setState(
+            () {
+              productFavStatus = !productFavStatus;
+            },
+          );
+        }
       },
       child: Container(
         padding: EdgeInsets.all(getProportionateScreenWidth(8)),
