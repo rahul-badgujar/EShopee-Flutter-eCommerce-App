@@ -1,15 +1,8 @@
-import 'package:e_commerce_app_flutter/components/top_rounded_container.dart';
-import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
-import 'package:e_commerce_app_flutter/models/Review.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/components/product_actions_section.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/components/product_images.dart';
-import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:logger/logger.dart';
-
 import 'product_review_section.dart';
 
 class Body extends StatelessWidget {

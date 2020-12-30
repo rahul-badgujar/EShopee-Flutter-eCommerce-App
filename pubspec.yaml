@@ -40,6 +40,7 @@ dependencies:
   pinch_zoom_image_updated: ^0.2.6
   provider: ^4.3.2+3
   string_validator: ^0.1.4
+  swipedetector: ^1.2.0
 
 dev_dependencies:
   flutter_test:
