@@ -13,7 +13,6 @@ import 'package:e_commerce_app_flutter/services/database/user_database_helper.da
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
-import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
 import '../../../utils.dart';
@@ -404,7 +403,23 @@ class _BodyState extends State<Body> {
     if (confirmation == false) {
       return;
     }
-    final orderFuture = orderAllCartProducts();
+    final orderFuture = UserDatabaseHelper().emptyCart();
+    orderFuture.then((status) {
+      if (status) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Ordered all Products"),
+          ),
+        );
+      }
+    }).catchError((e) {
+      Logger().e(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Something went wrong"),
+        ),
+      );
+    });
     await showDialog(
       context: context,
       builder: (context) {
@@ -414,44 +429,5 @@ class _BodyState extends State<Body> {
         );
       },
     );
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Ordered all Products"),
-      ),
-    );
-  }
-
-  Future<void> orderAllCartProducts() async {
-    final datetime = DateTime.now();
-    final dateformat = DateFormat("yyyy-MM-dd");
-    String date = dateformat.format(datetime);
-
-    /* for (int i = 0; i < cartItems.length; i++) {
-      bool productAddedToOrderedList = false;
-      try {
-        productAddedToOrderedList =
-            await UserDatabaseHelper().addOrderedProduct(
-          OrderedProduct(
-            null,
-            productUid: cartItems[i].productID,
-            orderDate: date,
-          ),
-        );
-      } on FirebaseException catch (e) {
-        Logger().d("FirebaseException: $e");
-      } catch (e) {
-        Logger().w("Unknown Exception: $e");
-      } finally {
-        if (productAddedToOrderedList) {
-          try {
-            await UserDatabaseHelper().removeProductFromCart(cartItems[i].id);
-          } on FirebaseException catch (e) {
-            Logger().d("FirebaseException: $e");
-          } catch (e) {
-            Logger().w("Unknown Exception: $e");
-          }
-        }
-      }
-    } */
   }
 }

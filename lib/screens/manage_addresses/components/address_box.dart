@@ -9,10 +9,10 @@ import 'package:logger/logger.dart';
 class AddressBox extends StatelessWidget {
   const AddressBox({
     Key key,
-    @required this.address,
+    @required this.addressId,
   }) : super(key: key);
 
-  final Address address;
+  final String addressId;
 
   @override
   Widget build(BuildContext context) {
@@ -37,74 +37,96 @@ class AddressBox extends StatelessWidget {
                   color: kTextColor.withOpacity(0.18),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "${address.title}",
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    "${address.receiver}",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    "${address.addresLine1}",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    "${address.addressLine2}",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    "City: ${address.city}",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    "District: ${address.district}",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    "State: ${address.state}",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    "Landmark: ${address.landmark}",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    "PIN: ${address.pincode}",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    "Phone: ${address.phone}",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
+              child: FutureBuilder<Address>(
+                  future: UserDatabaseHelper().getAddressFromId(addressId),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final address = snapshot.data;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${address.title}",
+                            style: TextStyle(
+                              fontSize: 22,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            "${address.receiver}",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "${address.addresLine1}",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "${address.addressLine2}",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "City: ${address.city}",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "District: ${address.district}",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "State: ${address.state}",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "Landmark: ${address.landmark}",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "PIN: ${address.pincode}",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "Phone: ${address.phone}",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      final error = snapshot.error.toString();
+                      Logger().e(error);
+                    }
+                    return Center(
+                      child: Icon(
+                        Icons.error,
+                        color: kTextColor,
+                        size: 60,
+                      ),
+                    );
+                  }),
             ),
           ),
           Container(
@@ -185,7 +207,7 @@ class AddressBox extends StatelessWidget {
       String snackbarMessage;
       try {
         status =
-            await UserDatabaseHelper().deleteAddressForCurrentUser(address.id);
+            await UserDatabaseHelper().deleteAddressForCurrentUser(addressId);
         if (status == true) {
           snackbarMessage = "Address deleted successfully";
         } else {
@@ -212,6 +234,7 @@ class AddressBox extends StatelessWidget {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => EditAddressScreen(addressToEdit: address)));
+            builder: (context) =>
+                EditAddressScreen(addressIdToEdit: addressId)));
   }
 }

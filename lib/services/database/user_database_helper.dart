@@ -120,17 +120,31 @@ class UserDatabaseHelper {
     return true;
   }
 
-  Future<List> getAddressesListForCurrentUser() async {
+  Future<List<String>> get addressesList async {
     String uid = AuthentificationService().currentUser.uid;
     final snapshot = await firestore
         .collection(USERS_COLLECTION_NAME)
         .doc(uid)
         .collection(ADDRESSES_COLLECTION_NAME)
         .get();
-    final List<Address> addresses =
-        snapshot.docs.map((e) => Address.fromMap(e.data(), id: e.id)).toList();
+    final addresses = List<String>();
+    snapshot.docs.forEach((doc) {
+      addresses.add(doc.id);
+    });
 
     return addresses;
+  }
+
+  Future<Address> getAddressFromId(String id) async {
+    String uid = AuthentificationService().currentUser.uid;
+    final doc = await firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(ADDRESSES_COLLECTION_NAME)
+        .doc(id)
+        .get();
+    final address = Address.fromMap(doc.data(), id: doc.id);
+    return address;
   }
 
   Future<bool> addAddressForCurrentUser(Address address) async {
@@ -192,6 +206,35 @@ class UserDatabaseHelper {
       docRef.update({CartItem.ITEM_COUNT_KEY: FieldValue.increment(1)});
     }
     return true;
+  }
+
+  Future<bool> emptyCart() async {
+    String uid = AuthentificationService().currentUser.uid;
+    final cartItems = await firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(CART_COLLECTION_NAME)
+        .get();
+    cartItems.docs.forEach((doc) {
+      doc.reference.delete();
+    });
+    return true;
+  }
+
+  Future<num> cartTotal() async {
+    String uid = AuthentificationService().currentUser.uid;
+    final cartItems = await firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(CART_COLLECTION_NAME)
+        .get();
+    num total = 0.0;
+    cartItems.docs.forEach((doc) async {
+      int itemsCount = doc.data()[CartItem.ITEM_COUNT_KEY];
+      final product = await ProductDatabaseHelper().getProductWithID(doc.id);
+      total += (itemsCount * product.discountPrice);
+    });
+    return total;
   }
 
   Future<bool> removeProductFromCart(String cartItemID) async {

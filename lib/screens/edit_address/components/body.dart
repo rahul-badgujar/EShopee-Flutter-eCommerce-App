@@ -1,14 +1,15 @@
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
+import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 
 import 'address_details_form.dart';
 
 class Body extends StatelessWidget {
-  final Address addressToEdit;
+  final String addressIdToEdit;
 
-  const Body({Key key, this.addressToEdit}) : super(key: key);
+  const Body({Key key, this.addressIdToEdit}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -26,7 +27,28 @@ class Body extends StatelessWidget {
                 style: headingStyle,
               ),
               SizedBox(height: getProportionateScreenHeight(30)),
-              AddressDetailsForm(addressToEdit: addressToEdit),
+              addressIdToEdit == null
+                  ? AddressDetailsForm(
+                      addressToEdit: null,
+                    )
+                  : FutureBuilder<Address>(
+                      future: UserDatabaseHelper()
+                          .getAddressFromId(addressIdToEdit),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final address = snapshot.data;
+                          return AddressDetailsForm(addressToEdit: address);
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return AddressDetailsForm(
+                          addressToEdit: null,
+                        );
+                      },
+                    ),
               SizedBox(height: getProportionateScreenHeight(40)),
             ],
           ),
