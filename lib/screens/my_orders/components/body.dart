@@ -136,7 +136,7 @@ class Body extends StatelessWidget {
                     ),
                   ),
                   child: ProductShortDetailCard(
-                    product: product,
+                    productId: product.id,
                     onPressed: () {
                       Navigator.push(
                         context,

@@ -205,7 +205,7 @@ class _BodyState extends State<Body> {
                 Expanded(
                   flex: 8,
                   child: ProductShortDetailCard(
-                    product: product,
+                    productId: product.id,
                     onPressed: () {
                       Navigator.push(
                         context,

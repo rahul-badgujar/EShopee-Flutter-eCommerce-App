@@ -93,7 +93,7 @@ class _BodyState extends State<Body> {
           DismissDirection.startToEnd: 0.65,
         },
         child: ProductShortDetailCard(
-          product: product,
+          productId: product.id,
           onPressed: () {
             Navigator.push(
               context,
