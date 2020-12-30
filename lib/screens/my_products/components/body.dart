@@ -99,7 +99,7 @@ class _BodyState extends State<Body> {
               context,
               MaterialPageRoute(
                 builder: (context) => ProductDetailsScreen(
-                  product: product,
+                  productId: product.id,
                 ),
               ),
             );

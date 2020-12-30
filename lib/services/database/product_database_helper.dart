@@ -134,7 +134,8 @@ class ProductDatabaseHelper {
     return product.id;
   }
 
-  Stream<List<Product>> getCategoryProducts(ProductType productType) async* {
+  Stream<List<Product>> getCategoryProductsStream(
+      ProductType productType) async* {
     final productsCollectionReference =
         firestore.collection(PRODUCTS_COLLECTION_NAME);
     final queryResult = productsCollectionReference
@@ -150,6 +151,21 @@ class ProductDatabaseHelper {
       }
       yield products;
     }
+  }
+
+  Future<List<String>> getCategoryProductsList(ProductType productType) async {
+    final productsCollectionReference =
+        firestore.collection(PRODUCTS_COLLECTION_NAME);
+    final queryResult = await productsCollectionReference
+        .where(Product.PRODUCT_TYPE_KEY,
+            isEqualTo: EnumToString.convertToString(productType))
+        .get();
+    List productsId = List<String>();
+    for (final product in queryResult.docs) {
+      final id = product.id;
+      productsId.add(id);
+    }
+    return productsId;
   }
 
   Future<List> getUsersProductsList() async {
@@ -202,6 +218,16 @@ class ProductDatabaseHelper {
       }
       yield productsList;
     }
+  }
+
+  Future<List<String>> get allProductsList async {
+    final products = await firestore.collection(PRODUCTS_COLLECTION_NAME).get();
+    List productsId = List<String>();
+    for (final product in products.docs) {
+      final id = product.id;
+      productsId.add(id);
+    }
+    return productsId;
   }
 
   Future<bool> updateProductsImages(

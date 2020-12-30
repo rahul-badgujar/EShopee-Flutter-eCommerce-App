@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_card.dart';
 import 'package:e_commerce_app_flutter/components/rounded_icon_button.dart';
@@ -14,27 +12,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logger/logger.dart';
 
-class Body extends StatefulWidget {
+class Body extends StatelessWidget {
   final ProductType productType;
 
   Body({
     Key key,
     @required this.productType,
   }) : super(key: key);
-
-  @override
-  _BodyState createState() => _BodyState();
-}
-
-class _BodyState extends State<Body> {
-  num uptoDiscount;
-
-  @override
-  void initState() {
-    super.initState();
-    uptoDiscount = 0;
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -62,33 +46,27 @@ class _BodyState extends State<Body> {
               SizedBox(height: getProportionateScreenHeight(20)),
               Expanded(
                 flex: 2,
-                child: buildCategoryBanner(uptoDiscount),
+                child: buildCategoryBanner(),
               ),
               SizedBox(height: getProportionateScreenHeight(20)),
               Expanded(
                 flex: 10,
-                child: StreamBuilder<List<Product>>(
-                  stream: ProductDatabaseHelper()
-                      .getCategoryProducts(widget.productType),
+                child: FutureBuilder<List<String>>(
+                  future: ProductDatabaseHelper()
+                      .getCategoryProductsList(productType),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      List<Product> products = snapshot.data;
-                      if (products.length == 0) {
+                      List<String> productsId = snapshot.data;
+                      if (productsId.length == 0) {
                         return Center(
                           child: NothingToShowContainer(
                             secondaryMessage:
-                                "No Products in ${EnumToString.convertToString(widget.productType)}",
+                                "No Products in ${EnumToString.convertToString(productType)}",
                           ),
                         );
                       }
-                      uptoDiscount = 0;
-                      products.forEach(
-                        (product) {
-                          uptoDiscount = max(uptoDiscount,
-                              product.calculatePercentageDiscount());
-                        },
-                      );
-                      return buildProductsGrid(products);
+
+                      return buildProductsGrid(productsId);
                     } else if (snapshot.connectionState ==
                         ConnectionState.waiting) {
                       return Center(
@@ -116,7 +94,7 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget buildCategoryBanner(int uptoDiscount) {
+  Widget buildCategoryBanner() {
     return Stack(
       children: [
         Container(
@@ -136,23 +114,12 @@ class _BodyState extends State<Body> {
           alignment: Alignment.centerLeft,
           child: Padding(
             padding: const EdgeInsets.only(left: 16),
-            child: Text.rich(
-              TextSpan(
-                text: EnumToString.convertToString(widget.productType),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 24,
-                ),
-                children: [
-                  TextSpan(
-                    text: "\nUpto $uptoDiscount% Off",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+            child: Text(
+              EnumToString.convertToString(productType),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w900,
+                fontSize: 24,
               ),
             ),
           ),
@@ -161,20 +128,20 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget buildProductsGrid(List<Product> products) {
+  Widget buildProductsGrid(List<String> productsId) {
     return GridView.builder(
       physics: BouncingScrollPhysics(),
-      itemCount: products.length,
+      itemCount: productsId.length,
       shrinkWrap: true,
       itemBuilder: (context, index) {
         return ProductCard(
-          product: products[index],
+          productId: productsId[index],
           press: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ProductDetailsScreen(
-                  product: products[index],
+                  productId: productsId[index],
                 ),
               ),
             );
@@ -195,7 +162,7 @@ class _BodyState extends State<Body> {
   }
 
   String bannerFromProductType() {
-    switch (widget.productType) {
+    switch (productType) {
       case ProductType.Electronics:
         return "assets/images/electronics_banner.jpg";
       case ProductType.Books:

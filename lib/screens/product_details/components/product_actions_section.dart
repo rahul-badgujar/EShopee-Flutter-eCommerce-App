@@ -4,7 +4,6 @@ import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/components/product_description.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:logger/logger.dart';
 
 import '../../../size_config.dart';
@@ -64,9 +63,8 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
             TopRoundedContainer(
               child: ProductDescription(product: widget.product),
             ),
-            Positioned(
-              top: 0,
-              right: 0,
+            Align(
+              alignment: Alignment.topCenter,
               child: buildFavouriteButton(),
             ),
           ],
@@ -84,7 +82,6 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
       },
       child: Container(
         padding: EdgeInsets.all(getProportionateScreenWidth(8)),
-        width: getProportionateScreenWidth(64),
         decoration: BoxDecoration(
           color: productFavStatus ? Color(0xFFFFE6E6) : Color(0xFFF5F6F9),
           shape: BoxShape.circle,
@@ -92,8 +89,8 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
         ),
         child: Padding(
           padding: EdgeInsets.all(getProportionateScreenWidth(8)),
-          child: SvgPicture.asset(
-            "assets/icons/Heart Icon_2.svg",
+          child: Icon(
+            Icons.favorite,
             color: productFavStatus ? Color(0xFFFF4848) : Color(0xFFD8DEE4),
           ),
         ),

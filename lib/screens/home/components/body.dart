@@ -58,42 +58,46 @@ class Body extends StatelessWidget {
             children: [
               SizedBox(height: getProportionateScreenHeight(15)),
               HomeHeader(),
-              /* Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  physics: BouncingScrollPhysics(),
-                  children: [
-                    ...List.generate(
-                      productCategories.length,
-                      (index) {
-                        return ProductTypeBox(
-                          icon: productCategories[index][ICON_KEY],
-                          title: productCategories[index][TITLE_KEY],
-                          onPress: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CategoryProductsScreen(
-                                  productType: productCategories[index]
-                                      [PRODUCT_TYPE_KEY],
+              SizedBox(height: getProportionateScreenHeight(15)),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.1,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    physics: BouncingScrollPhysics(),
+                    children: [
+                      ...List.generate(
+                        productCategories.length,
+                        (index) {
+                          return ProductTypeBox(
+                            icon: productCategories[index][ICON_KEY],
+                            title: productCategories[index][TITLE_KEY],
+                            onPress: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CategoryProductsScreen(
+                                    productType: productCategories[index]
+                                        [PRODUCT_TYPE_KEY],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ), */
+              ),
               SizedBox(height: getProportionateScreenHeight(20)),
               SizedBox(
                 height: SizeConfig.screenHeight * 0.5,
                 child: ProductsSection(
                   sectionTitle: "Products You Like",
-                  productsStream:
-                      UserDatabaseHelper().usersFavouriteProductsStream,
+                  productsFuture:
+                      UserDatabaseHelper().usersFavouriteProductsList,
                   emptyListMessage: "Add Product to Favourites",
                 ),
               ),
@@ -102,7 +106,7 @@ class Body extends StatelessWidget {
                 height: SizeConfig.screenHeight * 0.5,
                 child: ProductsSection(
                   sectionTitle: "Explore All Products",
-                  productsStream: ProductDatabaseHelper().allProductsListStream,
+                  productsFuture: ProductDatabaseHelper().allProductsList,
                   emptyListMessage: "Looks like all Stores are closed",
                 ),
               ),

@@ -142,7 +142,7 @@ class Body extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProductDetailsScreen(
-                            product: product,
+                            productId: product.id,
                           ),
                         ),
                       );

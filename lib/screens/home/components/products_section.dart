@@ -1,6 +1,5 @@
 import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_card.dart';
-import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/home/components/section_tile.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +9,12 @@ import '../../../size_config.dart';
 
 class ProductsSection extends StatelessWidget {
   final String sectionTitle;
-  final Stream productsStream;
+  final Future productsFuture;
   final String emptyListMessage;
   const ProductsSection({
     Key key,
     @required this.sectionTitle,
-    @required this.productsStream,
+    @required this.productsFuture,
     this.emptyListMessage = "No Products to show here",
   }) : super(key: key);
 
@@ -38,16 +37,16 @@ class ProductsSection extends StatelessWidget {
           ),
           SizedBox(height: getProportionateScreenHeight(15)),
           Expanded(
-            child: buildProductsList(productsStream),
+            child: buildProductsList(),
           ),
         ],
       ),
     );
   }
 
-  Widget buildProductsList(Stream stream) {
-    return StreamBuilder<List<Product>>(
-      stream: stream,
+  Widget buildProductsList() {
+    return FutureBuilder<List<String>>(
+      future: productsFuture,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data.length == 0) {
@@ -77,7 +76,7 @@ class ProductsSection extends StatelessWidget {
     );
   }
 
-  Widget buildProductGrid(List<Product> products) {
+  Widget buildProductGrid(List<String> productsId) {
     return GridView.builder(
       shrinkWrap: true,
       physics: BouncingScrollPhysics(),
@@ -87,16 +86,16 @@ class ProductsSection extends StatelessWidget {
         crossAxisSpacing: 4,
         mainAxisSpacing: 4,
       ),
-      itemCount: products.length,
+      itemCount: productsId.length,
       itemBuilder: (context, index) {
         return ProductCard(
-          product: products[index],
+          productId: productsId[index],
           press: () async {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    ProductDetailsScreen(product: products[index]),
+                    ProductDetailsScreen(productId: productsId[index]),
               ),
             );
           },
