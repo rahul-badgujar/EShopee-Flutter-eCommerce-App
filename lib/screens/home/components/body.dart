@@ -47,19 +47,18 @@ class Body extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding:
-            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(height: getProportionateScreenHeight(5)),
-            Flexible(flex: 2, child: HomeHeader()),
-            Flexible(
-              flex: 2,
-              child: Padding(
+    return SingleChildScrollView(
+      child: SafeArea(
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(height: getProportionateScreenHeight(15)),
+              HomeHeader(),
+              /* Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: ListView(
                   scrollDirection: Axis.horizontal,
@@ -87,27 +86,29 @@ class Body extends StatelessWidget {
                     ),
                   ],
                 ),
+              ), */
+              SizedBox(height: getProportionateScreenHeight(20)),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.5,
+                child: ProductsSection(
+                  sectionTitle: "Products You Like",
+                  productsStream:
+                      UserDatabaseHelper().usersFavouriteProductsStream,
+                  emptyListMessage: "Add Product to Favourites",
+                ),
               ),
-            ),
-            Flexible(
-              flex: 8,
-              child: ProductsSection(
-                sectionTitle: "Products You Like",
-                productsStream:
-                    UserDatabaseHelper().usersFavouriteProductsStream,
-                emptyListMessage: "Add Product to Favourites",
+              SizedBox(height: getProportionateScreenHeight(20)),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.5,
+                child: ProductsSection(
+                  sectionTitle: "Explore All Products",
+                  productsStream: ProductDatabaseHelper().allProductsListStream,
+                  emptyListMessage: "Looks like all Stores are closed",
+                ),
               ),
-            ),
-            Flexible(
-              flex: 8,
-              child: ProductsSection(
-                sectionTitle: "Explore All Products",
-                productsStream: ProductDatabaseHelper().allProductsListStream,
-                emptyListMessage: "Looks like all Stores are closed",
-              ),
-            ),
-            SizedBox(height: getProportionateScreenHeight(5)),
-          ],
+              SizedBox(height: getProportionateScreenHeight(80)),
+            ],
+          ),
         ),
       ),
     );

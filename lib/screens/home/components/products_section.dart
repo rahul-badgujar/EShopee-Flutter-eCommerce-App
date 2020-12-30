@@ -21,17 +21,27 @@ class ProductsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SectionTile(
-          title: sectionTitle,
-          press: () {},
-        ),
-        SizedBox(height: getProportionateScreenHeight(5)),
-        Expanded(
-          child: buildProductsList(productsStream),
-        ),
-      ],
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 16,
+      ),
+      decoration: BoxDecoration(
+        color: Color(0xFFF5F6F9),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        children: [
+          SectionTile(
+            title: sectionTitle,
+            press: () {},
+          ),
+          SizedBox(height: getProportionateScreenHeight(15)),
+          Expanded(
+            child: buildProductsList(productsStream),
+          ),
+        ],
+      ),
     );
   }
 
@@ -47,7 +57,7 @@ class ProductsSection extends StatelessWidget {
               ),
             );
           }
-          return buildHorizontalProductsList(snapshot.data);
+          return buildProductGrid(snapshot.data);
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(),
@@ -67,10 +77,16 @@ class ProductsSection extends StatelessWidget {
     );
   }
 
-  Widget buildHorizontalProductsList(List<Product> products) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
+  Widget buildProductGrid(List<Product> products) {
+    return GridView.builder(
+      shrinkWrap: true,
       physics: BouncingScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.7,
+        crossAxisSpacing: 4,
+        mainAxisSpacing: 4,
+      ),
       itemCount: products.length,
       itemBuilder: (context, index) {
         return ProductCard(
@@ -86,8 +102,6 @@ class ProductsSection extends StatelessWidget {
           },
         );
       },
-      itemExtent: SizeConfig.screenWidth * 0.46,
-      padding: EdgeInsets.symmetric(vertical: 8),
     );
   }
 }

@@ -13,24 +13,15 @@ class SectionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: getProportionateScreenWidth(18),
-          ),
+    return SizedBox(
+      width: double.infinity,
+      child: Text(
+        title,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: getProportionateScreenWidth(18),
         ),
-        GestureDetector(
-          onTap: press,
-          child: Icon(
-            Icons.arrow_forward_ios,
-            size: getProportionateScreenWidth(15),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
