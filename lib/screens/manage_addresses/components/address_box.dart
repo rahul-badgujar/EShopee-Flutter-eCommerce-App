@@ -1,8 +1,6 @@
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
-import 'package:e_commerce_app_flutter/screens/edit_address/edit_address_screen.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -10,9 +8,13 @@ class AddressBox extends StatelessWidget {
   const AddressBox({
     Key key,
     @required this.addressId,
+    @required this.deleteButtonCallback,
+    @required this.editButtonCallback,
   }) : super(key: key);
 
   final String addressId;
+  final Function deleteButtonCallback;
+  final Function editButtonCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +155,7 @@ class AddressBox extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    editButtonCallback(context);
+                    editButtonCallback.call(context, addressId);
                   },
                 ),
                 FlatButton(
@@ -166,7 +168,7 @@ class AddressBox extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    deleteButtonCallback(context);
+                    deleteButtonCallback.call(context, addressId);
                   },
                 )
               ],
@@ -175,66 +177,5 @@ class AddressBox extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<void> deleteButtonCallback(BuildContext context) async {
-    final confirmDeletion = await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Confirmation"),
-          content: Text("Are you sure you want to delete this Address ?"),
-          actions: [
-            FlatButton(
-              child: Text("Yes"),
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-            ),
-            FlatButton(
-              child: Text("No"),
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-            ),
-          ],
-        );
-      },
-    );
-
-    if (confirmDeletion) {
-      bool status = false;
-      String snackbarMessage;
-      try {
-        status =
-            await UserDatabaseHelper().deleteAddressForCurrentUser(addressId);
-        if (status == true) {
-          snackbarMessage = "Address deleted successfully";
-        } else {
-          throw "Coulnd't delete address due to unknown reason";
-        }
-      } on FirebaseException catch (e) {
-        Logger().w("Firebase Exception: $e");
-        snackbarMessage = "Something went wrong";
-      } catch (e) {
-        Logger().w("Unknown Exception: $e");
-        snackbarMessage = e.toString();
-      } finally {
-        Logger().i(snackbarMessage);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(snackbarMessage),
-          ),
-        );
-      }
-    }
-  }
-
-  void editButtonCallback(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                EditAddressScreen(addressIdToEdit: addressId)));
   }
 }

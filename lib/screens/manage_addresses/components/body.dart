@@ -3,7 +3,9 @@ import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/screens/edit_address/edit_address_screen.dart';
 import 'package:e_commerce_app_flutter/services/data_streams/addresses_stream.dart';
+import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import '../components/address_box.dart';
@@ -32,9 +34,7 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: RefreshIndicator(
-        onRefresh: () {
-          return Future<void>.value();
-        },
+        onRefresh: refreshPage,
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -81,6 +81,8 @@ class _BodyState extends State<Body> {
                             itemCount: addresses.length,
                             itemBuilder: (context, index) => AddressBox(
                               addressId: addresses[index],
+                              deleteButtonCallback: deleteButtonCallback,
+                              editButtonCallback: editButtonCallback,
                             ),
                           );
                         } else if (snapshot.connectionState ==
@@ -109,6 +111,78 @@ class _BodyState extends State<Body> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> refreshPage() {
+    addressesStream.reload();
+    return Future<void>.value();
+  }
+
+  Future<void> deleteButtonCallback(
+      BuildContext context, String addressId) async {
+    final confirmDeletion = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Confirmation"),
+          content: Text("Are you sure you want to delete this Address ?"),
+          actions: [
+            FlatButton(
+              child: Text("Yes"),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            ),
+            FlatButton(
+              child: Text("No"),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmDeletion) {
+      bool status = false;
+      String snackbarMessage;
+      try {
+        status =
+            await UserDatabaseHelper().deleteAddressForCurrentUser(addressId);
+        if (status == true) {
+          snackbarMessage = "Address deleted successfully";
+        } else {
+          throw "Coulnd't delete address due to unknown reason";
+        }
+      } on FirebaseException catch (e) {
+        Logger().w("Firebase Exception: $e");
+        snackbarMessage = "Something went wrong";
+      } catch (e) {
+        Logger().w("Unknown Exception: $e");
+        snackbarMessage = e.toString();
+      } finally {
+        Logger().i(snackbarMessage);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+      }
+      await refreshPage();
+    }
+  }
+
+  void editButtonCallback(BuildContext context, String addressId) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                EditAddressScreen(addressIdToEdit: addressId))).then(
+      (_) async {
+        await refreshPage();
+      },
     );
   }
 }

@@ -11,6 +11,7 @@ import 'package:e_commerce_app_flutter/services/data_streams/cart_items_stream.d
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:logger/logger.dart';
@@ -24,7 +25,7 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   final CartItemsStream cartItemsStream = CartItemsStream();
-
+  PersistentBottomSheetController bottomSheetHandler;
   @override
   void initState() {
     super.initState();
@@ -97,10 +98,9 @@ class _BodyState extends State<Body> {
               DefaultButton(
                 text: "Proceed to Payment",
                 press: () {
-                  Scaffold.of(context).showBottomSheet(
+                  bottomSheetHandler = Scaffold.of(context).showBottomSheet(
                     (context) {
                       return CheckoutCard(
-                        cartTotal: 3.0,
                         onCheckoutPressed: checkoutButtonCallback,
                       );
                     },
@@ -168,6 +168,7 @@ class _BodyState extends State<Body> {
                     .removeProductFromCart(cartItemId);
                 if (result == true) {
                   snackbarMessage = "Product removed from cart successfully";
+                  await refreshPage();
                 } else {
                   throw "Coulnd't remove product from cart due to unknown reason";
                 }
@@ -256,9 +257,9 @@ class _BodyState extends State<Body> {
                           onTap: () async {
                             final future = UserDatabaseHelper()
                                 .increaseCartItemCount(cartItemId);
-                            future.then((status) {
+                            future.then((status) async {
                               if (status) {
-                                refreshPage();
+                                await refreshPage();
                               } else {
                                 throw "Couldn't perform the operation due to some unknown issue";
                               }
@@ -312,9 +313,9 @@ class _BodyState extends State<Body> {
                           onTap: () async {
                             final future = UserDatabaseHelper()
                                 .decreaseCartItemCount(cartItemId);
-                            future.then((status) {
+                            future.then((status) async {
                               if (status) {
-                                refreshPage();
+                                await refreshPage();
                               } else {
                                 throw "Couldn't perform the operation due to some unknown issue";
                               }
@@ -396,6 +397,9 @@ class _BodyState extends State<Body> {
   }
 
   Future<void> checkoutButtonCallback() async {
+    if (bottomSheetHandler != null) {
+      bottomSheetHandler.close();
+    }
     final confirmation = await showConfirmationDialog(
       context,
       "This is just a Project Testing App so, no actual Payment Interface is available.\nDo you want to proceed for Mock Ordering of Products?",
@@ -429,5 +433,6 @@ class _BodyState extends State<Body> {
         );
       },
     );
+    await refreshPage();
   }
 }

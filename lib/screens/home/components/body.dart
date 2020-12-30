@@ -1,5 +1,6 @@
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/category_products/category_products_screen.dart';
+import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:e_commerce_app_flutter/services/data_streams/all_products_stream.dart';
 import 'package:e_commerce_app_flutter/services/data_streams/favourite_products_stream.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
@@ -126,7 +127,7 @@ class _BodyState extends State<Body> {
                     sectionTitle: "Products You Like",
                     productsStreamController: favouriteProductsStream,
                     emptyListMessage: "Add Product to Favourites",
-                    refreshCallback: refreshPage,
+                    onProductCardTapped: onProductCardTapped,
                   ),
                 ),
                 SizedBox(height: getProportionateScreenHeight(20)),
@@ -136,7 +137,7 @@ class _BodyState extends State<Body> {
                     sectionTitle: "Explore All Products",
                     productsStreamController: allProductsStream,
                     emptyListMessage: "Looks like all Stores are closed",
-                    refreshCallback: refreshPage,
+                    onProductCardTapped: onProductCardTapped,
                   ),
                 ),
                 SizedBox(height: getProportionateScreenHeight(80)),
@@ -152,5 +153,16 @@ class _BodyState extends State<Body> {
     favouriteProductsStream.reload();
     allProductsStream.reload();
     return Future<void>.value();
+  }
+
+  void onProductCardTapped(String productId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductDetailsScreen(productId: productId),
+      ),
+    ).then((_) async {
+      await refreshPage();
+    });
   }
 }

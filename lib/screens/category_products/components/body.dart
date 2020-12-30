@@ -187,8 +187,8 @@ class _BodyState extends State<Body> {
                   ),
                 ),
               ).then(
-                (_) {
-                  refreshPage();
+                (_) async {
+                  await refreshPage();
                 },
               );
             },

@@ -1,7 +1,6 @@
 import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_card.dart';
 import 'package:e_commerce_app_flutter/screens/home/components/section_tile.dart';
-import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:e_commerce_app_flutter/services/data_streams/data_stream.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -12,13 +11,13 @@ class ProductsSection extends StatelessWidget {
   final String sectionTitle;
   final DataStream productsStreamController;
   final String emptyListMessage;
-  final Function refreshCallback;
+  final Function onProductCardTapped;
   const ProductsSection({
     Key key,
     @required this.sectionTitle,
     @required this.productsStreamController,
     this.emptyListMessage = "No Products to show here",
-    @required this.refreshCallback,
+    @required this.onProductCardTapped,
   }) : super(key: key);
 
   @override
@@ -94,15 +93,7 @@ class ProductsSection extends StatelessWidget {
         return ProductCard(
           productId: productsId[index],
           press: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ProductDetailsScreen(productId: productsId[index]),
-              ),
-            ).then((_) {
-              refreshCallback.call();
-            });
+            onProductCardTapped.call(productsId[index]);
           },
         );
       },
