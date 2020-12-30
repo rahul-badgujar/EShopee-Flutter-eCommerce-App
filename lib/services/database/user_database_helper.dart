@@ -165,13 +165,32 @@ class UserDatabaseHelper {
     return true;
   }
 
-  Future<bool> addProductToCart(CartItem cartItem) async {
+  Future<CartItem> getCartItemFromId(String id) async {
     String uid = AuthentificationService().currentUser.uid;
-    final cartCollectionReference = firestore
+    final cartCollectionRef = firestore
         .collection(USERS_COLLECTION_NAME)
         .doc(uid)
         .collection(CART_COLLECTION_NAME);
-    await cartCollectionReference.add(cartItem.toMap());
+    final docRef = cartCollectionRef.doc(id);
+    final docSnapshot = await docRef.get();
+    final cartItem = CartItem.fromMap(docSnapshot.data(), id: docSnapshot.id);
+    return cartItem;
+  }
+
+  Future<bool> addProductToCart(String productId) async {
+    String uid = AuthentificationService().currentUser.uid;
+    final cartCollectionRef = firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(CART_COLLECTION_NAME);
+    final docRef = cartCollectionRef.doc(productId);
+    final docSnapshot = await docRef.get();
+    bool alreadyPresent = docSnapshot.exists;
+    if (alreadyPresent == false) {
+      docRef.set(CartItem(itemCount: 1).toMap());
+    } else {
+      docRef.update({CartItem.ITEM_COUNT_KEY: FieldValue.increment(1)});
+    }
     return true;
   }
 
@@ -182,6 +201,34 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(CART_COLLECTION_NAME);
     await cartCollectionReference.doc(cartItemID).delete();
+    return true;
+  }
+
+  Future<bool> increaseCartItemCount(String cartItemID) async {
+    String uid = AuthentificationService().currentUser.uid;
+    final cartCollectionRef = firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(CART_COLLECTION_NAME);
+    final docRef = cartCollectionRef.doc(cartItemID);
+    docRef.update({CartItem.ITEM_COUNT_KEY: FieldValue.increment(1)});
+    return true;
+  }
+
+  Future<bool> decreaseCartItemCount(String cartItemID) async {
+    String uid = AuthentificationService().currentUser.uid;
+    final cartCollectionRef = firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(CART_COLLECTION_NAME);
+    final docRef = cartCollectionRef.doc(cartItemID);
+    final docSnapshot = await docRef.get();
+    int currentCount = docSnapshot.data()[CartItem.ITEM_COUNT_KEY];
+    if (currentCount <= 1) {
+      return removeProductFromCart(cartItemID);
+    } else {
+      docRef.update({CartItem.ITEM_COUNT_KEY: FieldValue.increment(-1)});
+    }
     return true;
   }
 
@@ -201,6 +248,20 @@ class UserDatabaseHelper {
       }
       yield cartItems;
     }
+  }
+
+  Future<List<String>> get allCartItemsList async {
+    String uid = AuthentificationService().currentUser.uid;
+    final querySnapshot = await firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(CART_COLLECTION_NAME)
+        .get();
+    List itemsId = List<String>();
+    for (final item in querySnapshot.docs) {
+      itemsId.add(item.id);
+    }
+    return itemsId;
   }
 
   Stream<DocumentSnapshot> get currentUserDataStream {

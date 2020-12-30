@@ -17,7 +17,7 @@ class CartItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Product>(
-      future: ProductDatabaseHelper().getProductWithID(cartItem.productID),
+      future: ProductDatabaseHelper().getProductWithID(cartItem.id),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Row(

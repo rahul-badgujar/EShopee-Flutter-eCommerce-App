@@ -4,10 +4,10 @@ import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_short_detail_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/CartItem.dart';
-import 'package:e_commerce_app_flutter/models/OrderedProduct.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/cart/components/checkout_card.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
+import 'package:e_commerce_app_flutter/services/data_streams/cart_items_stream.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
@@ -24,48 +24,67 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  double cartTotal = 0.0;
-  List<CartItem> cartItems;
-  List<Product> cartProducts;
+  final CartItemsStream cartItemsStream = CartItemsStream();
 
   @override
   void initState() {
     super.initState();
+    cartItemsStream.init();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    cartItemsStream.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:
-          EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-      child: SizedBox(
-        width: double.infinity,
-        child: Column(
-          children: [
-            SizedBox(height: getProportionateScreenHeight(10)),
-            Text(
-              "Your Cart",
-              style: headingStyle,
-            ),
-            SizedBox(height: getProportionateScreenHeight(20)),
-            Expanded(
-              child: Center(
-                child: buildCartItemsList(),
+    return SafeArea(
+      child: RefreshIndicator(
+        onRefresh: refreshPage,
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: getProportionateScreenWidth(20)),
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                children: [
+                  SizedBox(height: getProportionateScreenHeight(10)),
+                  Text(
+                    "Your Cart",
+                    style: headingStyle,
+                  ),
+                  SizedBox(height: getProportionateScreenHeight(20)),
+                  SizedBox(
+                    height: SizeConfig.screenHeight * 0.75,
+                    child: Center(
+                      child: buildCartItemsList(),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
+  Future<void> refreshPage() {
+    cartItemsStream.reload();
+    return Future<void>.value();
+  }
+
   Widget buildCartItemsList() {
-    return StreamBuilder<List<CartItem>>(
-      stream: UserDatabaseHelper().allCartItemsStream,
+    return StreamBuilder<List<String>>(
+      stream: cartItemsStream.stream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          cartItems = snapshot.data;
-          if (cartItems.length == 0) {
+          List<String> cartItemsId = snapshot.data;
+          if (cartItemsId.length == 0) {
             return Center(
               child: NothingToShowContainer(
                 iconPath: "assets/icons/empty_cart.svg",
@@ -73,23 +92,20 @@ class _BodyState extends State<Body> {
               ),
             );
           }
-          cartTotal = 0.0;
-          cartProducts = List<Product>.filled(cartItems.length, null);
+
           return Column(
             children: [
               DefaultButton(
                 text: "Proceed to Payment",
                 press: () {
-                  if (cartTotal > 0.0) {
-                    Scaffold.of(context).showBottomSheet(
-                      (context) {
-                        return CheckoutCard(
-                          cartTotal: cartTotal,
-                          onCheckoutPressed: checkoutButtonCallback,
-                        );
-                      },
-                    );
-                  }
+                  Scaffold.of(context).showBottomSheet(
+                    (context) {
+                      return CheckoutCard(
+                        cartTotal: 3.0,
+                        onCheckoutPressed: checkoutButtonCallback,
+                      );
+                    },
+                  );
                 },
               ),
               SizedBox(height: getProportionateScreenHeight(20)),
@@ -97,13 +113,13 @@ class _BodyState extends State<Body> {
                 child: ListView.builder(
                   padding: EdgeInsets.symmetric(vertical: 16),
                   physics: BouncingScrollPhysics(),
-                  itemCount: cartItems.length,
+                  itemCount: cartItemsId.length,
                   itemBuilder: (context, index) {
-                    if (index >= cartItems.length) {
+                    if (index >= cartItemsId.length) {
                       return SizedBox(height: getProportionateScreenHeight(80));
                     }
                     return buildCartItemDismissible(
-                        context, cartItems[index], index);
+                        context, cartItemsId[index], index);
                   },
                 ),
               ),
@@ -129,15 +145,15 @@ class _BodyState extends State<Body> {
   }
 
   Widget buildCartItemDismissible(
-      BuildContext context, CartItem cartItem, int index) {
+      BuildContext context, String cartItemId, int index) {
     return Dismissible(
-      key: Key(cartItem.productID),
+      key: Key(cartItemId),
       direction: DismissDirection.startToEnd,
       dismissThresholds: {
         DismissDirection.startToEnd: 0.65,
       },
       background: buildDismissibleBackground(),
-      child: buildCartItem(cartItem, index),
+      child: buildCartItem(cartItemId, index),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
           final confirmation = await showConfirmationDialog(
@@ -150,7 +166,7 @@ class _BodyState extends State<Body> {
               String snackbarMessage;
               try {
                 result = await UserDatabaseHelper()
-                    .removeProductFromCart(cartItem.id);
+                    .removeProductFromCart(cartItemId);
                 if (result == true) {
                   snackbarMessage = "Product removed from cart successfully";
                 } else {
@@ -181,7 +197,7 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget buildCartItem(CartItem cartItem, int index) {
+  Widget buildCartItem(String cartItemId, int index) {
     return Container(
       padding: EdgeInsets.only(
         bottom: 4,
@@ -194,12 +210,10 @@ class _BodyState extends State<Body> {
         borderRadius: BorderRadius.circular(15),
       ),
       child: FutureBuilder<Product>(
-        future: ProductDatabaseHelper().getProductWithID(cartItem.productID),
+        future: ProductDatabaseHelper().getProductWithID(cartItemId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Product product = snapshot.data;
-            cartProducts[index] = product;
-            cartTotal += (cartItem.itemCount * product.discountPrice);
             return Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -240,16 +254,55 @@ class _BodyState extends State<Body> {
                             Icons.arrow_drop_up,
                             color: kTextColor,
                           ),
-                          onTap: () {},
+                          onTap: () async {
+                            final future = UserDatabaseHelper()
+                                .increaseCartItemCount(cartItemId);
+                            future.then((status) {
+                              if (status) {
+                                refreshPage();
+                              } else {
+                                throw "Couldn't perform the operation due to some unknown issue";
+                              }
+                            }).catchError((e) {
+                              Logger().e(e.toString());
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text("Something went wrong"),
+                              ));
+                            });
+                            await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return FutureProgressDialog(
+                                  future,
+                                  message: Text("Please wait"),
+                                );
+                              },
+                            );
+                          },
                         ),
                         SizedBox(height: 8),
-                        Text(
-                          "${cartItem.itemCount}",
-                          style: TextStyle(
-                            color: kPrimaryColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                          ),
+                        FutureBuilder<CartItem>(
+                          future: UserDatabaseHelper()
+                              .getCartItemFromId(cartItemId),
+                          builder: (context, snapshot) {
+                            int itemCount = 0;
+                            if (snapshot.hasData) {
+                              final cartItem = snapshot.data;
+                              itemCount = cartItem.itemCount;
+                            } else if (snapshot.hasError) {
+                              final error = snapshot.error.toString();
+                              Logger().e(error);
+                            }
+                            return Text(
+                              "$itemCount",
+                              style: TextStyle(
+                                color: kPrimaryColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            );
+                          },
                         ),
                         SizedBox(height: 8),
                         InkWell(
@@ -257,7 +310,32 @@ class _BodyState extends State<Body> {
                             Icons.arrow_drop_down,
                             color: kTextColor,
                           ),
-                          onTap: () {},
+                          onTap: () async {
+                            final future = UserDatabaseHelper()
+                                .decreaseCartItemCount(cartItemId);
+                            future.then((status) {
+                              if (status) {
+                                refreshPage();
+                              } else {
+                                throw "Couldn't perform the operation due to some unknown issue";
+                              }
+                            }).catchError((e) {
+                              Logger().e(e.toString());
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text("Something went wrong"),
+                              ));
+                            });
+                            await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return FutureProgressDialog(
+                                  future,
+                                  message: Text("Please wait"),
+                                );
+                              },
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -319,25 +397,6 @@ class _BodyState extends State<Body> {
   }
 
   Future<void> checkoutButtonCallback() async {
-    bool cartLoaded = true;
-    if (cartItems == null) {
-      cartLoaded = false;
-    } else {
-      for (final product in cartItems) {
-        if (product == null) {
-          cartLoaded = false;
-          break;
-        }
-      }
-    }
-    if (cartLoaded == false) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Cart loading... Please wait"),
-        ),
-      );
-      return;
-    }
     final confirmation = await showConfirmationDialog(
       context,
       "This is just a Project Testing App so, no actual Payment Interface is available.\nDo you want to proceed for Mock Ordering of Products?",
@@ -367,7 +426,7 @@ class _BodyState extends State<Body> {
     final dateformat = DateFormat("yyyy-MM-dd");
     String date = dateformat.format(datetime);
 
-    for (int i = 0; i < cartItems.length; i++) {
+    /* for (int i = 0; i < cartItems.length; i++) {
       bool productAddedToOrderedList = false;
       try {
         productAddedToOrderedList =
@@ -393,6 +452,6 @@ class _BodyState extends State<Body> {
           }
         }
       }
-    }
+    } */
   }
 }

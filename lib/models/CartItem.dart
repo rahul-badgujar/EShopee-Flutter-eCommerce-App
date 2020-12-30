@@ -4,18 +4,15 @@ class CartItem extends Model {
   static const String PRODUCT_ID_KEY = "product_id";
   static const String ITEM_COUNT_KEY = "item_count";
 
-  String productID;
   int itemCount;
   CartItem({
     String id,
     this.itemCount = 0,
-    this.productID,
   }) : super(id);
 
   factory CartItem.fromMap(Map<String, dynamic> map, {String id}) {
     return CartItem(
       id: id,
-      productID: map[PRODUCT_ID_KEY],
       itemCount: map[ITEM_COUNT_KEY],
     );
   }
@@ -23,7 +20,6 @@ class CartItem extends Model {
   @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{
-      PRODUCT_ID_KEY: productID,
       ITEM_COUNT_KEY: itemCount,
     };
     return map;
@@ -32,7 +28,6 @@ class CartItem extends Model {
   @override
   Map<String, dynamic> toUpdateMap() {
     final map = <String, dynamic>{};
-    if (productID != null) map[PRODUCT_ID_KEY] = productID;
     if (itemCount != null) map[ITEM_COUNT_KEY] = itemCount;
     return map;
   }

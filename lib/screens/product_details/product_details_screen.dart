@@ -1,4 +1,3 @@
-import 'package:e_commerce_app_flutter/models/CartItem.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -28,12 +27,8 @@ class ProductDetailsScreen extends StatelessWidget {
           bool addedSuccessfully = false;
           String snackbarMessage;
           try {
-            addedSuccessfully = await UserDatabaseHelper().addProductToCart(
-              CartItem(
-                productID: productId,
-                itemCount: 1,
-              ),
-            );
+            addedSuccessfully =
+                await UserDatabaseHelper().addProductToCart(productId);
             if (addedSuccessfully == true) {
               snackbarMessage = "Product added successfully";
             } else {
