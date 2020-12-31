@@ -6,23 +6,25 @@ import '../components/change_email_form.dart';
 class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
+    return SafeArea(
       child: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Padding(
           padding:
               EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-          child: Column(
-            children: [
-              SizedBox(height: SizeConfig.screenHeight * 0.04),
-              Text(
-                "Change Email",
-                style: headingStyle,
-              ),
-              SizedBox(height: SizeConfig.screenHeight * 0.1),
-              ChangeEmailForm(),
-            ],
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              children: [
+                SizedBox(height: SizeConfig.screenHeight * 0.04),
+                Text(
+                  "Change Email",
+                  style: headingStyle,
+                ),
+                SizedBox(height: SizeConfig.screenHeight * 0.1),
+                ChangeEmailForm(),
+              ],
+            ),
           ),
         ),
       ),

@@ -72,11 +72,11 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: refreshPage,
-      child: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        child: SafeArea(
+    return SafeArea(
+      child: RefreshIndicator(
+        onRefresh: refreshPage,
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
           child: Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: getProportionateScreenWidth(20)),

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:e_commerce_app_flutter/models/Model.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/models/Review.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
@@ -134,25 +133,6 @@ class ProductDatabaseHelper {
     return product.id;
   }
 
-  Stream<List<Product>> getCategoryProductsStream(
-      ProductType productType) async* {
-    final productsCollectionReference =
-        firestore.collection(PRODUCTS_COLLECTION_NAME);
-    final queryResult = productsCollectionReference
-        .where(Product.PRODUCT_TYPE_KEY,
-            isEqualTo: EnumToString.convertToString(productType))
-        .get()
-        .asStream();
-    await for (final QuerySnapshot querySnapshot in queryResult) {
-      List<Product> products = List<Product>();
-      for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
-        Product product = Product.fromMap(doc.data(), id: doc.id);
-        products.add(product);
-      }
-      yield products;
-    }
-  }
-
   Future<List<String>> getCategoryProductsList(ProductType productType) async {
     final productsCollectionReference =
         firestore.collection(PRODUCTS_COLLECTION_NAME);
@@ -168,43 +148,6 @@ class ProductDatabaseHelper {
     return productsId;
   }
 
-  Future<List> getUsersProductsList() async {
-    String uid = AuthentificationService().currentUser.uid;
-    final productsCollectionReference =
-        firestore.collection(PRODUCTS_COLLECTION_NAME);
-    final queryResult = await productsCollectionReference
-        .where(Product.OWNER_KEY, isEqualTo: uid)
-        .get();
-    List<Product> products = queryResult.docs
-        .map(
-          (e) => Product.fromMap(
-            e.data(),
-            id: e.id,
-          ),
-        )
-        .toList();
-
-    return products;
-  }
-
-  Stream<List<Product>> get usersProductListStream async* {
-    String uid = AuthentificationService().currentUser.uid;
-    final productsCollectionReference =
-        firestore.collection(PRODUCTS_COLLECTION_NAME);
-    final queryStream = productsCollectionReference
-        .where(Product.OWNER_KEY, isEqualTo: uid)
-        .get()
-        .asStream();
-    await for (final querySnapshot in queryStream) {
-      List<Model> usersProducts = List<Product>();
-      for (final doc in querySnapshot.docs) {
-        Product product = Product.fromMap(doc.data(), id: doc.id);
-        usersProducts.add(product);
-      }
-      yield usersProducts;
-    }
-  }
-
   Future<List<String>> get usersProductsList async {
     String uid = AuthentificationService().currentUser.uid;
     final productsCollectionReference =
@@ -217,21 +160,6 @@ class ProductDatabaseHelper {
       usersProducts.add(doc.id);
     });
     return usersProducts;
-  }
-
-  Stream<List<Product>> get allProductsListStream async* {
-    final productsCollectionReference =
-        firestore.collection(PRODUCTS_COLLECTION_NAME);
-
-    final productsStream = productsCollectionReference.get().asStream();
-    await for (final QuerySnapshot querySnapshot in productsStream) {
-      List<Product> productsList = List<Product>();
-      for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
-        Product product = Product.fromMap(doc.data(), id: doc.id);
-        productsList.add(product);
-      }
-      yield productsList;
-    }
   }
 
   Future<List<String>> get allProductsList async {

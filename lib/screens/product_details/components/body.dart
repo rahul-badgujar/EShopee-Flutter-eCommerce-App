@@ -17,40 +17,42 @@ class Body extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:
-          EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+    return SafeArea(
       child: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
-        child: FutureBuilder<Product>(
-          future: ProductDatabaseHelper().getProductWithID(productId),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final product = snapshot.data;
-              return Column(
-                children: [
-                  ProductImages(product: product),
-                  SizedBox(height: getProportionateScreenHeight(20)),
-                  ProductActionsSection(product: product),
-                  SizedBox(height: getProportionateScreenHeight(20)),
-                  ProductReviewsSection(product: product),
-                  SizedBox(height: getProportionateScreenHeight(100)),
-                ],
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+          child: FutureBuilder<Product>(
+            future: ProductDatabaseHelper().getProductWithID(productId),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final product = snapshot.data;
+                return Column(
+                  children: [
+                    ProductImages(product: product),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    ProductActionsSection(product: product),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    ProductReviewsSection(product: product),
+                    SizedBox(height: getProportionateScreenHeight(100)),
+                  ],
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                final error = snapshot.error.toString();
+                Logger().e(error);
+              }
+              return Center(
+                child: Icon(
+                  Icons.error,
+                  color: kTextColor,
+                  size: 60,
+                ),
               );
-            } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              final error = snapshot.error.toString();
-              Logger().e(error);
-            }
-            return Center(
-              child: Icon(
-                Icons.error,
-                color: kTextColor,
-                size: 60,
-              ),
-            );
-          },
+            },
+          ),
         ),
       ),
     );

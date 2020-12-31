@@ -4,6 +4,7 @@ import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_short_detail_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/CartItem.dart';
+import 'package:e_commerce_app_flutter/models/OrderedProduct.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/cart/components/checkout_card.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
@@ -360,14 +361,51 @@ class _BodyState extends State<Body> {
       return;
     }
     final orderFuture = UserDatabaseHelper().emptyCart();
-    orderFuture.then((status) {
-      if (status) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Ordered all Products"),
-          ),
-        );
+    orderFuture.then((orderedProductsUid) async {
+      if (orderedProductsUid != null) {
+        print(orderedProductsUid);
+        final dateTime = DateTime.now();
+        final formatedDateTime =
+            "${dateTime.day}-${dateTime.month}-${dateTime.year}";
+        List<OrderedProduct> orderedProducts = orderedProductsUid
+            .map((e) => OrderedProduct(null,
+                productUid: e, orderDate: formatedDateTime))
+            .toList();
+        bool addedProductsToMyProducts = false;
+        String snackbarmMessage;
+        try {
+          addedProductsToMyProducts =
+              await UserDatabaseHelper().addToMyOrders(orderedProducts);
+          if (addedProductsToMyProducts) {
+            snackbarmMessage = "Products ordered Successfully";
+          } else {
+            throw "Could not order products due to unknown issue";
+          }
+        } on FirebaseException catch (e) {
+          Logger().e(e.toString());
+          snackbarmMessage = e.toString();
+        } catch (e) {
+          Logger().e(e.toString());
+          snackbarmMessage = e.toString();
+        } finally {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(snackbarmMessage ?? "Something went wrong"),
+            ),
+          );
+        }
+      } else {
+        throw "Something went wrong while clearing cart";
       }
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return FutureProgressDialog(
+            orderFuture,
+            message: Text("Placing the Order"),
+          );
+        },
+      );
     }).catchError((e) {
       Logger().e(e.toString());
       ScaffoldMessenger.of(context).showSnackBar(

@@ -36,6 +36,7 @@ class _BodyState extends State<Body> {
       child: RefreshIndicator(
         onRefresh: refreshPage,
         child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
           child: Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: getProportionateScreenWidth(20)),

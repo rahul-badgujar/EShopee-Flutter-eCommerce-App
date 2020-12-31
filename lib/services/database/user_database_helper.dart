@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app_flutter/models/Address.dart';
 import 'package:e_commerce_app_flutter/models/CartItem.dart';
 import 'package:e_commerce_app_flutter/models/OrderedProduct.dart';
-import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 
@@ -28,34 +27,6 @@ class UserDatabaseHelper {
       _firebaseFirestore = FirebaseFirestore.instance;
     }
     return _firebaseFirestore;
-  }
-
-  Future<bool> addOrderedProduct(OrderedProduct orderedProduct) async {
-    String uid = AuthentificationService().currentUser.uid;
-    final orderedProductsCollectionRef = firestore
-        .collection(USERS_COLLECTION_NAME)
-        .doc(uid)
-        .collection(ORDERED_PRODUCTS_COLLECTION_NAME);
-    await orderedProductsCollectionRef.add(orderedProduct.toMap());
-    return true;
-  }
-
-  Stream<List<OrderedProduct>> get orderedProductsStream async* {
-    String uid = AuthentificationService().currentUser.uid;
-    final querySnapshotStream = firestore
-        .collection(USERS_COLLECTION_NAME)
-        .doc(uid)
-        .collection(ORDERED_PRODUCTS_COLLECTION_NAME)
-        .get()
-        .asStream();
-    await for (final querySnapshot in querySnapshotStream) {
-      List<OrderedProduct> orderedProductsList = List<OrderedProduct>();
-      for (final doc in querySnapshot.docs) {
-        final orderedProduct = OrderedProduct.fromMap(doc.data(), id: doc.id);
-        orderedProductsList.add(orderedProduct);
-      }
-      yield orderedProductsList;
-    }
   }
 
   Future<void> createNewUser(String uid) async {
@@ -86,20 +57,6 @@ class UserDatabaseHelper {
     final userDocData = (await userDocSnapshot.get()).data();
     final favList = userDocData[FAV_PRODUCTS_KEY].cast<String>();
     return favList;
-  }
-
-  Stream<List<Product>> get usersFavouriteProductsStream async* {
-    final usersFavProducts = await usersFavouriteProductsList;
-    await for (final List<Product> list
-        in ProductDatabaseHelper().allProductsListStream) {
-      List<Product> favProducts = List<Product>();
-      for (final Product product in list) {
-        if (usersFavProducts.contains(product.id)) {
-          favProducts.add(product);
-        }
-      }
-      yield favProducts;
-    }
   }
 
   Future<bool> switchProductFavouriteStatus(
@@ -208,17 +165,19 @@ class UserDatabaseHelper {
     return true;
   }
 
-  Future<bool> emptyCart() async {
+  Future<List<String>> emptyCart() async {
     String uid = AuthentificationService().currentUser.uid;
     final cartItems = await firestore
         .collection(USERS_COLLECTION_NAME)
         .doc(uid)
         .collection(CART_COLLECTION_NAME)
         .get();
-    cartItems.docs.forEach((doc) {
-      doc.reference.delete();
-    });
-    return true;
+    List orderedProductsUid = List<String>();
+    for (final doc in cartItems.docs) {
+      orderedProductsUid.add(doc.id);
+      await doc.reference.delete();
+    }
+    return orderedProductsUid;
   }
 
   Future<num> get cartTotal async {
@@ -275,24 +234,6 @@ class UserDatabaseHelper {
     return true;
   }
 
-  Stream<List<CartItem>> get allCartItemsStream async* {
-    String uid = AuthentificationService().currentUser.uid;
-    final querySnapshotStream = firestore
-        .collection(USERS_COLLECTION_NAME)
-        .doc(uid)
-        .collection(CART_COLLECTION_NAME)
-        .get()
-        .asStream();
-    await for (final QuerySnapshot querySnapshot in querySnapshotStream) {
-      List<CartItem> cartItems = List<CartItem>();
-      for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
-        CartItem cartItem = CartItem.fromMap(doc.data(), id: doc.id);
-        cartItems.add(cartItem);
-      }
-      yield cartItems;
-    }
-  }
-
   Future<List<String>> get allCartItemsList async {
     String uid = AuthentificationService().currentUser.uid;
     final querySnapshot = await firestore
@@ -307,6 +248,44 @@ class UserDatabaseHelper {
     return itemsId;
   }
 
+  Future<List<String>> get orderedProductsList async {
+    String uid = AuthentificationService().currentUser.uid;
+    final orderedProductsSnapshot = await firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(ORDERED_PRODUCTS_COLLECTION_NAME)
+        .get();
+    List orderedProductsId = List<String>();
+    for (final doc in orderedProductsSnapshot.docs) {
+      orderedProductsId.add(doc.id);
+    }
+    return orderedProductsId;
+  }
+
+  Future<bool> addToMyOrders(List<OrderedProduct> orders) async {
+    String uid = AuthentificationService().currentUser.uid;
+    final orderedProductsCollectionRef = firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(ORDERED_PRODUCTS_COLLECTION_NAME);
+    for (final order in orders) {
+      await orderedProductsCollectionRef.add(order.toMap());
+    }
+    return true;
+  }
+
+  Future<OrderedProduct> getOrderedProductFromId(String id) async {
+    String uid = AuthentificationService().currentUser.uid;
+    final doc = await firestore
+        .collection(USERS_COLLECTION_NAME)
+        .doc(uid)
+        .collection(ORDERED_PRODUCTS_COLLECTION_NAME)
+        .doc(id)
+        .get();
+    final orderedProduct = OrderedProduct.fromMap(doc.data(), id: doc.id);
+    return orderedProduct;
+  }
+
   Stream<DocumentSnapshot> get currentUserDataStream {
     String uid = AuthentificationService().currentUser.uid;
     return firestore
@@ -316,28 +295,12 @@ class UserDatabaseHelper {
         .asStream();
   }
 
-  Stream<QuerySnapshot> get currentUserAddressesStream {
-    String uid = AuthentificationService().currentUser.uid;
-    return firestore
-        .collection(USERS_COLLECTION_NAME)
-        .doc(uid)
-        .collection(ADDRESSES_COLLECTION_NAME)
-        .snapshots();
-  }
-
   Future<bool> updatePhoneForCurrentUser(String phone) async {
     String uid = AuthentificationService().currentUser.uid;
     final userDocSnapshot =
         firestore.collection(USERS_COLLECTION_NAME).doc(uid);
     await userDocSnapshot.update({PHONE_KEY: phone});
     return true;
-  }
-
-  Future<String> get currentUserPhoneNumber async {
-    String uid = AuthentificationService().currentUser.uid;
-    final userDoc =
-        await firestore.collection(USERS_COLLECTION_NAME).doc(uid).get();
-    return await userDoc.data()[PHONE_KEY];
   }
 
   String getPathForCurrentUserDisplayPicture() {

@@ -20,38 +20,40 @@ class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<BodyState>(
       create: (context) => BodyState(),
-      child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-          child: SizedBox(
-            width: double.infinity,
-            child: Consumer<BodyState>(
-              builder: (context, bodyState, child) {
-                return Column(
-                  children: [
-                    Text(
-                      "Change Avatar",
-                      style: headingStyle,
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(40)),
-                    GestureDetector(
-                      child: buildDisplayPictureAvatar(context, bodyState),
-                      onTap: () {
-                        getImageFromUser(context, bodyState);
-                      },
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(80)),
-                    buildChosePictureButton(context, bodyState),
-                    SizedBox(height: getProportionateScreenHeight(20)),
-                    buildUploadPictureButton(context, bodyState),
-                    SizedBox(height: getProportionateScreenHeight(20)),
-                    buildRemovePictureButton(context, bodyState),
-                    SizedBox(height: getProportionateScreenHeight(80)),
-                  ],
-                );
-              },
+      child: SafeArea(
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: getProportionateScreenWidth(20)),
+            child: SizedBox(
+              width: double.infinity,
+              child: Consumer<BodyState>(
+                builder: (context, bodyState, child) {
+                  return Column(
+                    children: [
+                      Text(
+                        "Change Avatar",
+                        style: headingStyle,
+                      ),
+                      SizedBox(height: getProportionateScreenHeight(40)),
+                      GestureDetector(
+                        child: buildDisplayPictureAvatar(context, bodyState),
+                        onTap: () {
+                          getImageFromUser(context, bodyState);
+                        },
+                      ),
+                      SizedBox(height: getProportionateScreenHeight(80)),
+                      buildChosePictureButton(context, bodyState),
+                      SizedBox(height: getProportionateScreenHeight(20)),
+                      buildUploadPictureButton(context, bodyState),
+                      SizedBox(height: getProportionateScreenHeight(20)),
+                      buildRemovePictureButton(context, bodyState),
+                      SizedBox(height: getProportionateScreenHeight(80)),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
