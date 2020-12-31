@@ -17,39 +17,42 @@ import 'package:future_progress_dialog/future_progress_dialog.dart';
 class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-          child: SizedBox(
-            width: double.infinity,
-            child: Consumer<ChosenImage>(
-              builder: (context, bodyState, child) {
-                return Column(
-                  children: [
-                    Text(
-                      "Change Avatar",
-                      style: headingStyle,
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(40)),
-                    GestureDetector(
-                      child: buildDisplayPictureAvatar(context, bodyState),
-                      onTap: () {
-                        getImageFromUser(context, bodyState);
-                      },
-                    ),
-                    SizedBox(height: getProportionateScreenHeight(80)),
-                    buildChosePictureButton(context, bodyState),
-                    SizedBox(height: getProportionateScreenHeight(20)),
-                    buildUploadPictureButton(context, bodyState),
-                    SizedBox(height: getProportionateScreenHeight(20)),
-                    buildRemovePictureButton(context, bodyState),
-                    SizedBox(height: getProportionateScreenHeight(80)),
-                  ],
-                );
-              },
+    return ChangeNotifierProvider(
+      create: (context) => ChosenImage(),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: getProportionateScreenWidth(20)),
+            child: SizedBox(
+              width: double.infinity,
+              child: Consumer<ChosenImage>(
+                builder: (context, bodyState, child) {
+                  return Column(
+                    children: [
+                      Text(
+                        "Change Avatar",
+                        style: headingStyle,
+                      ),
+                      SizedBox(height: getProportionateScreenHeight(40)),
+                      GestureDetector(
+                        child: buildDisplayPictureAvatar(context, bodyState),
+                        onTap: () {
+                          getImageFromUser(context, bodyState);
+                        },
+                      ),
+                      SizedBox(height: getProportionateScreenHeight(80)),
+                      buildChosePictureButton(context, bodyState),
+                      SizedBox(height: getProportionateScreenHeight(20)),
+                      buildUploadPictureButton(context, bodyState),
+                      SizedBox(height: getProportionateScreenHeight(20)),
+                      buildRemovePictureButton(context, bodyState),
+                      SizedBox(height: getProportionateScreenHeight(80)),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),

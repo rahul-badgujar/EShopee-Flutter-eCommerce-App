@@ -10,27 +10,13 @@ import 'package:provider/provider.dart';
 
 import '../../../size_config.dart';
 
-class ProductActionsSection extends StatefulWidget {
+class ProductActionsSection extends StatelessWidget {
   final Product product;
 
   const ProductActionsSection({
     Key key,
     @required this.product,
   }) : super(key: key);
-  @override
-  _ProductActionsSectionState createState() => _ProductActionsSectionState();
-}
-
-class _ProductActionsSectionState extends State<ProductActionsSection> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +25,7 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
         Stack(
           children: [
             TopRoundedContainer(
-              child: ProductDescription(product: widget.product),
+              child: ProductDescription(product: product),
             ),
             Align(
               alignment: Alignment.topCenter,
@@ -49,7 +35,7 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
         ),
       ],
     );
-    UserDatabaseHelper().isProductFavourite(widget.product.id).then(
+    UserDatabaseHelper().isProductFavourite(product.id).then(
       (value) {
         final productActions =
             Provider.of<ProductActions>(context, listen: false);
@@ -71,7 +57,7 @@ class _ProductActionsSectionState extends State<ProductActionsSection> {
             bool success = false;
             final future = UserDatabaseHelper()
                 .switchProductFavouriteStatus(
-                    widget.product.id, !productDetails.productFavStatus)
+                    product.id, !productDetails.productFavStatus)
                 .then(
               (status) {
                 success = status;
