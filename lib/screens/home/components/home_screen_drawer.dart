@@ -12,6 +12,7 @@ import 'package:e_commerce_app_flutter/services/database/user_database_helper.da
 import 'package:e_commerce_app_flutter/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:logger/logger.dart';
 import '../../change_display_name/change_display_name_screen.dart';
 
@@ -50,7 +51,28 @@ class HomeScreenDrawer extends StatelessWidget {
               "Manage Addresses",
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
-            onTap: () {
+            onTap: () async {
+              bool allowed = AuthentificationService().currentUserVerified;
+              if (!allowed) {
+                final reverify = await showConfirmationDialog(context,
+                    "You haven't verified your email address. This action is only allowed for verified users.",
+                    positiveResponse: "Resend verification email",
+                    negativeResponse: "Go back");
+                if (reverify) {
+                  final future = AuthentificationService()
+                      .sendVerificationEmailToCurrentUser();
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return FutureProgressDialog(
+                        future,
+                        message: Text("Resending verification email"),
+                      );
+                    },
+                  );
+                }
+                return;
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -65,7 +87,28 @@ class HomeScreenDrawer extends StatelessWidget {
               "My Orders",
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
-            onTap: () {
+            onTap: () async {
+              bool allowed = AuthentificationService().currentUserVerified;
+              if (!allowed) {
+                final reverify = await showConfirmationDialog(context,
+                    "You haven't verified your email address. This action is only allowed for verified users.",
+                    positiveResponse: "Resend verification email",
+                    negativeResponse: "Go back");
+                if (reverify) {
+                  final future = AuthentificationService()
+                      .sendVerificationEmailToCurrentUser();
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return FutureProgressDialog(
+                        future,
+                        message: Text("Resending verification email"),
+                      );
+                    },
+                  );
+                }
+                return;
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -244,7 +287,28 @@ class HomeScreenDrawer extends StatelessWidget {
               fontSize: 15,
             ),
           ),
-          onTap: () {
+          onTap: () async {
+            bool allowed = AuthentificationService().currentUserVerified;
+            if (!allowed) {
+              final reverify = await showConfirmationDialog(context,
+                  "You haven't verified your email address. This action is only allowed for verified users.",
+                  positiveResponse: "Resend verification email",
+                  negativeResponse: "Go back");
+              if (reverify) {
+                final future = AuthentificationService()
+                    .sendVerificationEmailToCurrentUser();
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return FutureProgressDialog(
+                      future,
+                      message: Text("Resending verification email"),
+                    );
+                  },
+                );
+              }
+              return;
+            }
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => EditProductScreen()));
           },
@@ -257,7 +321,28 @@ class HomeScreenDrawer extends StatelessWidget {
               fontSize: 15,
             ),
           ),
-          onTap: () {
+          onTap: () async {
+            bool allowed = AuthentificationService().currentUserVerified;
+            if (!allowed) {
+              final reverify = await showConfirmationDialog(context,
+                  "You haven't verified your email address. This action is only allowed for verified users.",
+                  positiveResponse: "Resend verification email",
+                  negativeResponse: "Go back");
+              if (reverify) {
+                final future = AuthentificationService()
+                    .sendVerificationEmailToCurrentUser();
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return FutureProgressDialog(
+                      future,
+                      message: Text("Resending verification email"),
+                    );
+                  },
+                );
+              }
+              return;
+            }
             Navigator.push(
               context,
               MaterialPageRoute(
