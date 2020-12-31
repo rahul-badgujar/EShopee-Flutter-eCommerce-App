@@ -40,7 +40,7 @@ class CheckoutCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                FutureBuilder<double>(
+                FutureBuilder<num>(
                   future: UserDatabaseHelper().cartTotal,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {

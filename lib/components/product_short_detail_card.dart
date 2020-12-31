@@ -51,8 +51,9 @@ class ProductShortDetailCard extends StatelessWidget {
                         softWrap: true,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: kTextColor,
                         ),
                         maxLines: 2,
                       ),
@@ -61,9 +62,9 @@ class ProductShortDetailCard extends StatelessWidget {
                         TextSpan(
                             text: "\₹${product.discountPrice}    ",
                             style: TextStyle(
-                              fontWeight: FontWeight.w600,
                               color: kPrimaryColor,
-                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
                             ),
                             children: [
                               TextSpan(
@@ -72,7 +73,7 @@ class ProductShortDetailCard extends StatelessWidget {
                                   color: kTextColor,
                                   decoration: TextDecoration.lineThrough,
                                   fontWeight: FontWeight.normal,
-                                  fontSize: 12,
+                                  fontSize: 11,
                                 ),
                               ),
                             ]),

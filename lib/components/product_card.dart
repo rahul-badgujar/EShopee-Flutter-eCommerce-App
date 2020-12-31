@@ -82,7 +82,7 @@ class ProductCard extends StatelessWidget {
                   "${product.title}\n",
                   style: TextStyle(
                     color: kTextColor,
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 2,
@@ -102,7 +102,8 @@ class ProductCard extends StatelessWidget {
                           text: "\₹${product.discountPrice}\n",
                           style: TextStyle(
                             color: kPrimaryColor,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12,
                           ),
                           children: [
                             TextSpan(
@@ -111,7 +112,7 @@ class ProductCard extends StatelessWidget {
                                 color: kTextColor,
                                 decoration: TextDecoration.lineThrough,
                                 fontWeight: FontWeight.normal,
-                                fontSize: 12,
+                                fontSize: 11,
                               ),
                             ),
                           ],

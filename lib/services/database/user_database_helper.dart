@@ -221,21 +221,19 @@ class UserDatabaseHelper {
     return true;
   }
 
-  Future<double> get cartTotal async {
+  Future<num> get cartTotal async {
     String uid = AuthentificationService().currentUser.uid;
     final cartItems = await firestore
         .collection(USERS_COLLECTION_NAME)
         .doc(uid)
         .collection(CART_COLLECTION_NAME)
         .get();
-    double total = 0.0;
-    cartItems.docs.forEach(
-      (doc) async {
-        int itemsCount = doc.data()[CartItem.ITEM_COUNT_KEY];
-        final product = await ProductDatabaseHelper().getProductWithID(doc.id);
-        total += (itemsCount * product.discountPrice);
-      },
-    );
+    num total = 0.0;
+    for (final doc in cartItems.docs) {
+      num itemsCount = doc.data()[CartItem.ITEM_COUNT_KEY];
+      final product = await ProductDatabaseHelper().getProductWithID(doc.id);
+      total += (itemsCount * product.discountPrice);
+    }
     return total;
   }
 

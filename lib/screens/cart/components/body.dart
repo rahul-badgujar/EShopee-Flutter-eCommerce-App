@@ -255,30 +255,7 @@ class _BodyState extends State<Body> {
                             color: kTextColor,
                           ),
                           onTap: () async {
-                            final future = UserDatabaseHelper()
-                                .increaseCartItemCount(cartItemId);
-                            future.then((status) async {
-                              if (status) {
-                                await refreshPage();
-                              } else {
-                                throw "Couldn't perform the operation due to some unknown issue";
-                              }
-                            }).catchError((e) {
-                              Logger().e(e.toString());
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: Text("Something went wrong"),
-                              ));
-                            });
-                            await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return FutureProgressDialog(
-                                  future,
-                                  message: Text("Please wait"),
-                                );
-                              },
-                            );
+                            await arrowUpCallback(cartItemId);
                           },
                         ),
                         SizedBox(height: 8),
@@ -311,30 +288,7 @@ class _BodyState extends State<Body> {
                             color: kTextColor,
                           ),
                           onTap: () async {
-                            final future = UserDatabaseHelper()
-                                .decreaseCartItemCount(cartItemId);
-                            future.then((status) async {
-                              if (status) {
-                                await refreshPage();
-                              } else {
-                                throw "Couldn't perform the operation due to some unknown issue";
-                              }
-                            }).catchError((e) {
-                              Logger().e(e.toString());
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: Text("Something went wrong"),
-                              ));
-                            });
-                            await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return FutureProgressDialog(
-                                  future,
-                                  message: Text("Please wait"),
-                                );
-                              },
-                            );
+                            await arrowDownCallback(cartItemId);
                           },
                         ),
                       ],
@@ -397,9 +351,7 @@ class _BodyState extends State<Body> {
   }
 
   Future<void> checkoutButtonCallback() async {
-    if (bottomSheetHandler != null) {
-      bottomSheetHandler.close();
-    }
+    shutBottomSheet();
     final confirmation = await showConfirmationDialog(
       context,
       "This is just a Project Testing App so, no actual Payment Interface is available.\nDo you want to proceed for Mock Ordering of Products?",
@@ -434,5 +386,63 @@ class _BodyState extends State<Body> {
       },
     );
     await refreshPage();
+  }
+
+  void shutBottomSheet() {
+    if (bottomSheetHandler != null) {
+      bottomSheetHandler.close();
+    }
+  }
+
+  Future<void> arrowUpCallback(String cartItemId) async {
+    shutBottomSheet();
+    final future = UserDatabaseHelper().increaseCartItemCount(cartItemId);
+    future.then((status) async {
+      if (status) {
+        await refreshPage();
+      } else {
+        throw "Couldn't perform the operation due to some unknown issue";
+      }
+    }).catchError((e) {
+      Logger().e(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Something went wrong"),
+      ));
+    });
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return FutureProgressDialog(
+          future,
+          message: Text("Please wait"),
+        );
+      },
+    );
+  }
+
+  Future<void> arrowDownCallback(String cartItemId) async {
+    shutBottomSheet();
+    final future = UserDatabaseHelper().decreaseCartItemCount(cartItemId);
+    future.then((status) async {
+      if (status) {
+        await refreshPage();
+      } else {
+        throw "Couldn't perform the operation due to some unknown issue";
+      }
+    }).catchError((e) {
+      Logger().e(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Something went wrong"),
+      ));
+    });
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return FutureProgressDialog(
+          future,
+          message: Text("Please wait"),
+        );
+      },
+    );
   }
 }
