@@ -6,20 +6,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../constants.dart';
 import 'expandable_text.dart';
 
-class ProductDescription extends StatefulWidget {
+class ProductDescription extends StatelessWidget {
   const ProductDescription({
     Key key,
     @required this.product,
   }) : super(key: key);
 
   final Product product;
-
-  @override
-  _ProductDescriptionState createState() => _ProductDescriptionState();
-}
-
-class _ProductDescriptionState extends State<ProductDescription> {
-  bool showFullDescription = false;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -29,7 +22,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
           children: [
             Text.rich(
               TextSpan(
-                  text: widget.product.title,
+                  text: product.title,
                   style: TextStyle(
                     fontSize: 21,
                     color: Colors.black,
@@ -37,7 +30,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                   ),
                   children: [
                     TextSpan(
-                      text: "\n${widget.product.variant} ",
+                      text: "\n${product.variant} ",
                       style: TextStyle(
                         fontWeight: FontWeight.normal,
                         fontSize: 15,
@@ -55,7 +48,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                     flex: 4,
                     child: Text.rich(
                       TextSpan(
-                        text: "\₹${widget.product.discountPrice}   ",
+                        text: "\₹${product.discountPrice}   ",
                         style: TextStyle(
                           color: kPrimaryColor,
                           fontWeight: FontWeight.w900,
@@ -63,7 +56,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                         ),
                         children: [
                           TextSpan(
-                            text: "\n\₹${widget.product.originalPrice}",
+                            text: "\n\₹${product.originalPrice}",
                             style: TextStyle(
                               decoration: TextDecoration.lineThrough,
                               color: kTextColor,
@@ -85,7 +78,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                         ),
                         Center(
                           child: Text(
-                            "${widget.product.calculatePercentageDiscount()}%\nOff",
+                            "${product.calculatePercentageDiscount()}%\nOff",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: getProportionateScreenHeight(15),
@@ -103,12 +96,12 @@ class _ProductDescriptionState extends State<ProductDescription> {
             const SizedBox(height: 16),
             ExpandableText(
               title: "Highlights",
-              content: widget.product.highlights,
+              content: product.highlights,
             ),
             const SizedBox(height: 16),
             ExpandableText(
               title: "Description",
-              content: widget.product.description,
+              content: product.description,
             ),
             const SizedBox(height: 16),
             Text.rich(
@@ -120,7 +113,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                 ),
                 children: [
                   TextSpan(
-                    text: "${widget.product.seller}",
+                    text: "${product.seller}",
                     style: TextStyle(
                       decoration: TextDecoration.underline,
                     ),
