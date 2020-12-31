@@ -1,12 +1,14 @@
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/screens/product_details/provider_models/ProductImageSwiper.dart';
 import 'package:flutter/material.dart';
 import 'package:pinch_zoom_image_updated/pinch_zoom_image_updated.dart';
+import 'package:provider/provider.dart';
 import 'package:swipedetector/swipedetector.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
-class ProductImages extends StatefulWidget {
+class ProductImages extends StatelessWidget {
   const ProductImages({
     Key key,
     @required this.product,
@@ -15,74 +17,70 @@ class ProductImages extends StatefulWidget {
   final Product product;
 
   @override
-  _ProductImagesState createState() => _ProductImagesState();
-}
-
-class _ProductImagesState extends State<ProductImages> {
-  int selectedImage = 0;
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SwipeDetector(
-          onSwipeLeft: () {
-            setState(
-              () {
-                selectedImage++;
-                selectedImage %= widget.product.images.length;
-              },
-            );
-          },
-          onSwipeRight: () {
-            setState(
-              () {
-                selectedImage--;
-                selectedImage += widget.product.images.length;
-                selectedImage %= widget.product.images.length;
-              },
-            );
-          },
-          child: PinchZoomImage(
-            hideStatusBarWhileZooming: true,
-            image: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(30),
+    return ChangeNotifierProvider(
+      create: (context) => ProductImageSwiper(),
+      child: Consumer<ProductImageSwiper>(
+        builder: (context, productImagesSwiper, child) {
+          return Column(
+            children: [
+              SwipeDetector(
+                onSwipeLeft: () {
+                  productImagesSwiper.currentImageIndex++;
+                  productImagesSwiper.currentImageIndex %=
+                      product.images.length;
+                },
+                onSwipeRight: () {
+                  productImagesSwiper.currentImageIndex--;
+                  productImagesSwiper.currentImageIndex +=
+                      product.images.length;
+                  productImagesSwiper.currentImageIndex %=
+                      product.images.length;
+                },
+                child: PinchZoomImage(
+                  hideStatusBarWhileZooming: true,
+                  image: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(30),
+                      ),
+                    ),
+                    child: SizedBox(
+                      height: SizeConfig.screenHeight * 0.35,
+                      width: SizeConfig.screenWidth * 0.75,
+                      child: Image.network(
+                        product.images[productImagesSwiper.currentImageIndex],
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              child: SizedBox(
-                height: SizeConfig.screenHeight * 0.35,
-                width: SizeConfig.screenWidth * 0.75,
-                child: Image.network(
-                  widget.product.images[selectedImage],
-                  fit: BoxFit.contain,
-                ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ...List.generate(
+                    product.images.length,
+                    (index) =>
+                        buildSmallPreview(productImagesSwiper, index: index),
+                  ),
+                ],
               ),
-            ),
-          ),
-        ),
-        SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ...List.generate(
-              widget.product.images.length,
-              (index) => buildSmallPreview(index: index),
-            ),
-          ],
-        ),
-      ],
+            ],
+          );
+        },
+      ),
     );
   }
 
-  Widget buildSmallPreview({@required int index}) {
+  Widget buildSmallPreview(ProductImageSwiper productImagesSwiper,
+      {@required int index}) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          selectedImage = index;
-        });
+        productImagesSwiper.currentImageIndex = index;
       },
       child: Container(
         margin:
@@ -94,10 +92,11 @@ class _ProductImagesState extends State<ProductImages> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-              color:
-                  selectedImage == index ? kPrimaryColor : Colors.transparent),
+              color: productImagesSwiper.currentImageIndex == index
+                  ? kPrimaryColor
+                  : Colors.transparent),
         ),
-        child: Image.network(widget.product.images[index]),
+        child: Image.network(product.images[index]),
       ),
     );
   }
