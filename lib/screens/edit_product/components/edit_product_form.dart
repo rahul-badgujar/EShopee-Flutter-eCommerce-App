@@ -5,6 +5,7 @@ import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/exceptions/local_files_handling/image_picking_exceptions.dart';
 import 'package:e_commerce_app_flutter/exceptions/local_files_handling/local_file_handling_exception.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/screens/edit_product/provider_models/ProductDetails.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:e_commerce_app_flutter/services/local_files_access/local_files_access_service.dart';
@@ -12,24 +13,10 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
-
-enum ImageType {
-  local,
-  network,
-}
-
-class CustomImage {
-  final ImageType imgType;
-  final String path;
-  CustomImage({this.imgType = ImageType.local, @required this.path});
-  @override
-  String toString() {
-    return "Instance of Custom Image: {imgType: $imgType, path: $path}";
-  }
-}
 
 class EditProductForm extends StatefulWidget {
   final Product product;
@@ -58,9 +45,7 @@ class _EditProductFormState extends State<EditProductForm> {
   final TextEditingController sellerFieldController = TextEditingController();
 
   bool newProduct = true;
-  List<CustomImage> selectedImages;
   Product product;
-  ProductType productType;
 
   @override
   void dispose() {
@@ -77,19 +62,20 @@ class _EditProductFormState extends State<EditProductForm> {
 
   @override
   void initState() {
+    super.initState();
     if (widget.product == null) {
       product = Product(null);
-      selectedImages = List<CustomImage>();
       newProduct = true;
     } else {
       product = widget.product;
       newProduct = false;
-      selectedImages = widget.product.images
+      final productDetails =
+          Provider.of<ProductDetails>(context, listen: false);
+      productDetails.initialSelectedImages = widget.product.images
           .map((e) => CustomImage(imgType: ImageType.network, path: e))
           .toList();
-      productType = product.productType;
+      productDetails.initialProductType = product.productType;
     }
-    super.initState();
   }
 
   @override
@@ -105,13 +91,13 @@ class _EditProductFormState extends State<EditProductForm> {
         buildProductTypeDropdown(),
         SizedBox(height: getProportionateScreenHeight(80)),
         DefaultButton(
-          text: "Save Product",
-          press: saveProductButtonCallback,
-        ),
+            text: "Save Product",
+            press: () {
+              saveProductButtonCallback(context);
+            }),
         SizedBox(height: getProportionateScreenHeight(10)),
       ],
     );
-
     if (newProduct == false) {
       titleFieldController.text = product.title;
       variantFieldController.text = product.variant;
@@ -211,32 +197,34 @@ class _EditProductFormState extends State<EditProductForm> {
         border: Border.all(color: kTextColor, width: 1),
         borderRadius: BorderRadius.all(Radius.circular(28)),
       ),
-      child: DropdownButton(
-        value: productType,
-        items: ProductType.values
-            .map(
-              (e) => DropdownMenuItem(
-                value: e,
-                child: Text(
-                  EnumToString.convertToString(e),
-                ),
-              ),
-            )
-            .toList(),
-        hint: Text(
-          "Chose Product Type",
-        ),
-        style: TextStyle(
-          color: kTextColor,
-          fontSize: 16,
-        ),
-        onChanged: (value) {
-          setState(() {
-            productType = value;
-          });
+      child: Consumer<ProductDetails>(
+        builder: (context, productDetails, child) {
+          return DropdownButton(
+            value: productDetails.productType,
+            items: ProductType.values
+                .map(
+                  (e) => DropdownMenuItem(
+                    value: e,
+                    child: Text(
+                      EnumToString.convertToString(e),
+                    ),
+                  ),
+                )
+                .toList(),
+            hint: Text(
+              "Chose Product Type",
+            ),
+            style: TextStyle(
+              color: kTextColor,
+              fontSize: 16,
+            ),
+            onChanged: (value) {
+              productDetails.productType = value;
+            },
+            elevation: 0,
+            underline: SizedBox(width: 0, height: 0),
+          );
         },
-        elevation: 0,
-        underline: SizedBox(width: 0, height: 0),
       ),
     );
   }
@@ -254,36 +242,44 @@ class _EditProductFormState extends State<EditProductForm> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: IconButton(
-            icon: Icon(
-              Icons.add_a_photo,
-            ),
-            color: kTextColor,
-            onPressed: addImageButtonCallback,
-          ),
+              icon: Icon(
+                Icons.add_a_photo,
+              ),
+              color: kTextColor,
+              onPressed: () {
+                addImageButtonCallback();
+              }),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ...List.generate(
-              selectedImages.length,
-              (index) => SizedBox(
-                width: 80,
-                height: 80,
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      addImageButtonCallback(index: index);
-                    },
-                    child: selectedImages[index].imgType == ImageType.local
-                        ? Image.memory(
-                            File(selectedImages[index].path).readAsBytesSync())
-                        : Image.network(selectedImages[index].path),
+        Consumer<ProductDetails>(
+          builder: (context, productDetails, child) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ...List.generate(
+                  productDetails.selectedImages.length,
+                  (index) => SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          addImageButtonCallback(index: index);
+                        },
+                        child: productDetails.selectedImages[index].imgType ==
+                                ImageType.local
+                            ? Image.memory(
+                                File(productDetails.selectedImages[index].path)
+                                    .readAsBytesSync())
+                            : Image.network(
+                                productDetails.selectedImages[index].path),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         ),
       ],
     );
@@ -426,7 +422,7 @@ class _EditProductFormState extends State<EditProductForm> {
     );
   }
 
-  Future<void> saveProductButtonCallback() async {
+  Future<void> saveProductButtonCallback(BuildContext context) async {
     if (validateBasicDetailsForm() == false) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -443,7 +439,8 @@ class _EditProductFormState extends State<EditProductForm> {
       );
       return;
     }
-    if (selectedImages.length < 1) {
+    final productDetails = Provider.of<ProductDetails>(context, listen: false);
+    if (productDetails.selectedImages.length < 1) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Upload atleast One Image of Product"),
@@ -451,7 +448,7 @@ class _EditProductFormState extends State<EditProductForm> {
       );
       return;
     }
-    if (productType == null) {
+    if (productDetails.productType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Please select Product Type"),
@@ -462,6 +459,7 @@ class _EditProductFormState extends State<EditProductForm> {
     String productId;
     String snackbarMessage;
     try {
+      product.productType = productDetails.productType;
       final productUploadFuture = newProduct
           ? ProductDatabaseHelper().addUsersProduct(product)
           : ProductDatabaseHelper().updateUsersProduct(product);
@@ -517,7 +515,7 @@ class _EditProductFormState extends State<EditProductForm> {
         ),
       );
     }
-    List<String> downloadUrls = selectedImages
+    List<String> downloadUrls = productDetails.selectedImages
         .map((e) => e.imgType == ImageType.network ? e.path : null)
         .toList();
     bool productFinalizeUpdate = false;
@@ -557,21 +555,22 @@ class _EditProductFormState extends State<EditProductForm> {
 
   Future<bool> uploadProductImages(String productId) async {
     bool allImagesUpdated = true;
-    for (int i = 0; i < selectedImages.length; i++) {
-      if (selectedImages[i].imgType == ImageType.local) {
-        print("Image being uploaded: " + selectedImages[i].path);
+    final productDetails = Provider.of<ProductDetails>(context, listen: false);
+    for (int i = 0; i < productDetails.selectedImages.length; i++) {
+      if (productDetails.selectedImages[i].imgType == ImageType.local) {
+        print("Image being uploaded: " + productDetails.selectedImages[i].path);
         String downloadUrl;
         try {
           final imgUploadFuture = FirestoreFilesAccess().uploadFileToPath(
-              File(selectedImages[i].path),
+              File(productDetails.selectedImages[i].path),
               ProductDatabaseHelper().getPathForProductImage(productId, i));
           downloadUrl = await showDialog(
             context: context,
             builder: (context) {
               return FutureProgressDialog(
                 imgUploadFuture,
-                message:
-                    Text("Uploading Images ${i + 1}/${selectedImages.length}"),
+                message: Text(
+                    "Uploading Images ${i + 1}/${productDetails.selectedImages.length}"),
               );
             },
           );
@@ -581,7 +580,7 @@ class _EditProductFormState extends State<EditProductForm> {
           Logger().w("Firebase Exception: $e");
         } finally {
           if (downloadUrl != null) {
-            selectedImages[i] =
+            productDetails.selectedImages[i] =
                 CustomImage(imgType: ImageType.network, path: downloadUrl);
           } else {
             allImagesUpdated = false;
@@ -599,7 +598,8 @@ class _EditProductFormState extends State<EditProductForm> {
   }
 
   Future<void> addImageButtonCallback({int index}) async {
-    if (index == null && selectedImages.length >= 3) {
+    final productDetails = Provider.of<ProductDetails>(context, listen: false);
+    if (index == null && productDetails.selectedImages.length >= 3) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Max 3 images can be uploaded")));
       return;
@@ -630,13 +630,12 @@ class _EditProductFormState extends State<EditProductForm> {
     if (path == null) {
       return;
     }
-    setState(() {
-      if (index == null) {
-        selectedImages.add(CustomImage(imgType: ImageType.local, path: path));
-      } else {
-        selectedImages[index] =
-            CustomImage(imgType: ImageType.local, path: path);
-      }
-    });
+    if (index == null) {
+      productDetails.addNewSelectedImage(
+          CustomImage(imgType: ImageType.local, path: path));
+    } else {
+      productDetails.setSelectedImageAtIndex(
+          CustomImage(imgType: ImageType.local, path: path), index);
+    }
   }
 }

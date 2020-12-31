@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 
-class BodyState extends ChangeNotifier {
+class ChosenImage extends ChangeNotifier {
   File _chosenImage;
 
   File get chosenImage => _chosenImage;

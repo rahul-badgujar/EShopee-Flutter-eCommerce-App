@@ -1,5 +1,7 @@
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/screens/edit_product/provider_models/ProductDetails.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'components/body.dart';
 
 class EditProductScreen extends StatelessWidget {
@@ -8,12 +10,16 @@ class EditProductScreen extends StatelessWidget {
   const EditProductScreen({Key key, this.productToEdit}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(productToEdit == null ? "Add New Product" : "Edit Product"),
-      ),
-      body: Body(
-        productToEdit: productToEdit,
+    return ChangeNotifierProvider(
+      create: (context) => ProductDetails(),
+      child: Scaffold(
+        appBar: AppBar(
+          title:
+              Text(productToEdit == null ? "Add New Product" : "Edit Product"),
+        ),
+        body: Body(
+          productToEdit: productToEdit,
+        ),
       ),
     );
   }

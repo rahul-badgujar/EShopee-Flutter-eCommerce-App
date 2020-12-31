@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/exceptions/local_files_handling/image_picking_exceptions.dart';
@@ -18,42 +17,39 @@ import 'package:future_progress_dialog/future_progress_dialog.dart';
 class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<BodyState>(
-      create: (context) => BodyState(),
-      child: SafeArea(
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: getProportionateScreenWidth(20)),
-            child: SizedBox(
-              width: double.infinity,
-              child: Consumer<BodyState>(
-                builder: (context, bodyState, child) {
-                  return Column(
-                    children: [
-                      Text(
-                        "Change Avatar",
-                        style: headingStyle,
-                      ),
-                      SizedBox(height: getProportionateScreenHeight(40)),
-                      GestureDetector(
-                        child: buildDisplayPictureAvatar(context, bodyState),
-                        onTap: () {
-                          getImageFromUser(context, bodyState);
-                        },
-                      ),
-                      SizedBox(height: getProportionateScreenHeight(80)),
-                      buildChosePictureButton(context, bodyState),
-                      SizedBox(height: getProportionateScreenHeight(20)),
-                      buildUploadPictureButton(context, bodyState),
-                      SizedBox(height: getProportionateScreenHeight(20)),
-                      buildRemovePictureButton(context, bodyState),
-                      SizedBox(height: getProportionateScreenHeight(80)),
-                    ],
-                  );
-                },
-              ),
+    return SafeArea(
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+          child: SizedBox(
+            width: double.infinity,
+            child: Consumer<ChosenImage>(
+              builder: (context, bodyState, child) {
+                return Column(
+                  children: [
+                    Text(
+                      "Change Avatar",
+                      style: headingStyle,
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(40)),
+                    GestureDetector(
+                      child: buildDisplayPictureAvatar(context, bodyState),
+                      onTap: () {
+                        getImageFromUser(context, bodyState);
+                      },
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(80)),
+                    buildChosePictureButton(context, bodyState),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    buildUploadPictureButton(context, bodyState),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    buildRemovePictureButton(context, bodyState),
+                    SizedBox(height: getProportionateScreenHeight(80)),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -61,7 +57,8 @@ class Body extends StatelessWidget {
     );
   }
 
-  Widget buildDisplayPictureAvatar(BuildContext context, BodyState bodyState) {
+  Widget buildDisplayPictureAvatar(
+      BuildContext context, ChosenImage bodyState) {
     return StreamBuilder(
       stream: UserDatabaseHelper().currentUserDataStream,
       builder: (context, snapshot) {
@@ -85,7 +82,7 @@ class Body extends StatelessWidget {
     );
   }
 
-  void getImageFromUser(BuildContext context, BodyState bodyState) async {
+  void getImageFromUser(BuildContext context, ChosenImage bodyState) async {
     String path;
     String snackbarMessage;
     try {
@@ -115,7 +112,7 @@ class Body extends StatelessWidget {
     bodyState.setChosenImage = File(path);
   }
 
-  Widget buildChosePictureButton(BuildContext context, BodyState bodyState) {
+  Widget buildChosePictureButton(BuildContext context, ChosenImage bodyState) {
     return DefaultButton(
       text: "Choose Picture",
       press: () {
@@ -124,7 +121,7 @@ class Body extends StatelessWidget {
     );
   }
 
-  Widget buildUploadPictureButton(BuildContext context, BodyState bodyState) {
+  Widget buildUploadPictureButton(BuildContext context, ChosenImage bodyState) {
     return DefaultButton(
       text: "Upload Picture",
       press: () {
@@ -146,7 +143,7 @@ class Body extends StatelessWidget {
   }
 
   Future<void> uploadImageToFirestorage(
-      BuildContext context, BodyState bodyState) async {
+      BuildContext context, ChosenImage bodyState) async {
     bool uploadDisplayPictureStatus = false;
     String snackbarMessage;
     try {
@@ -177,7 +174,7 @@ class Body extends StatelessWidget {
     }
   }
 
-  Widget buildRemovePictureButton(BuildContext context, BodyState bodyState) {
+  Widget buildRemovePictureButton(BuildContext context, ChosenImage bodyState) {
     return DefaultButton(
       text: "Remove Picture",
       press: () async {
@@ -200,7 +197,7 @@ class Body extends StatelessWidget {
   }
 
   Future<void> removeImageFromFirestore(
-      BuildContext context, BodyState bodyState) async {
+      BuildContext context, ChosenImage bodyState) async {
     bool status = false;
     String snackbarMessage;
     try {
