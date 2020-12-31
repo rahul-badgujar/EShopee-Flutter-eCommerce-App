@@ -56,8 +56,7 @@ class _EditProductFormState extends State<EditProductForm> {
   final TextEditingController desciptionFieldController =
       TextEditingController();
   final TextEditingController sellerFieldController = TextEditingController();
-  bool basicDetailsFormValidated = false;
-  bool describeProductFormValidated = false;
+
   bool newProduct = true;
   List<CustomImage> selectedImages;
   Product product;
@@ -104,7 +103,7 @@ class _EditProductFormState extends State<EditProductForm> {
         buildUploadImagesTile(context),
         SizedBox(height: getProportionateScreenHeight(20)),
         buildProductTypeDropdown(),
-        SizedBox(height: getProportionateScreenHeight(20)),
+        SizedBox(height: getProportionateScreenHeight(80)),
         DefaultButton(
           text: "Save Product",
           press: saveProductButtonCallback,
@@ -129,6 +128,7 @@ class _EditProductFormState extends State<EditProductForm> {
     return Form(
       key: _basicDetailsFormKey,
       child: ExpansionTile(
+        maintainState: true,
         title: Text(
           "Basic Details",
           style: Theme.of(context).textTheme.headline6,
@@ -149,33 +149,29 @@ class _EditProductFormState extends State<EditProductForm> {
           SizedBox(height: getProportionateScreenHeight(20)),
           buildSellerField(),
           SizedBox(height: getProportionateScreenHeight(20)),
-          DefaultButton(
-            text: "Validate",
-            press: () {
-              if (_basicDetailsFormKey.currentState.validate()) {
-                _basicDetailsFormKey.currentState.save();
-                product.title = titleFieldController.text;
-                product.variant = variantFieldController.text;
-                product.originalPrice =
-                    double.parse(originalPriceFieldController.text);
-                product.discountPrice =
-                    double.parse(discountPriceFieldController.text);
-                product.seller = sellerFieldController.text;
-                basicDetailsFormValidated = true;
-              } else {
-                basicDetailsFormValidated = false;
-              }
-            },
-          ),
         ],
       ),
     );
+  }
+
+  bool validateBasicDetailsForm() {
+    if (_basicDetailsFormKey.currentState.validate()) {
+      _basicDetailsFormKey.currentState.save();
+      product.title = titleFieldController.text;
+      product.variant = variantFieldController.text;
+      product.originalPrice = double.parse(originalPriceFieldController.text);
+      product.discountPrice = double.parse(discountPriceFieldController.text);
+      product.seller = sellerFieldController.text;
+      return true;
+    }
+    return false;
   }
 
   Widget buildDescribeProductTile(BuildContext context) {
     return Form(
       key: _describeProductFormKey,
       child: ExpansionTile(
+        maintainState: true,
         title: Text(
           "Describe Product",
           style: Theme.of(context).textTheme.headline6,
@@ -190,22 +186,19 @@ class _EditProductFormState extends State<EditProductForm> {
           SizedBox(height: getProportionateScreenHeight(20)),
           buildDescriptionField(),
           SizedBox(height: getProportionateScreenHeight(20)),
-          DefaultButton(
-            text: "Validate",
-            press: () {
-              if (_describeProductFormKey.currentState.validate()) {
-                _describeProductFormKey.currentState.save();
-                product.highlights = highlightsFieldController.text;
-                product.description = desciptionFieldController.text;
-                describeProductFormValidated = true;
-              } else {
-                describeProductFormValidated = false;
-              }
-            },
-          ),
         ],
       ),
     );
+  }
+
+  bool validateDescribeProductForm() {
+    if (_describeProductFormKey.currentState.validate()) {
+      _describeProductFormKey.currentState.save();
+      product.highlights = highlightsFieldController.text;
+      product.description = desciptionFieldController.text;
+      return true;
+    }
+    return false;
   }
 
   Widget buildProductTypeDropdown() {
@@ -434,6 +427,30 @@ class _EditProductFormState extends State<EditProductForm> {
   }
 
   Future<void> saveProductButtonCallback() async {
+    if (validateBasicDetailsForm() == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Erros in Basic Details Form"),
+        ),
+      );
+      return;
+    }
+    if (validateDescribeProductForm() == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Errors in Describe Product Form"),
+        ),
+      );
+      return;
+    }
+    if (selectedImages.length < 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Upload atleast One Image of Product"),
+        ),
+      );
+      return;
+    }
     if (productType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -442,111 +459,100 @@ class _EditProductFormState extends State<EditProductForm> {
       );
       return;
     }
-    if (basicDetailsFormValidated == true &&
-        describeProductFormValidated == true) {
-      product.productType = productType;
-
-      String productId;
-      String snackbarMessage;
-      try {
-        final productUploadFuture = newProduct
-            ? ProductDatabaseHelper().addUsersProduct(product)
-            : ProductDatabaseHelper().updateUsersProduct(product);
-        productId = await showDialog(
-          context: context,
-          builder: (context) {
-            return FutureProgressDialog(
-              productUploadFuture,
-              message:
-                  Text(newProduct ? "Uploading Product" : "Updating Product"),
-            );
-          },
-        );
-        if (productId != null) {
-          snackbarMessage = "Product Info updated successfully";
-        } else {
-          throw "Couldn't update product info due to some unknown issue";
-        }
-      } on FirebaseException catch (e) {
-        Logger().w("Firebase Exception: $e");
-        snackbarMessage = "Something went wrong";
-      } catch (e) {
-        Logger().w("Unknown Exception: $e");
-        snackbarMessage = e.toString();
-      } finally {
-        Logger().i(snackbarMessage);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(snackbarMessage),
-          ),
-        );
+    String productId;
+    String snackbarMessage;
+    try {
+      final productUploadFuture = newProduct
+          ? ProductDatabaseHelper().addUsersProduct(product)
+          : ProductDatabaseHelper().updateUsersProduct(product);
+      productId = await showDialog(
+        context: context,
+        builder: (context) {
+          return FutureProgressDialog(
+            productUploadFuture,
+            message:
+                Text(newProduct ? "Uploading Product" : "Updating Product"),
+          );
+        },
+      );
+      if (productId != null) {
+        snackbarMessage = "Product Info updated successfully";
+      } else {
+        throw "Couldn't update product info due to some unknown issue";
       }
-      if (productId == null) return;
-      bool allImagesUploaded = false;
-      try {
-        allImagesUploaded = await uploadProductImages(productId);
-        if (allImagesUploaded == true) {
-          snackbarMessage = "All images uploaded successfully";
-        } else {
-          throw "Some images couldn't be uploaded, please try again";
-        }
-      } on FirebaseException catch (e) {
-        Logger().w("Firebase Exception: $e");
-        snackbarMessage = "Something went wrong";
-      } catch (e) {
-        Logger().w("Unknown Exception: $e");
-        snackbarMessage = "Something went wrong";
-      } finally {
-        Logger().i(snackbarMessage);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(snackbarMessage),
-          ),
-        );
-      }
-      List<String> downloadUrls = selectedImages
-          .map((e) => e.imgType == ImageType.network ? e.path : null)
-          .toList();
-      bool productFinalizeUpdate = false;
-      try {
-        final updateProductFuture = ProductDatabaseHelper()
-            .updateProductsImages(productId, downloadUrls);
-        productFinalizeUpdate = await showDialog(
-          context: context,
-          builder: (context) {
-            return FutureProgressDialog(
-              updateProductFuture,
-              message: Text("Saving Product"),
-            );
-          },
-        );
-        if (productFinalizeUpdate == true) {
-          snackbarMessage = "Product uploaded successfully";
-        } else {
-          throw "Couldn't upload product properly, please retry";
-        }
-      } on FirebaseException catch (e) {
-        Logger().w("Firebase Exception: $e");
-        snackbarMessage = "Something went wrong";
-      } catch (e) {
-        Logger().w("Unknown Exception: $e");
-        snackbarMessage = e.toString();
-      } finally {
-        Logger().i(snackbarMessage);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(snackbarMessage),
-          ),
-        );
-      }
-      Navigator.pop(context);
-    } else {
+    } on FirebaseException catch (e) {
+      Logger().w("Firebase Exception: $e");
+      snackbarMessage = "Something went wrong";
+    } catch (e) {
+      Logger().w("Unknown Exception: $e");
+      snackbarMessage = e.toString();
+    } finally {
+      Logger().i(snackbarMessage);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Form not validated properly"),
+          content: Text(snackbarMessage),
         ),
       );
     }
+    if (productId == null) return;
+    bool allImagesUploaded = false;
+    try {
+      allImagesUploaded = await uploadProductImages(productId);
+      if (allImagesUploaded == true) {
+        snackbarMessage = "All images uploaded successfully";
+      } else {
+        throw "Some images couldn't be uploaded, please try again";
+      }
+    } on FirebaseException catch (e) {
+      Logger().w("Firebase Exception: $e");
+      snackbarMessage = "Something went wrong";
+    } catch (e) {
+      Logger().w("Unknown Exception: $e");
+      snackbarMessage = "Something went wrong";
+    } finally {
+      Logger().i(snackbarMessage);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackbarMessage),
+        ),
+      );
+    }
+    List<String> downloadUrls = selectedImages
+        .map((e) => e.imgType == ImageType.network ? e.path : null)
+        .toList();
+    bool productFinalizeUpdate = false;
+    try {
+      final updateProductFuture =
+          ProductDatabaseHelper().updateProductsImages(productId, downloadUrls);
+      productFinalizeUpdate = await showDialog(
+        context: context,
+        builder: (context) {
+          return FutureProgressDialog(
+            updateProductFuture,
+            message: Text("Saving Product"),
+          );
+        },
+      );
+      if (productFinalizeUpdate == true) {
+        snackbarMessage = "Product uploaded successfully";
+      } else {
+        throw "Couldn't upload product properly, please retry";
+      }
+    } on FirebaseException catch (e) {
+      Logger().w("Firebase Exception: $e");
+      snackbarMessage = "Something went wrong";
+    } catch (e) {
+      Logger().w("Unknown Exception: $e");
+      snackbarMessage = e.toString();
+    } finally {
+      Logger().i(snackbarMessage);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackbarMessage),
+        ),
+      );
+    }
+    Navigator.pop(context);
   }
 
   Future<bool> uploadProductImages(String productId) async {
