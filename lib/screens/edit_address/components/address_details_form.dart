@@ -114,6 +114,7 @@ class _AddressDetailsFormState extends State<AddressDetailsForm> {
     return TextFormField(
       controller: titleFieldController,
       keyboardType: TextInputType.name,
+      maxLength: 8,
       decoration: InputDecoration(
         hintText: "Enter a title for address",
         labelText: "Title",

@@ -2,6 +2,7 @@ import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/screens/edit_address/edit_address_screen.dart';
+import 'package:e_commerce_app_flutter/screens/manage_addresses/components/address_short_details_card.dart';
 import 'package:e_commerce_app_flutter/services/data_streams/addresses_stream.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
@@ -49,6 +50,10 @@ class _BodyState extends State<Body> {
                     "Manage Addresses",
                     style: headingStyle,
                   ),
+                  Text(
+                    "Swipe LEFT to Edit, Swipe RIGHT to Delete",
+                    style: TextStyle(fontSize: 12),
+                  ),
                   SizedBox(height: getProportionateScreenHeight(20)),
                   DefaultButton(
                     text: "Add New Address",
@@ -78,14 +83,11 @@ class _BodyState extends State<Body> {
                             );
                           }
                           return ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            itemCount: addresses.length,
-                            itemBuilder: (context, index) => AddressBox(
-                              addressId: addresses[index],
-                              deleteButtonCallback: deleteButtonCallback,
-                              editButtonCallback: editButtonCallback,
-                            ),
-                          );
+                              physics: BouncingScrollPhysics(),
+                              itemCount: addresses.length,
+                              itemBuilder: (context, index) {
+                                return buildAddressItemCard(addresses[index]);
+                              });
                         } else if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return Center(
@@ -120,7 +122,7 @@ class _BodyState extends State<Body> {
     return Future<void>.value();
   }
 
-  Future<void> deleteButtonCallback(
+  Future<bool> deleteButtonCallback(
       BuildContext context, String addressId) async {
     final confirmDeletion = await showDialog(
       context: context,
@@ -172,18 +174,130 @@ class _BodyState extends State<Body> {
         );
       }
       await refreshPage();
+      return status;
     }
+    return false;
   }
 
-  void editButtonCallback(BuildContext context, String addressId) {
-    Navigator.push(
+  Future<bool> editButtonCallback(
+      BuildContext context, String addressId) async {
+    await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>
-                EditAddressScreen(addressIdToEdit: addressId))).then(
-      (_) async {
-        await refreshPage();
+                EditAddressScreen(addressIdToEdit: addressId)));
+    await refreshPage();
+    return false;
+  }
+
+  Future<void> addressItemTapCallback(String addressId) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          backgroundColor: Colors.transparent,
+          title: AddressBox(
+            addressId: addressId,
+          ),
+          titlePadding: EdgeInsets.zero,
+        );
       },
+    );
+    await refreshPage();
+  }
+
+  Widget buildAddressItemCard(String addressId) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 6,
+      ),
+      child: Dismissible(
+        key: Key(addressId),
+        direction: DismissDirection.horizontal,
+        background: buildDismissibleSecondaryBackground(),
+        secondaryBackground: buildDismissiblePrimaryBackground(),
+        dismissThresholds: {
+          DismissDirection.endToStart: 0.65,
+          DismissDirection.startToEnd: 0.65,
+        },
+        child: AddressShortDetailsCard(
+          addressId: addressId,
+          onTap: () async {
+            await addressItemTapCallback(addressId);
+          },
+        ),
+        confirmDismiss: (direction) async {
+          if (direction == DismissDirection.startToEnd) {
+            final status = await deleteButtonCallback(context, addressId);
+            return status;
+          } else if (direction == DismissDirection.endToStart) {
+            final status = await editButtonCallback(context, addressId);
+            return status;
+          }
+          return false;
+        },
+        onDismissed: (direction) async {
+          await refreshPage();
+        },
+      ),
+    );
+  }
+
+  Widget buildDismissiblePrimaryBackground() {
+    return Container(
+      padding: EdgeInsets.only(right: 20),
+      decoration: BoxDecoration(
+        color: Colors.green,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Icon(
+            Icons.edit,
+            color: Colors.white,
+          ),
+          SizedBox(width: 4),
+          Text(
+            "Edit",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildDismissibleSecondaryBackground() {
+    return Container(
+      padding: EdgeInsets.only(left: 20),
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            "Delete",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
+          ),
+          SizedBox(width: 4),
+          Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+        ],
+      ),
     );
   }
 }

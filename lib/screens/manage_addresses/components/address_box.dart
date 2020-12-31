@@ -8,19 +8,15 @@ class AddressBox extends StatelessWidget {
   const AddressBox({
     Key key,
     @required this.addressId,
-    @required this.deleteButtonCallback,
-    @required this.editButtonCallback,
   }) : super(key: key);
 
   final String addressId;
-  final Function deleteButtonCallback;
-  final Function editButtonCallback;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        vertical: 6,
+        vertical: 8,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,14 +26,8 @@ class AddressBox extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: kTextColor.withOpacity(0.025),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-                border: Border.all(
-                  color: kTextColor.withOpacity(0.18),
-                ),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
               ),
               child: FutureBuilder<Address>(
                   future: UserDatabaseHelper().getAddressFromId(addressId),
@@ -129,49 +119,6 @@ class AddressBox extends StatelessWidget {
                       ),
                     );
                   }),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 8,
-            ),
-            decoration: BoxDecoration(
-                color: kPrimaryColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                )),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                FlatButton(
-                  child: Text(
-                    "Edit",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                  onPressed: () {
-                    editButtonCallback.call(context, addressId);
-                  },
-                ),
-                FlatButton(
-                  child: Text(
-                    "Delete",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                  onPressed: () {
-                    deleteButtonCallback.call(context, addressId);
-                  },
-                )
-              ],
             ),
           ),
         ],

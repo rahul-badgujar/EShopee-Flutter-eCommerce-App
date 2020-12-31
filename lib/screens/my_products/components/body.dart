@@ -238,10 +238,8 @@ class _BodyState extends State<Body> {
         }
         return false;
       },
-      onDismissed: (direction) {
-        if (direction == DismissDirection.startToEnd) {
-          print("delete: ${product.id}");
-        } else if (direction == DismissDirection.startToEnd) {}
+      onDismissed: (direction) async {
+        await refreshPage();
       },
     );
   }
