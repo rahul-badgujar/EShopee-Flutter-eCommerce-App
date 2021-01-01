@@ -1,4 +1,5 @@
 import 'package:e_commerce_app_flutter/constants.dart';
+import 'package:e_commerce_app_flutter/screens/about_developer/about_developer_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_display_picture/change_display_picture_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_email/change_email_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_password/change_password_screen.dart';
@@ -118,6 +119,21 @@ class HomeScreenDrawer extends StatelessWidget {
             },
           ),
           buildSellerExpansionTile(context),
+          ListTile(
+            leading: Icon(Icons.info),
+            title: Text(
+              "About Developer",
+              style: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+            onTap: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AboutDeveloperScreen(),
+                ),
+              );
+            },
+          ),
           ListTile(
             leading: Icon(Icons.logout),
             title: Text(
