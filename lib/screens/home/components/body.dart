@@ -158,7 +158,7 @@ class _BodyState extends State<Body> {
                 ),
                 SizedBox(height: getProportionateScreenHeight(20)),
                 SizedBox(
-                  height: SizeConfig.screenHeight * 0.8,
+                  height: SizeConfig.screenHeight * 0.5,
                   child: ProductsSection(
                     sectionTitle: "Products You Like",
                     productsStreamController: favouriteProductsStream,

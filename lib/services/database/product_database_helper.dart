@@ -24,25 +24,26 @@ class ProductDatabaseHelper {
 
   Future<List<String>> searchInProducts(String query,
       {ProductType productType}) async {
-    final productsCollectionRef =
-        firestore.collection(PRODUCTS_COLLECTION_NAME);
-    final queryResult = await productsCollectionRef
+    Query queryRef;
+    if (productType == null) {
+      queryRef = firestore.collection(PRODUCTS_COLLECTION_NAME);
+    } else {
+      final productTypeStr = EnumToString.convertToString(productType);
+      print(productTypeStr);
+      queryRef = firestore
+          .collection(PRODUCTS_COLLECTION_NAME)
+          .where(Product.PRODUCT_TYPE_KEY, isEqualTo: productTypeStr);
+    }
+
+    Set productsId = Set<String>();
+    final querySearchInTags = await queryRef
         .where(Product.SEARCH_TAGS_KEY, arrayContains: query)
         .get();
-    Set productsId = Set<String>();
-    for (final doc in queryResult.docs) {
+    for (final doc in querySearchInTags.docs) {
       productsId.add(doc.id);
     }
-    QuerySnapshot productsRef;
-    if (productType == null) {
-      productsRef = await productsCollectionRef.get();
-    } else {
-      productsRef = await productsCollectionRef
-          .where(Product.PRODUCT_TYPE_KEY,
-              isEqualTo: EnumToString.convertToString(productType))
-          .get();
-    }
-    for (final doc in productsRef.docs) {
+    final queryRefDocs = await queryRef.get();
+    for (final doc in queryRefDocs.docs) {
       final product = Product.fromMap(doc.data(), id: doc.id);
       if (product.title.toString().toLowerCase().contains(query) ||
           product.description.toString().toLowerCase().contains(query) ||
