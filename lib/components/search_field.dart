@@ -5,8 +5,10 @@ import '../size_config.dart';
 
 //TODO: Implement search
 class SearchField extends StatelessWidget {
+  final Function onSubmit;
   const SearchField({
     Key key,
+    @required this.onSubmit,
   }) : super(key: key);
 
   @override
@@ -17,6 +19,7 @@ class SearchField extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextField(
+        textInputAction: TextInputAction.search,
         decoration: InputDecoration(
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
@@ -26,10 +29,7 @@ class SearchField extends StatelessWidget {
               horizontal: getProportionateScreenWidth(20),
               vertical: getProportionateScreenWidth(9)),
         ),
-        onSubmitted: (value) {
-          // process the search query
-          print("Search query for: $value");
-        },
+        onSubmitted: onSubmit,
       ),
     );
   }

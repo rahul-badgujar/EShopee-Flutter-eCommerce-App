@@ -67,7 +67,13 @@ class _BodyState extends State<Body> {
                         },
                       ),
                       SizedBox(width: 5),
-                      Expanded(child: SearchField()),
+                      Expanded(
+                        child: SearchField(
+                          onSubmit: (value) {
+                            print(value);
+                          },
+                        ),
+                      ),
                     ],
                   ),
                   SizedBox(height: getProportionateScreenHeight(20)),

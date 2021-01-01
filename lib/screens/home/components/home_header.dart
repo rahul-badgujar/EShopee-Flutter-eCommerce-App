@@ -23,7 +23,13 @@ class HomeHeader extends StatelessWidget {
             press: () {
               Scaffold.of(context).openDrawer();
             }),
-        Expanded(child: SearchField()),
+        Expanded(
+          child: SearchField(
+            onSubmit: (value) {
+              print(value);
+            },
+          ),
+        ),
         SizedBox(width: 5),
         IconButtonWithCounter(
           svgSrc: "assets/icons/Cart Icon.svg",
