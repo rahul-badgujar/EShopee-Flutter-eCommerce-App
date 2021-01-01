@@ -5,7 +5,9 @@ import 'package:e_commerce_app_flutter/services/database/app_review_database_hel
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'app_review_dialog.dart';
 
@@ -29,11 +31,18 @@ class Body extends StatelessWidget {
                   style: headingStyle,
                 ),
                 SizedBox(height: getProportionateScreenHeight(50)),
-                CircleAvatar(
-                  radius: SizeConfig.screenWidth * 0.3,
-                  backgroundColor: kTextColor.withOpacity(0.5),
-                  backgroundImage: AssetImage(
-                    "assets/images/developer.jpeg",
+                InkWell(
+                  onTap: () async {
+                    const String linkedInUrl =
+                        "https://www.linkedin.com/in/imrb7here";
+                    await launchUrl(linkedInUrl);
+                  },
+                  child: CircleAvatar(
+                    radius: SizeConfig.screenWidth * 0.3,
+                    backgroundColor: kTextColor.withOpacity(0.5),
+                    backgroundImage: AssetImage(
+                      "assets/images/developer.jpeg",
+                    ),
                   ),
                 ),
                 SizedBox(height: getProportionateScreenHeight(30)),
@@ -51,7 +60,51 @@ class Body extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: getProportionateScreenHeight(75)),
+                SizedBox(height: getProportionateScreenHeight(30)),
+                Row(
+                  children: [
+                    Spacer(),
+                    IconButton(
+                      icon: SvgPicture.asset(
+                        "assets/icons/github_icon.svg",
+                        color: kTextColor.withOpacity(0.75),
+                      ),
+                      color: kTextColor.withOpacity(0.75),
+                      iconSize: 40,
+                      padding: EdgeInsets.all(16),
+                      onPressed: () async {
+                        const String githubUrl = "https://github.com/imRB7here";
+                        await launchUrl(githubUrl);
+                      },
+                    ),
+                    IconButton(
+                      icon: SvgPicture.asset(
+                        "assets/icons/linkedin_icon.svg",
+                        color: kTextColor.withOpacity(0.75),
+                      ),
+                      iconSize: 40,
+                      padding: EdgeInsets.all(16),
+                      onPressed: () async {
+                        const String linkedInUrl =
+                            "https://www.linkedin.com/in/imrb7here";
+                        await launchUrl(linkedInUrl);
+                      },
+                    ),
+                    IconButton(
+                      icon: SvgPicture.asset("assets/icons/instagram_icon.svg",
+                          color: kTextColor.withOpacity(0.75)),
+                      iconSize: 40,
+                      padding: EdgeInsets.all(16),
+                      onPressed: () async {
+                        const String instaUrl =
+                            "https://www.instagram.com/_rahul.badgujar_";
+                        await launchUrl(instaUrl);
+                      },
+                    ),
+                    Spacer(),
+                  ],
+                ),
+                SizedBox(height: getProportionateScreenHeight(50)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -90,6 +143,18 @@ class Body extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> launchUrl(String url) async {
+    try {
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        Logger().i("LinkedIn URL was unable to launch");
+      }
+    } catch (e) {
+      Logger().e("Exception while launching URL: $e");
+    }
   }
 
   Future<void> submitAppReview(BuildContext context,
