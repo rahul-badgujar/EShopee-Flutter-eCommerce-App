@@ -24,7 +24,7 @@ class Body extends StatelessWidget {
           physics: BouncingScrollPhysics(),
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: getProportionateScreenWidth(20)),
+                horizontal: getProportionateScreenWidth(screenPadding)),
             child: SizedBox(
               width: double.infinity,
               child: Consumer<ChosenImage>(

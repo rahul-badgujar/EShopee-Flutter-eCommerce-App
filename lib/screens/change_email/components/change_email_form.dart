@@ -36,8 +36,8 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
     final form = Form(
       key: _formKey,
       child: Padding(
-        padding:
-            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+        padding: EdgeInsets.symmetric(
+            horizontal: getProportionateScreenWidth(screenPadding)),
         child: Column(
           children: [
             buildCurrentEmailFormField(),

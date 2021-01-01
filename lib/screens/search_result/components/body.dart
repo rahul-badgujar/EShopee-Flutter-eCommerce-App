@@ -1,6 +1,7 @@
 import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
+import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -21,8 +22,8 @@ class Body extends StatelessWidget {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+          padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(screenPadding)),
           child: SizedBox(
             width: double.infinity,
             child: Column(
@@ -98,7 +99,16 @@ class Body extends StatelessWidget {
               itemBuilder: (context, index) {
                 return ProductCard(
                   productId: searchResultProductsId[index],
-                  press: () {},
+                  press: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductDetailsScreen(
+                          productId: searchResultProductsId[index],
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             );
