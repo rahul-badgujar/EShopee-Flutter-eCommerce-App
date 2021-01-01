@@ -1,6 +1,7 @@
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/category_products/category_products_screen.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
+import 'package:e_commerce_app_flutter/screens/search_result/search_result_screen.dart';
 import 'package:e_commerce_app_flutter/services/data_streams/all_products_stream.dart';
 import 'package:e_commerce_app_flutter/services/data_streams/favourite_products_stream.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
@@ -85,7 +86,31 @@ class _BodyState extends State<Body> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(height: getProportionateScreenHeight(15)),
-                HomeHeader(),
+                HomeHeader(
+                  onSearchSubmitted: (value) async {
+                    final query = value.toString();
+                    if (query.length <= 0) return;
+                    final searchedProductsId = List<String>();
+                    searchedProductsId.addAll(
+                      [
+                        "DgTwXZidec2B1k2GvKr2",
+                        "GTdqmgUeIrZ4qWJbfYlz",
+                        "nTsSOiI5vGQL8uMdpiDX"
+                      ],
+                    );
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SearchResultScreen(
+                          searchQuery: query,
+                          searchResultProductsId: searchedProductsId,
+                          searchIn: "All Products",
+                        ),
+                      ),
+                    );
+                    await refreshPage();
+                  },
+                ),
                 SizedBox(height: getProportionateScreenHeight(15)),
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.1,

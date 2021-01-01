@@ -5,9 +5,7 @@ class ChangeDisplayPictureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Change Display Picture"),
-      ),
+      appBar: AppBar(),
       body: Body(),
     );
   }

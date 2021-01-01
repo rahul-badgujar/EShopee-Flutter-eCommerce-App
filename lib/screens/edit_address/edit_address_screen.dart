@@ -9,9 +9,7 @@ class EditAddressScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Edit Address"),
-      ),
+      appBar: AppBar(),
       body: Body(addressIdToEdit: addressIdToEdit),
     );
   }

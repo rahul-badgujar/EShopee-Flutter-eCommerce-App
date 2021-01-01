@@ -5,9 +5,7 @@ class ChangePhoneScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Change Phone Number"),
-      ),
+      appBar: AppBar(),
       body: Body(),
     );
   }

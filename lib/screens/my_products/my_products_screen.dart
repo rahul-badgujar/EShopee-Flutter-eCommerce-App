@@ -5,9 +5,7 @@ class MyProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Manage Your Products"),
-      ),
+      appBar: AppBar(),
       body: Body(),
       //body: Body(),
     );
