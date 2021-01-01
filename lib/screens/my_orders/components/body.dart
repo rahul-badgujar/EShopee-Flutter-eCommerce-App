@@ -1,10 +1,10 @@
-import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_short_detail_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/OrderedProduct.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/models/Review.dart';
+import 'package:e_commerce_app_flutter/screens/my_orders/components/product_review_dialog.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/services/data_streams/ordered_products_stream.dart';
@@ -13,7 +13,6 @@ import 'package:e_commerce_app_flutter/services/database/user_database_helper.da
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:logger/logger.dart';
 
 class Body extends StatefulWidget {
@@ -300,73 +299,6 @@ class _BodyState extends State<Body> {
           color: kTextColor,
         );
       },
-    );
-  }
-}
-
-class ProductReviewDialog extends StatelessWidget {
-  final Review review;
-  ProductReviewDialog({
-    Key key,
-    @required this.review,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: Center(
-        child: Text(
-          "Review",
-        ),
-      ),
-      children: [
-        Center(
-          child: RatingBar.builder(
-            initialRating: review.rating.toDouble(),
-            minRating: 1,
-            direction: Axis.horizontal,
-            allowHalfRating: false,
-            itemCount: 5,
-            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-            itemBuilder: (context, _) => Icon(
-              Icons.star,
-              color: Colors.amber,
-            ),
-            onRatingUpdate: (rating) {
-              review.rating = rating.round();
-            },
-          ),
-        ),
-        SizedBox(height: getProportionateScreenHeight(20)),
-        Center(
-          child: TextFormField(
-            initialValue: review.feedback,
-            decoration: InputDecoration(
-              hintText: "Feedback of Product",
-              labelText: "Feedback (optional)",
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-            ),
-            onChanged: (value) {
-              review.feedback = value;
-            },
-            maxLines: null,
-            maxLength: 150,
-          ),
-        ),
-        SizedBox(height: getProportionateScreenHeight(10)),
-        Center(
-          child: DefaultButton(
-            text: "Submit",
-            press: () {
-              Navigator.pop(context, review);
-            },
-          ),
-        ),
-      ],
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 16,
-      ),
     );
   }
 }

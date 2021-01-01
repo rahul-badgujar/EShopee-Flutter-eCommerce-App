@@ -1,6 +1,13 @@
 import 'package:e_commerce_app_flutter/constants.dart';
+import 'package:e_commerce_app_flutter/models/AppReview.dart';
+import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:e_commerce_app_flutter/services/database/app_review_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+
+import 'app_review_dialog.dart';
 
 class Body extends StatelessWidget {
   @override
@@ -54,7 +61,9 @@ class Body extends StatelessWidget {
                       color: kTextColor.withOpacity(0.75),
                       iconSize: 50,
                       padding: EdgeInsets.all(16),
-                      onPressed: () {},
+                      onPressed: () {
+                        submitAppReview(context, liked: true);
+                      },
                     ),
                     Text(
                       "Liked the app?",
@@ -68,7 +77,9 @@ class Body extends StatelessWidget {
                       padding: EdgeInsets.all(16),
                       color: kTextColor.withOpacity(0.75),
                       iconSize: 50,
-                      onPressed: () {},
+                      onPressed: () {
+                        submitAppReview(context, liked: false);
+                      },
                     ),
                     Spacer(),
                   ],
@@ -79,5 +90,60 @@ class Body extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> submitAppReview(BuildContext context,
+      {bool liked = true}) async {
+    AppReview prevReview;
+    try {
+      prevReview = await AppReviewDatabaseHelper().getAppReviewOfCurrentUser();
+    } on FirebaseException catch (e) {
+      Logger().w("Firebase Exception: $e");
+    } catch (e) {
+      Logger().w("Unknown Exception: $e");
+    } finally {
+      if (prevReview == null) {
+        prevReview = AppReview(
+          AuthentificationService().currentUser.uid,
+          liked: liked,
+          feedback: "",
+        );
+      }
+    }
+
+    final AppReview result = await showDialog(
+      context: context,
+      builder: (context) {
+        return AppReviewDialog(
+          appReview: prevReview,
+        );
+      },
+    );
+    if (result != null) {
+      result.liked = liked;
+      bool reviewAdded = false;
+      String snackbarMessage;
+      try {
+        reviewAdded = await AppReviewDatabaseHelper().editAppReview(result);
+        if (reviewAdded == true) {
+          snackbarMessage = "Feedback submitted successfully";
+        } else {
+          throw "Coulnd't add feeback due to unknown reason";
+        }
+      } on FirebaseException catch (e) {
+        Logger().w("Firebase Exception: $e");
+        snackbarMessage = e.toString();
+      } catch (e) {
+        Logger().w("Unknown Exception: $e");
+        snackbarMessage = e.toString();
+      } finally {
+        Logger().i(snackbarMessage);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+      }
+    }
   }
 }
