@@ -10,16 +10,29 @@ Future<bool> showConfirmationDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: Text(messege),
+        content: Text(messege),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
         actions: [
           FlatButton(
-            child: Text(positiveResponse),
+            child: Text(
+              positiveResponse,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             onPressed: () {
               Navigator.pop(context, true);
             },
           ),
           FlatButton(
-            child: Text(negativeResponse),
+            child: Text(
+              negativeResponse,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             onPressed: () {
               Navigator.pop(context, false);
             },
