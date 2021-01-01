@@ -39,9 +39,12 @@ class ProductTypeBox extends StatelessWidget {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(6.0),
-                  child: SvgPicture.asset(
-                    icon,
-                    color: kPrimaryColor,
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: SvgPicture.asset(
+                      icon,
+                      color: kPrimaryColor,
+                    ),
                   ),
                 ),
               ),

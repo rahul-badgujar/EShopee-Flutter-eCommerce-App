@@ -38,7 +38,6 @@ class ProductImages extends StatelessWidget {
                       product.images.length;
                 },
                 child: PinchZoomImage(
-                  hideStatusBarWhileZooming: true,
                   image: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
