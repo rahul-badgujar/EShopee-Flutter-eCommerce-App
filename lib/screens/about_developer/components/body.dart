@@ -21,6 +21,58 @@ class Body extends StatelessWidget {
                   "About Developer",
                   style: headingStyle,
                 ),
+                SizedBox(height: getProportionateScreenHeight(50)),
+                CircleAvatar(
+                  radius: SizeConfig.screenWidth * 0.3,
+                  backgroundColor: kTextColor.withOpacity(0.5),
+                  backgroundImage: AssetImage(
+                    "assets/images/developer.jpeg",
+                  ),
+                ),
+                SizedBox(height: getProportionateScreenHeight(30)),
+                Text(
+                  '" Rahul Badgujar "',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                Text(
+                  "PCCoE Pune",
+                  style: TextStyle(
+                    fontSize: 21,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(height: getProportionateScreenHeight(75)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Spacer(),
+                    IconButton(
+                      icon: Icon(Icons.thumb_up),
+                      color: kTextColor.withOpacity(0.75),
+                      iconSize: 50,
+                      padding: EdgeInsets.all(16),
+                      onPressed: () {},
+                    ),
+                    Text(
+                      "Liked the app?",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.thumb_down),
+                      padding: EdgeInsets.all(16),
+                      color: kTextColor.withOpacity(0.75),
+                      iconSize: 50,
+                      onPressed: () {},
+                    ),
+                    Spacer(),
+                  ],
+                )
               ],
             ),
           ),
