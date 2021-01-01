@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
@@ -81,20 +82,33 @@ class Body extends StatelessWidget {
         color: Color(0xFFF5F6F9),
         borderRadius: BorderRadius.circular(15),
       ),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: BouncingScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.7,
-          crossAxisSpacing: 4,
-          mainAxisSpacing: 4,
-        ),
-        itemCount: searchResultProductsId.length,
-        itemBuilder: (context, index) {
-          return ProductCard(
-            productId: searchResultProductsId[index],
-            press: () {},
+      child: Builder(
+        builder: (context) {
+          if (searchResultProductsId.length > 0) {
+            return GridView.builder(
+              shrinkWrap: true,
+              physics: BouncingScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.7,
+                crossAxisSpacing: 4,
+                mainAxisSpacing: 4,
+              ),
+              itemCount: searchResultProductsId.length,
+              itemBuilder: (context, index) {
+                return ProductCard(
+                  productId: searchResultProductsId[index],
+                  press: () {},
+                );
+              },
+            );
+          }
+          return Center(
+            child: NothingToShowContainer(
+              iconPath: "assets/icons/search_no_found.svg",
+              secondaryMessage: "Found 0 Products",
+              primaryMessage: "Try another search keyword",
+            ),
           );
         },
       ),

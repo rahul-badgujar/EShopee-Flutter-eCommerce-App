@@ -22,12 +22,39 @@ class ProductDatabaseHelper {
     return _firebaseFirestore;
   }
 
-  /* Future<List<String>> searchInProducts(String query) {
+  Future<List<String>> searchInProducts(String query,
+      {ProductType productType}) async {
     final productsCollectionRef =
         firestore.collection(PRODUCTS_COLLECTION_NAME);
-    final queryResult=productsCollectionRef.where(Product.TITLE_KEY, con)
+    final queryResult = await productsCollectionRef
+        .where(Product.SEARCH_TAGS_KEY, arrayContains: query)
+        .get();
+    Set productsId = Set<String>();
+    for (final doc in queryResult.docs) {
+      productsId.add(doc.id);
+    }
+    QuerySnapshot productsRef;
+    if (productType == null) {
+      productsRef = await productsCollectionRef.get();
+    } else {
+      productsRef = await productsCollectionRef
+          .where(Product.PRODUCT_TYPE_KEY,
+              isEqualTo: EnumToString.convertToString(productType))
+          .get();
+    }
+    for (final doc in productsRef.docs) {
+      final product = Product.fromMap(doc.data(), id: doc.id);
+      if (product.title.toString().toLowerCase().contains(query) ||
+          product.description.toString().toLowerCase().contains(query) ||
+          product.highlights.toString().toLowerCase().contains(query) ||
+          product.variant.toString().toLowerCase().contains(query) ||
+          product.seller.toString().toLowerCase().contains(query)) {
+        productsId.add(product.id);
+      }
+    }
+    return productsId.toList();
   }
- */
+
   Future<bool> addProductReview(String productId, Review review) async {
     final reviewesCollectionRef = firestore
         .collection(PRODUCTS_COLLECTION_NAME)
@@ -122,8 +149,8 @@ class ProductDatabaseHelper {
         firestore.collection(PRODUCTS_COLLECTION_NAME);
     final docRef = await productsCollectionReference.add(product.toMap());
     await docRef.update({
-      Product.SEARCH_TAGS_KEY:
-          FieldValue.arrayUnion([productMap[Product.PRODUCT_TYPE_KEY]])
+      Product.SEARCH_TAGS_KEY: FieldValue.arrayUnion(
+          [productMap[Product.PRODUCT_TYPE_KEY].toString().toLowerCase()])
     });
     return docRef.id;
   }
@@ -143,8 +170,8 @@ class ProductDatabaseHelper {
     await docRef.update(productMap);
     if (product.productType != null) {
       await docRef.update({
-        Product.SEARCH_TAGS_KEY:
-            FieldValue.arrayUnion([productMap[Product.PRODUCT_TYPE_KEY]])
+        Product.SEARCH_TAGS_KEY: FieldValue.arrayUnion(
+            [productMap[Product.PRODUCT_TYPE_KEY].toString().toLowerCase()])
       });
     }
     return docRef.id;

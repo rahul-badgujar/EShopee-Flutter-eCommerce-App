@@ -128,10 +128,9 @@ class _EditProductFormState extends State<EditProductForm> {
             width: getProportionateScreenWidth(120),
             constraintSuggestion: true,
             hintText: "Add search tag",
-            maxLength: 15,
             keyboardType: TextInputType.name,
             onSubmitted: (String str) {
-              productDetails.addSearchTag(str);
+              productDetails.addSearchTag(str.toLowerCase());
             },
           ),
           itemCount: productDetails.searchTags.length,

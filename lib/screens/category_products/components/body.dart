@@ -7,6 +7,7 @@ import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:e_commerce_app_flutter/screens/search_result/search_result_screen.dart';
 import 'package:e_commerce_app_flutter/services/data_streams/category_products_stream.dart';
+import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
@@ -58,45 +59,7 @@ class _BodyState extends State<Body> {
               child: Column(
                 children: [
                   SizedBox(height: getProportionateScreenHeight(20)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      RoundedIconButton(
-                        iconData: Icons.arrow_back_ios,
-                        press: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      SizedBox(width: 5),
-                      Expanded(
-                        child: SearchField(
-                          onSubmit: (value) async {
-                            final query = value.toString();
-                            if (query.length <= 0) return;
-                            final searchedProductsId = List<String>();
-                            searchedProductsId.addAll(
-                              [
-                                "DgTwXZidec2B1k2GvKr2",
-                                "GTdqmgUeIrZ4qWJbfYlz",
-                                "nTsSOiI5vGQL8uMdpiDX"
-                              ],
-                            );
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SearchResultScreen(
-                                  searchQuery: query,
-                                  searchResultProductsId: searchedProductsId,
-                                  searchIn: "All Products",
-                                ),
-                              ),
-                            );
-                            await refreshPage();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                  buildHeadBar(),
                   SizedBox(height: getProportionateScreenHeight(20)),
                   SizedBox(
                     height: SizeConfig.screenHeight * 0.13,
@@ -146,6 +109,59 @@ class _BodyState extends State<Body> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildHeadBar() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        RoundedIconButton(
+          iconData: Icons.arrow_back_ios,
+          press: () {
+            Navigator.pop(context);
+          },
+        ),
+        SizedBox(width: 5),
+        Expanded(
+          child: SearchField(
+            onSubmit: (value) async {
+              final query = value.toString();
+              if (query.length <= 0) return;
+              List<String> searchedProductsId;
+              try {
+                searchedProductsId = await ProductDatabaseHelper()
+                    .searchInProducts(query.toLowerCase(),
+                        productType: widget.productType);
+                if (searchedProductsId != null) {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SearchResultScreen(
+                        searchQuery: query,
+                        searchResultProductsId: searchedProductsId,
+                        searchIn:
+                            EnumToString.convertToString(widget.productType),
+                      ),
+                    ),
+                  );
+                  await refreshPage();
+                } else {
+                  throw "Couldn't perform search due to some unknown reason";
+                }
+              } catch (e) {
+                final error = e.toString();
+                Logger().e(error);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("$error"),
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 
