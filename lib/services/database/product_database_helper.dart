@@ -22,6 +22,12 @@ class ProductDatabaseHelper {
     return _firebaseFirestore;
   }
 
+  /* Future<List<String>> searchInProducts(String query) {
+    final productsCollectionRef =
+        firestore.collection(PRODUCTS_COLLECTION_NAME);
+    final queryResult=productsCollectionRef.where(Product.TITLE_KEY, con)
+  }
+ */
   Future<bool> addProductReview(String productId, Review review) async {
     final reviewesCollectionRef = firestore
         .collection(PRODUCTS_COLLECTION_NAME)
@@ -110,10 +116,15 @@ class ProductDatabaseHelper {
 
   Future<String> addUsersProduct(Product product) async {
     String uid = AuthentificationService().currentUser.uid;
+    final productMap = product.toMap();
     product.owner = uid;
     final productsCollectionReference =
         firestore.collection(PRODUCTS_COLLECTION_NAME);
     final docRef = await productsCollectionReference.add(product.toMap());
+    await docRef.update({
+      Product.SEARCH_TAGS_KEY:
+          FieldValue.arrayUnion([productMap[Product.PRODUCT_TYPE_KEY]])
+    });
     return docRef.id;
   }
 
@@ -125,12 +136,18 @@ class ProductDatabaseHelper {
   }
 
   Future<String> updateUsersProduct(Product product) async {
+    final productMap = product.toUpdateMap();
     final productsCollectionReference =
         firestore.collection(PRODUCTS_COLLECTION_NAME);
-    await productsCollectionReference
-        .doc(product.id)
-        .update(product.toUpdateMap());
-    return product.id;
+    final docRef = productsCollectionReference.doc(product.id);
+    await docRef.update(productMap);
+    if (product.productType != null) {
+      await docRef.update({
+        Product.SEARCH_TAGS_KEY:
+            FieldValue.arrayUnion([productMap[Product.PRODUCT_TYPE_KEY]])
+      });
+    }
+    return docRef.id;
   }
 
   Future<List<String>> getCategoryProductsList(ProductType productType) async {

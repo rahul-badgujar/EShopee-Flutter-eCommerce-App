@@ -22,6 +22,7 @@ class Product extends Model {
   static const String SELLER_KEY = "seller";
   static const String OWNER_KEY = "owner";
   static const String PRODUCT_TYPE_KEY = "product_type";
+  static const String SEARCH_TAGS_KEY = "search_tags";
 
   List<String> images;
   String title;
@@ -35,6 +36,7 @@ class Product extends Model {
   bool favourite;
   String owner;
   ProductType productType;
+  List<String> searchTags;
 
   Product(
     String id, {
@@ -49,7 +51,36 @@ class Product extends Model {
     this.description,
     this.seller,
     this.owner,
+    this.searchTags,
   }) : super(id);
+
+  int calculatePercentageDiscount() {
+    int discount =
+        (((originalPrice - discountPrice) * 100) / originalPrice).round();
+    return discount;
+  }
+
+  factory Product.fromMap(Map<String, dynamic> map, {String id}) {
+    if (map[SEARCH_TAGS_KEY] == null) {
+      map[SEARCH_TAGS_KEY] = List<String>();
+    }
+    return Product(
+      id,
+      images: map[IMAGES_KEY].cast<String>(),
+      title: map[TITLE_KEY],
+      variant: map[VARIANT_KEY],
+      productType:
+          EnumToString.fromString(ProductType.values, map[PRODUCT_TYPE_KEY]),
+      discountPrice: map[DISCOUNT_PRICE_KEY],
+      originalPrice: map[ORIGINAL_PRICE_KEY],
+      rating: map[RATING_KEY],
+      highlights: map[HIGHLIGHTS_KEY],
+      description: map[DESCRIPTION_KEY],
+      seller: map[SELLER_KEY],
+      owner: map[OWNER_KEY],
+      searchTags: map[SEARCH_TAGS_KEY].cast<String>(),
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() {
@@ -65,32 +96,10 @@ class Product extends Model {
       DESCRIPTION_KEY: description,
       SELLER_KEY: seller,
       OWNER_KEY: owner,
+      SEARCH_TAGS_KEY: searchTags,
     };
+
     return map;
-  }
-
-  int calculatePercentageDiscount() {
-    int discount =
-        (((originalPrice - discountPrice) * 100) / originalPrice).round();
-    return discount;
-  }
-
-  factory Product.fromMap(Map<String, dynamic> map, {String id}) {
-    return Product(
-      id,
-      images: map[IMAGES_KEY].cast<String>(),
-      title: map[TITLE_KEY],
-      variant: map[VARIANT_KEY],
-      productType:
-          EnumToString.fromString(ProductType.values, map[PRODUCT_TYPE_KEY]),
-      discountPrice: map[DISCOUNT_PRICE_KEY],
-      originalPrice: map[ORIGINAL_PRICE_KEY],
-      rating: map[RATING_KEY],
-      highlights: map[HIGHLIGHTS_KEY],
-      description: map[DESCRIPTION_KEY],
-      seller: map[SELLER_KEY],
-      owner: map[OWNER_KEY],
-    );
   }
 
   @override
@@ -107,8 +116,9 @@ class Product extends Model {
     if (seller != null) map[SELLER_KEY] = seller;
     if (productType != null)
       map[PRODUCT_TYPE_KEY] = EnumToString.convertToString(productType);
-
     if (owner != null) map[OWNER_KEY] = owner;
+    if (searchTags != null) map[SEARCH_TAGS_KEY] = searchTags;
+
     return map;
   }
 }

@@ -19,6 +19,7 @@ class CustomImage {
 class ProductDetails extends ChangeNotifier {
   List<CustomImage> _selectedImages = List<CustomImage>();
   ProductType _productType;
+  List<String> _searchTags = List<String>();
 
   List<CustomImage> get selectedImages {
     return _selectedImages;
@@ -55,6 +56,32 @@ class ProductDetails extends ChangeNotifier {
 
   set productType(ProductType type) {
     _productType = type;
+    notifyListeners();
+  }
+
+  List<String> get searchTags {
+    return _searchTags;
+  }
+
+  set searchTags(List<String> tags) {
+    _searchTags = tags;
+    notifyListeners();
+  }
+
+  set initSearchTags(List<String> tags) {
+    _searchTags = tags;
+  }
+
+  void addSearchTag(String tag) {
+    _searchTags.add(tag);
+    notifyListeners();
+  }
+
+  void removeSearchTag({int index}) {
+    if (index == null)
+      _searchTags.removeLast();
+    else
+      _searchTags.removeAt(index);
     notifyListeners();
   }
 }

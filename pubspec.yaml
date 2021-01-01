@@ -32,6 +32,7 @@ dependencies:
   flutter_launcher_icons: ^0.8.1
   flutter_rating_bar: ^3.2.0+1
   flutter_svg: ^0.19.2+1
+  flutter_tags: ^0.4.9+1
   future_progress_dialog: ^0.1.1
   image_picker: ^0.6.7+15
   intl: ^0.16.1
