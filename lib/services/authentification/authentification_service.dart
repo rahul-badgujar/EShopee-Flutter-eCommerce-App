@@ -117,7 +117,10 @@ class AuthentificationService {
     await firebaseAuth.signOut();
   }
 
-  bool get currentUserVerified => currentUser.emailVerified;
+  bool get currentUserVerified {
+    currentUser.reload();
+    return currentUser.emailVerified;
+  }
 
   Future<void> sendVerificationEmailToCurrentUser() async {
     await firebaseAuth.currentUser.sendEmailVerification();
