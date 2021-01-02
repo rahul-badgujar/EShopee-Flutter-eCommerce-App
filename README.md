@@ -58,25 +58,28 @@ NOTE: Its tries to stimulate a mock buy-sell cycle as their is no any Payment Ga
 :heavy_check_mark: Maintain Cart\
 :heavy_check_mark: Mark products as your favourites\
 :heavy_check_mark: Manage your Addresses\
-:heavy_check_mark: Review the products you buy\
+:heavy_check_mark: Review the products you buy
 
 ## :checkered_flag: Illustrations
 
-![Home Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/home%20screen.png)
-![Home Screen Drawer](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/home%20screen%20drawer.png)
-![Product Details](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/product%20details%20screen-%20product%20actions.png)
-![Product Review](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/product%20details%20screen-%20user%20reviews.png)
-![Category Products](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/category%20products%20screen.png)
-![Cart Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/cart%20screen.png)
-![Edit Product Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/edit%20product%20screen.png)
-![My Products Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/my%20products%20screen.png)
-![Manage Addresses Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/manage%20addresses%20screen.png)
-![My Orders](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/my%20orders%20screen.png)
-[And many more at](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/tree/master/illustrations)
+Here are some Illustration of App Screens
+
+![Home Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/home%20screen.png)\
+![Home Screen Drawer](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/home%20screen%20drawer.png)\
+![Product Details](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/product%20details%20screen-%20product%20actions.png)\
+![Product Review](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/product%20details%20screen-%20user%20reviews.png)\
+![Category Products](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/category%20products%20screen.png)\
+![Cart Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/cart%20screen.png)\
+![Edit Product Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/edit%20product%20screen.png)\
+![My Products Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/my%20products%20screen.png)\
+![Manage Addresses Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/manage%20addresses%20screen.png)\
+![My Orders](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/my%20orders%20screen.png)\
+
+[For more Illustrations of App...](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/tree/master/illustrations)
 
 ## :white_check_mark: Installation
 
-Download the APK File from GDrive Link: [EShopee](https://drive.google.com/drive/folders/1wsWxGh_5MTHRUqDh6Zyc8J_iolTVBhmH?usp=sharing)
+Download the APK File from GDrive Link: [EShopee](https://drive.google.com/drive/folders/1wsWxGh_5MTHRUqDh6Zyc8J_iolTVBhmH?usp=sharing)\
 Sign up, Sign in and Explore the App. And do not forget to add your own products
 
 ## :rocket: Resources
