@@ -1,14 +1,18 @@
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
+import 'package:e_commerce_app_flutter/screens/cart/cart_screen.dart';
 import 'package:e_commerce_app_flutter/screens/category_products/category_products_screen.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/product_details_screen.dart';
 import 'package:e_commerce_app_flutter/screens/search_result/search_result_screen.dart';
+import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/services/data_streams/all_products_stream.dart';
 import 'package:e_commerce_app_flutter/services/data_streams/favourite_products_stream.dart';
 import 'package:e_commerce_app_flutter/services/database/product_database_helper.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:logger/logger.dart';
+import '../../../utils.dart';
 import '../components/home_header.dart';
 import 'product_type_box.dart';
 import 'products_section.dart';
@@ -121,6 +125,37 @@ class _BodyState extends State<Body> {
                         ),
                       );
                     }
+                  },
+                  onCartButtonPressed: () async {
+                    bool allowed =
+                        AuthentificationService().currentUserVerified;
+                    if (!allowed) {
+                      final reverify = await showConfirmationDialog(context,
+                          "You haven't verified your email address. This action is only allowed for verified users.",
+                          positiveResponse: "Resend verification email",
+                          negativeResponse: "Go back");
+                      if (reverify) {
+                        final future = AuthentificationService()
+                            .sendVerificationEmailToCurrentUser();
+                        await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return FutureProgressDialog(
+                              future,
+                              message: Text("Resending verification email"),
+                            );
+                          },
+                        );
+                      }
+                      return;
+                    }
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CartScreen(),
+                      ),
+                    );
+                    await refreshPage();
                   },
                 ),
                 SizedBox(height: getProportionateScreenHeight(15)),

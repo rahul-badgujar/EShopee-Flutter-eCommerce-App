@@ -2,6 +2,7 @@ import 'package:e_commerce_app_flutter/exceptions/firebaseauth/messeged_firebase
 import 'package:e_commerce_app_flutter/exceptions/firebaseauth/signin_exceptions.dart';
 import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:logger/logger.dart';
 
 import '../../../components/custom_suffix_icon.dart';
@@ -42,7 +43,7 @@ class _SignInFormState extends State<SignInForm> {
           buildForgotPasswordWidget(context),
           SizedBox(height: getProportionateScreenHeight(30)),
           DefaultButton(
-            text: "Continue",
+            text: "Sign in",
             press: signInButtonCallback,
           ),
         ],
@@ -128,9 +129,19 @@ class _SignInFormState extends State<SignInForm> {
       bool signInStatus = false;
       String snackbarMessage;
       try {
-        signInStatus = await authService.signIn(
+        final signInFuture = authService.signIn(
           email: emailFieldController.text.trim(),
           password: passwordFieldController.text.trim(),
+        );
+        signInFuture.then((value) => signInStatus = value);
+        signInStatus = await showDialog(
+          context: context,
+          builder: (context) {
+            return FutureProgressDialog(
+              signInFuture,
+              message: Text("Signing in to account"),
+            );
+          },
         );
         if (signInStatus == true) {
           snackbarMessage = "Signed In Successfully";

@@ -7,6 +7,7 @@ import 'package:e_commerce_app_flutter/exceptions/firebaseauth/credential_action
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:logger/logger.dart';
 
 import '../../../constants.dart';
@@ -77,8 +78,18 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
       bool resultStatus;
       String snackbarMessage;
       try {
-        resultStatus =
-            await AuthentificationService().resetPasswordForEmail(emailInput);
+        final resultFuture =
+            AuthentificationService().resetPasswordForEmail(emailInput);
+        resultFuture.then((value) => resultStatus = value);
+        resultStatus = await showDialog(
+          context: context,
+          builder: (context) {
+            return FutureProgressDialog(
+              resultFuture,
+              message: Text("Sending verification email"),
+            );
+          },
+        );
         if (resultStatus == true) {
           snackbarMessage = "Password Reset Link sent to your email";
         } else {

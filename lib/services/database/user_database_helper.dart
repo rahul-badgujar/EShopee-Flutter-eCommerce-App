@@ -50,12 +50,12 @@ class UserDatabaseHelper {
     }
   }
 
-  Future<List<String>> get usersFavouriteProductsList async {
+  Future<List> get usersFavouriteProductsList async {
     String uid = AuthentificationService().currentUser.uid;
     final userDocSnapshot =
         firestore.collection(USERS_COLLECTION_NAME).doc(uid);
     final userDocData = (await userDocSnapshot.get()).data();
-    final favList = userDocData[FAV_PRODUCTS_KEY].cast<String>();
+    final favList = userDocData[FAV_PRODUCTS_KEY];
     return favList;
   }
 

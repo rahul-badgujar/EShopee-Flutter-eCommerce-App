@@ -5,6 +5,7 @@ import 'package:e_commerce_app_flutter/exceptions/firebaseauth/signup_exceptions
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:logger/logger.dart';
 
 import '../../../constants.dart';
@@ -45,7 +46,7 @@ class _SignUpFormState extends State<SignUpForm> {
             buildConfirmPasswordFormField(),
             SizedBox(height: getProportionateScreenHeight(40)),
             DefaultButton(
-              text: "Continue",
+              text: "Sign up",
               press: signUpButtonCallback,
             ),
           ],
@@ -136,9 +137,19 @@ class _SignUpFormState extends State<SignUpForm> {
       bool signUpStatus = false;
       String snackbarMessage;
       try {
-        signUpStatus = await authService.signUp(
+        final signUpFuture = authService.signUp(
           email: emailFieldController.text,
           password: passwordFieldController.text,
+        );
+        signUpFuture.then((value) => signUpStatus = value);
+        signUpStatus = await showDialog(
+          context: context,
+          builder: (context) {
+            return FutureProgressDialog(
+              signUpFuture,
+              message: Text("Creating new account"),
+            );
+          },
         );
         if (signUpStatus == true) {
           snackbarMessage =
