@@ -1,5 +1,5 @@
 <div align="center" id="top"> 
-  <img src="./.github/app.gif" alt="EShopee: Flutter eCommerce App" />
+  <img src="https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/assets/images/launcher_icon_with_bg.png" alt="EShopee: Flutter eCommerce App" />
 
 &#xa0;
 
