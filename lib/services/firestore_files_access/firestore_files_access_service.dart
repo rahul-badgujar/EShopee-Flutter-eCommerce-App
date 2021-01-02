@@ -36,8 +36,13 @@ class FirestoreFilesAccess {
     List<String> extensions = <String>["jpg", "jpeg", "jpe", "jfif"];
     final Reference firestorageRef = FirebaseStorage.instance.ref();
     for (final ext in extensions) {
-      final url = await firestorageRef.child("$filename.$ext").getDownloadURL();
-      if (url != null) return url;
+      try {
+        final url =
+            await firestorageRef.child("$filename.$ext").getDownloadURL();
+        return url;
+      } catch (_) {
+        continue;
+      }
     }
     throw FirebaseException(
         message: "No JPEG Image found for Developer",
