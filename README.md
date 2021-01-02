@@ -1,5 +1,5 @@
 <div align="center" id="top"> 
-  <img src="https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/assets/images/launcher_icon_with_bg.png" alt="EShopee: Flutter eCommerce App" />
+  <img src="https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/assets/images/launcher_icon_with_bg.png" alt="EShopee: Flutter eCommerce App" width="80" height="80"/>
 
 &#xa0;
 
@@ -17,11 +17,11 @@
 
   <img alt="License" src="https://img.shields.io/github/license/rahul-badgujar/e_commerce_app_flutter?color=56BEB8">
 
-  <!-- <img alt="Github issues" src="https://img.shields.io/github/issues/{{YOUR_GITHUB_USERNAME}}/e_commerce_app_flutter?color=56BEB8" /> -->
+  <img alt="Github issues" src="https://img.shields.io/github/issues/{{YOUR_GITHUB_USERNAME}}/e_commerce_app_flutter?color=56BEB8" />
 
-  <!-- <img alt="Github forks" src="https://img.shields.io/github/forks/{{YOUR_GITHUB_USERNAME}}/e_commerce_app_flutter?color=56BEB8" /> -->
+  <img alt="Github forks" src="https://img.shields.io/github/forks/{{YOUR_GITHUB_USERNAME}}/e_commerce_app_flutter?color=56BEB8" />
 
-  <!-- <img alt="Github stars" src="https://img.shields.io/github/stars/{{YOUR_GITHUB_USERNAME}}/e_commerce_app_flutter?color=56BEB8" /> -->
+  <img alt="Github stars" src="https://img.shields.io/github/stars/{{YOUR_GITHUB_USERNAME}}/e_commerce_app_flutter?color=56BEB8" />
 </p>
 
 Status
@@ -51,22 +51,23 @@ NOTE: Its tries to stimulate a mock buy-sell cycle as their is no any Payment Ga
 
 ## :sparkles: Features
 
-:heavy_check_mark: User Authentification and related services;\
-:heavy_check_mark: Add your Products;\
-:heavy_check_mark: View products added by other users;
-:heavy_check_mark: View products of Different Cateogories;
-:heavy_check_mark: Maintain Cart;
-:heavy_check_mark: Mark products as your favourites;
-:heavy_check_mark: Manage your Addresses;
-:heavy_check_mark: Review the products you buy;
+:heavy_check_mark: User Authentification and related services\
+:heavy_check_mark: Add your Products\
+:heavy_check_mark: View products added by other users\
+:heavy_check_mark: View products of Different Cateogories\
+:heavy_check_mark: Maintain Cart\
+:heavy_check_mark: Mark products as your favourites\
+:heavy_check_mark: Manage your Addresses\
+:heavy_check_mark: Review the products you buy\
 
 ## :checkered_flag: Illustrations
 
-![Splash Screen](./illustrations/splash screen.png)
+[Splash Screen](./illustrations/splash screen.png)
 
 ## :white_check_mark: Installation
 
 Download the APK File from GDrive Link: [EShopee](https://drive.google.com/drive/folders/1wsWxGh_5MTHRUqDh6Zyc8J_iolTVBhmH?usp=sharing)
+Sign up, Sign in and Explore the App. And do not forget to add your own products
 
 ## :rocket: Resources
 
