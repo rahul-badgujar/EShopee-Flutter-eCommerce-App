@@ -37,7 +37,7 @@ Status
   <a href="#sparkles-features">Features</a> &#xa0; | &#xa0;
   <a href="#checkered_flag-illustrations">Illustrations</a> &#xa0; | &#xa0;
   <a href="#white_check_mark-installation">Installation</a> &#xa0; | &#xa0;
-  <a href="#rocket-resouces">Resources</a> &#xa0; | &#xa0;
+  <a href="#rocket-resources">Resources</a> &#xa0; | &#xa0;
   <a href="https://github.com/rahul-badgujar" target="_blank">Author</a>
 </p>
 
@@ -62,7 +62,21 @@ NOTE: Its tries to stimulate a mock buy-sell cycle as their is no any Payment Ga
 
 ## :checkered_flag: Illustrations
 
-[Splash Screen](./illustrations/splash screen.png)
+[Home Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/home%20screen.png)
+[Home Screen Drawer](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/home%20screen%20drawer.png)
+[Product Details](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/product%20details%20screen-%20product%20actions.png)
+[Product Review](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/product%20details%20screen-%20user%20reviews.png)
+[Category Products](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/category%20products%20screen.png)
+[Cart Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/cart%20screen.png)
+
+<!-- [Edit Product Screen]() -->
+<!-- [My Products Screen]() -->
+
+[Manage Addresses Screen](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/blob/master/illustrations/manage%20addresses%20screen.png)
+
+<!-- [My Orders]() -->
+
+[And many more at](https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App/tree/master/illustrations)
 
 ## :white_check_mark: Installation
 
