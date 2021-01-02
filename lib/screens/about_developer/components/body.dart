@@ -2,6 +2,7 @@ import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/AppReview.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/services/database/app_review_database_helper.dart';
+import 'package:e_commerce_app_flutter/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -37,13 +38,7 @@ class Body extends StatelessWidget {
                         "https://www.linkedin.com/in/imrb7here";
                     await launchUrl(linkedInUrl);
                   },
-                  child: CircleAvatar(
-                    radius: SizeConfig.screenWidth * 0.3,
-                    backgroundColor: kTextColor.withOpacity(0.5),
-                    backgroundImage: AssetImage(
-                      "assets/images/developer.jpeg",
-                    ),
-                  ),
+                  child: buildDeveloperAvatar(),
                 ),
                 SizedBox(height: getProportionateScreenHeight(30)),
                 Text(
@@ -143,6 +138,28 @@ class Body extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget buildDeveloperAvatar() {
+    return FutureBuilder<String>(
+        future: FirestoreFilesAccess().getDeveloperImage(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final url = snapshot.data;
+            return CircleAvatar(
+              radius: SizeConfig.screenWidth * 0.3,
+              backgroundColor: kTextColor.withOpacity(0.75),
+              backgroundImage: NetworkImage(url),
+            );
+          } else if (snapshot.hasError) {
+            final error = snapshot.error.toString();
+            Logger().e(error);
+          }
+          return CircleAvatar(
+            radius: SizeConfig.screenWidth * 0.3,
+            backgroundColor: kTextColor.withOpacity(0.75),
+          );
+        });
   }
 
   Future<void> launchUrl(String url) async {
