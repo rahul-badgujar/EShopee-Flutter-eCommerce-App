@@ -37,6 +37,30 @@ class UserDatabaseHelper {
     });
   }
 
+  Future<void> deleteCurrentUserData() async {
+    final uid = AuthentificationService().currentUser.uid;
+    final docRef = firestore.collection(USERS_COLLECTION_NAME).doc(uid);
+    final cartCollectionRef = docRef.collection(CART_COLLECTION_NAME);
+    final addressCollectionRef = docRef.collection(ADDRESSES_COLLECTION_NAME);
+    final ordersCollectionRef =
+        docRef.collection(ORDERED_PRODUCTS_COLLECTION_NAME);
+
+    final cartDocs = await cartCollectionRef.get();
+    for (final cartDoc in cartDocs.docs) {
+      await cartCollectionRef.doc(cartDoc.id).delete();
+    }
+    final addressesDocs = await addressCollectionRef.get();
+    for (final addressDoc in addressesDocs.docs) {
+      await addressCollectionRef.doc(addressDoc.id).delete();
+    }
+    final ordersDoc = await ordersCollectionRef.get();
+    for (final orderDoc in ordersDoc.docs) {
+      await ordersCollectionRef.doc(orderDoc.id).delete();
+    }
+
+    await docRef.delete();
+  }
+
   Future<bool> isProductFavourite(String productId) async {
     String uid = AuthentificationService().currentUser.uid;
     final userDocSnapshot =

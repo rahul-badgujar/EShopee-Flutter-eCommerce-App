@@ -49,6 +49,30 @@ class AuthentificationService {
 
   Stream<User> get userChanges => firebaseAuth.userChanges();
 
+  Future<void> deleteUserAccount() async {
+    await currentUser.delete();
+    await signOut();
+  }
+
+  Future<bool> reauthCurrentUser(password) async {
+    try {
+      UserCredential userCredential =
+          await firebaseAuth.signInWithEmailAndPassword(
+              email: currentUser.email, password: password);
+      userCredential = await currentUser
+          .reauthenticateWithCredential(userCredential.credential);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == WRONG_PASSWORD_EXCEPTION_CODE) {
+        throw FirebaseSignInAuthWrongPasswordException();
+      } else {
+        throw FirebaseSignInAuthException(message: e.code);
+      }
+    } catch (e) {
+      throw FirebaseReauthUnknownReasonFailureException(message: e.toString());
+    }
+    return true;
+  }
+
   Future<bool> signIn({String email, String password}) async {
     try {
       final UserCredential userCredential = await firebaseAuth
