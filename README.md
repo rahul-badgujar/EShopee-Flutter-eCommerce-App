@@ -36,9 +36,9 @@ Status
   <a href="#dart-about">About</a> &#xa0; | &#xa0; 
   <a href="#sparkles-features">Features</a> &#xa0; | &#xa0;
   <a href="#checkered_flag-illustrations">Illustrations</a> &#xa0; | &#xa0;
-  <a href="#white_check_mark-requirements">Installation</a> &#xa0; | &#xa0;
-  <a href="#rocket-technologies">Resources</a> &#xa0; | &#xa0;
-  <a href="https://github.com/rahul-badgujar}" target="_blank">Author</a>
+  <a href="#white_check_mark-installation">Installation</a> &#xa0; | &#xa0;
+  <a href="#rocket-resouces">Resources</a> &#xa0; | &#xa0;
+  <a href="https://github.com/rahul-badgujar" target="_blank">Author</a>
 </p>
 
 <br>
