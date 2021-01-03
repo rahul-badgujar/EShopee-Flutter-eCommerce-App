@@ -76,19 +76,19 @@ Here are some Illustration of App Screens
 | :-------------------------------------: | :-----------------------------------: | :-------------------------: |
 |         Manage Addresses Screen         |            Address Dialog             |         Cart Screen         |
 
-| !()[illustrations\my_orders.png] | !()[illustrations\my_products.png] | !()[illustrations\edit_product.png] |
+| ![](illustrations\my_orders.png) | ![](illustrations\my_products.png) | ![](illustrations\edit_product.png) |
 | :------------------------------: | :--------------------------------: | :---------------------------------: |
 |         My Orders Screen         |         My Products Screen         |     Add or Edit Product Screen      |
 
-| !()[illustrations\review_dialog.png] | !()[illustrations\sign_in.png] | !()[illustrations\sign_up.png] |
+| ![](illustrations\review_dialog.png) | ![](illustrations\sign_in.png) | ![](illustrations\sign_up.png) |
 | :----------------------------------: | :----------------------------: | :----------------------------: |
 |        Product Review Dialog         |         Sign In Screen         |         Sign Up Screen         |
 
-| !()[illustrations\forgot_password.png] | !()[illustrations\change_display_name.png] | !()[illustrations\change_display_picture.png] |
+| ![](illustrations\forgot_password.png) | ![](illustrations\change_display_name.png) | ![](illustrations\change_display_picture.png) |
 | :------------------------------------: | :----------------------------------------: | :-------------------------------------------: |
 |         Forgot Password Screen         |         Change Display Name Screen         |         Change Display Picture Screen         |
 
-| !()[illustrations\change_email.png] | !()[illustrations\change_password.png] | !()[illustrations\change_phone.png] |
+| ![](illustrations\change_email.png) | ![](illustrations\change_password.png) | ![](illustrations\change_phone.png) |
 | :---------------------------------: | :------------------------------------: | :---------------------------------: |
 |         Change Email Screen         |         Change Password Screen         |         Change Phone Screen         |
 
