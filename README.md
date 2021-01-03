@@ -64,11 +64,11 @@ NOTE: Its tries to stimulate a mock buy-sell cycle as their is no any Payment Ga
 
 Here are some Illustration of App Screens
 
-| ![](illustrations\home_screen.png) | ![](illustrations\home_screen_drawer.png) | ![](illustrations\search_result.png) |
+| ![](illustrations/home_screen.png) | ![](illustrations/home_screen_drawer.png) | ![](illustrations/search_result.png) |
 | :--------------------------------: | :---------------------------------------: | :----------------------------------: |
 |            Home Screen             |            Home Screen Drawer             |            Search Result             |
 
-| ![](illustrations\product_details_1.png) | ![](illustrations\product_details_2.png) | ![](illustrations\category_product.png) |
+| ![](illustrations/product_details_1.png) | ![](illustrations/product_details_2.png) | ![](illustrations/category_product.png) |
 | :--------------------------------------: | :--------------------------------------: | :-------------------------------------: |
 |        Product Details Screen - 1        |        Product Details Screen - 2        |        Category Products Screen         |
 
