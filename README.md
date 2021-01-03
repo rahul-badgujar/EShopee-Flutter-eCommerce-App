@@ -84,13 +84,7 @@ Here are some Illustration of App Screens
 | :----------------------------------: | :----------------------------: | :----------------------------: |
 |        Product Review Dialog         |         Sign In Screen         |         Sign Up Screen         |
 
-| ![](illustrations/forgot_password.png) | ![](illustrations/change_display_name.png) | ![](illustrations/change_display_picture.png) |
-| :------------------------------------: | :----------------------------------------: | :-------------------------------------------: |
-|         Forgot Password Screen         |         Change Display Name Screen         |         Change Display Picture Screen         |
-
-| ![](illustrations/change_email.png) | ![](illustrations/change_password.png) | ![](illustrations/change_phone.png) |
-| :---------------------------------: | :------------------------------------: | :---------------------------------: |
-|         Change Email Screen         |         Change Password Screen         |         Change Phone Screen         |
+And many more at [more screens](illustrations/)
 
 ## :white_check_mark: Installation
 
