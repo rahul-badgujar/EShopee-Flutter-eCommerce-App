@@ -96,7 +96,7 @@ And all rest at [more screens](illustrations/)
 
 ## :white_check_mark: Installation
 
-Download the APK File from GDrive Link: [EShopee](https://drive.google.com/drive/folders/1wsWxGh_5MTHRUqDh6Zyc8J_iolTVBhmH?usp=sharing)\
+Download the APK File from GDrive Link: [EShopee](https://drive.google.com/file/d/1lbUD13OZmXLbSPXrFJuGGDQxO3elqVBF/view?usp=sharing)\
 Sign up, Sign in and Explore the App. And do not forget to add your own products
 
 ## :rocket: Resources
