@@ -66,7 +66,7 @@ class Product extends Model {
     }
     return Product(
       id,
-      images: map[IMAGES_KEY].cast<String>(),
+      images: (map[IMAGES_KEY] ?? []).cast<String>(),
       title: map[TITLE_KEY],
       variant: map[VARIANT_KEY],
       productType:

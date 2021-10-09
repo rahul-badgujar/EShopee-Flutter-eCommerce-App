@@ -1,7 +1,6 @@
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/product_details/provider_models/ProductImageSwiper.dart';
 import 'package:flutter/material.dart';
-import 'package:pinch_zoom_image_updated/pinch_zoom_image_updated.dart';
 import 'package:provider/provider.dart';
 import 'package:swipedetector/swipedetector.dart';
 
@@ -37,22 +36,20 @@ class ProductImages extends StatelessWidget {
                   productImagesSwiper.currentImageIndex %=
                       product.images.length;
                 },
-                child: PinchZoomImage(
-                  image: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(30),
-                      ),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
                     ),
-                    child: SizedBox(
-                      height: SizeConfig.screenHeight * 0.35,
-                      width: SizeConfig.screenWidth * 0.75,
-                      child: Image.network(
-                        product.images[productImagesSwiper.currentImageIndex],
-                        fit: BoxFit.contain,
-                      ),
+                  ),
+                  child: SizedBox(
+                    height: SizeConfig.screenHeight * 0.35,
+                    width: SizeConfig.screenWidth * 0.75,
+                    child: Image.network(
+                      product.images[productImagesSwiper.currentImageIndex],
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),

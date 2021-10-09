@@ -38,7 +38,7 @@ dependencies:
   intl: ^0.16.1
   logger: ^0.9.4
   permission_handler: ^5.0.1+1
-  pinch_zoom_image_updated: ^0.2.6
+  # pinch_zoom_image_updated: ^0.2.6
   provider: ^4.3.2+3
   string_validator: ^0.1.4
   swipedetector: ^1.2.0
