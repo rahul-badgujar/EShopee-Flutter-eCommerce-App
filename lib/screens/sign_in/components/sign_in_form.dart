@@ -134,20 +134,28 @@ class _SignInFormState extends State<SignInForm> {
           email: emailFieldController.text.trim(),
           password: passwordFieldController.text.trim(),
         );
-        signInFuture.then((value) => signInStatus = value);
+        //signInFuture.then((value) => signInStatus = value);
         signInStatus = await showDialog(
           context: context,
           builder: (context) {
             return AsyncProgressDialog(
               signInFuture,
               message: Text("Signing in to account"),
+              onError: (e) {
+                snackbarMessage = e.toString();
+              },
             );
           },
         );
         if (signInStatus == true) {
           snackbarMessage = "Signed In Successfully";
         } else {
-          throw FirebaseSignInAuthUnknownReasonFailure();
+          if (snackbarMessage == null) {
+            throw FirebaseSignInAuthUnknownReasonFailure();
+          } else {
+            throw FirebaseSignInAuthUnknownReasonFailure(
+                message: snackbarMessage);
+          }
         }
       } on MessagedFirebaseAuthException catch (e) {
         snackbarMessage = e.message;

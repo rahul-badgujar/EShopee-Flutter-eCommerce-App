@@ -33,6 +33,12 @@ class FirebaseSignInAuthWrongPasswordException
       : super(message: message);
 }
 
+class FirebaseTooManyRequestsException extends FirebaseSignInAuthException {
+  FirebaseTooManyRequestsException(
+      {String message = "Server busy, Please try again after some time."})
+      : super(message: message);
+}
+
 class FirebaseSignInAuthUserNotVerifiedException
     extends FirebaseSignInAuthException {
   FirebaseSignInAuthUserNotVerifiedException(

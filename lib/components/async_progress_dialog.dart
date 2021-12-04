@@ -6,7 +6,7 @@ const _DefaultDecoration = BoxDecoration(
   borderRadius: BorderRadius.all(Radius.circular(10)),
 );
 
-class AsyncProgressDialog extends StatelessWidget {
+class AsyncProgressDialog extends StatefulWidget {
   /// Dialog will be closed when [future] task is finished.
   @required
   final Future future;
@@ -36,13 +36,18 @@ class AsyncProgressDialog extends StatelessWidget {
   });
 
   @override
+  State<AsyncProgressDialog> createState() => _AsyncProgressDialogState();
+}
+
+class _AsyncProgressDialogState extends State<AsyncProgressDialog> {
+  @override
   Widget build(BuildContext context) {
-    future.then((val) {
+    widget.future.then((val) {
       Navigator.of(context).pop(val);
     }).catchError((e) {
       Navigator.of(context).pop();
-      if (onError != null) {
-        onError.call(e);
+      if (widget.onError != null) {
+        widget.onError.call(e);
       } else {
         throw e;
       }
@@ -60,24 +65,24 @@ class AsyncProgressDialog extends StatelessWidget {
 
   Widget _buildDialog(BuildContext context) {
     var content;
-    if (message == null) {
+    if (widget.message == null) {
       content = Center(
         child: Container(
           height: 100,
           width: 100,
           alignment: Alignment.center,
-          decoration: decoration ?? _DefaultDecoration,
-          child: progress ?? CircularProgressIndicator(),
+          decoration: widget.decoration ?? _DefaultDecoration,
+          child: widget.progress ?? CircularProgressIndicator(),
         ),
       );
     } else {
       content = Container(
         height: 100,
         padding: const EdgeInsets.all(20),
-        decoration: decoration ?? _DefaultDecoration,
+        decoration: widget.decoration ?? _DefaultDecoration,
         child:
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          progress ?? CircularProgressIndicator(),
+          widget.progress ?? CircularProgressIndicator(),
           SizedBox(width: 20),
           _buildText(context)
         ]),
@@ -88,19 +93,19 @@ class AsyncProgressDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       child: Opacity(
-        opacity: opacity,
+        opacity: widget.opacity,
         child: content,
       ),
     );
   }
 
   Widget _buildText(BuildContext context) {
-    if (message == null) {
+    if (widget.message == null) {
       return SizedBox.shrink();
     }
     return Expanded(
       flex: 1,
-      child: message,
+      child: widget.message,
     );
   }
 }

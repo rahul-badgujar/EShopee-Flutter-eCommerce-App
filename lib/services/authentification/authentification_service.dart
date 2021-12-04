@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 class AuthentificationService {
   static const String USER_NOT_FOUND_EXCEPTION_CODE = "user-not-found";
   static const String WRONG_PASSWORD_EXCEPTION_CODE = "wrong-password";
+  static const String TOO_MANY_REQUESTS_EXCEPTION_CODE = 'too-many-requests';
   static const String EMAIL_ALREADY_IN_USE_EXCEPTION_CODE =
       "email-already-in-use";
   static const String OPERATION_NOT_ALLOWED_EXCEPTION_CODE =
@@ -98,6 +99,9 @@ class AuthentificationService {
 
         case WRONG_PASSWORD_EXCEPTION_CODE:
           throw FirebaseSignInAuthWrongPasswordException();
+
+        case TOO_MANY_REQUESTS_EXCEPTION_CODE:
+          throw FirebaseTooManyRequestsException();
 
         default:
           throw FirebaseSignInAuthException(message: e.code);
