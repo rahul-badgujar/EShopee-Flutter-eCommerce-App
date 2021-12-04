@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/screens/about_developer/about_developer_screen.dart';
 import 'package:e_commerce_app_flutter/screens/change_display_picture/change_display_picture_screen.dart';
@@ -65,7 +66,7 @@ class HomeScreenDrawer extends StatelessWidget {
                   await showDialog(
                     context: context,
                     builder: (context) {
-                      return FutureProgressDialog(
+                      return AsyncProgressDialog(
                         future,
                         message: Text("Resending verification email"),
                       );
@@ -101,7 +102,7 @@ class HomeScreenDrawer extends StatelessWidget {
                   await showDialog(
                     context: context,
                     builder: (context) {
-                      return FutureProgressDialog(
+                      return AsyncProgressDialog(
                         future,
                         message: Text("Resending verification email"),
                       );
@@ -316,7 +317,7 @@ class HomeScreenDrawer extends StatelessWidget {
                 await showDialog(
                   context: context,
                   builder: (context) {
-                    return FutureProgressDialog(
+                    return AsyncProgressDialog(
                       future,
                       message: Text("Resending verification email"),
                     );
@@ -350,7 +351,7 @@ class HomeScreenDrawer extends StatelessWidget {
                 await showDialog(
                   context: context,
                   builder: (context) {
-                    return FutureProgressDialog(
+                    return AsyncProgressDialog(
                       future,
                       message: Text("Resending verification email"),
                     );

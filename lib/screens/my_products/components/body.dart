@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_short_detail_card.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
@@ -175,7 +176,7 @@ class _BodyState extends State<Body> {
               await showDialog(
                 context: context,
                 builder: (context) {
-                  return FutureProgressDialog(
+                  return AsyncProgressDialog(
                     deletionFuture,
                     message: Text(
                         "Deleting Product Images ${i + 1}/${product.images.length}"),
@@ -192,7 +193,7 @@ class _BodyState extends State<Body> {
               productInfoDeleted = await showDialog(
                 context: context,
                 builder: (context) {
-                  return FutureProgressDialog(
+                  return AsyncProgressDialog(
                     deleteProductFuture,
                     message: Text("Deleting Product"),
                   );

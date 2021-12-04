@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/exceptions/firebaseauth/messeged_firebaseauth_exception.dart';
 import 'package:e_commerce_app_flutter/exceptions/firebaseauth/signin_exceptions.dart';
 import 'package:e_commerce_app_flutter/screens/forgot_password/forgot_password_screen.dart';
@@ -137,7 +138,7 @@ class _SignInFormState extends State<SignInForm> {
         signInStatus = await showDialog(
           context: context,
           builder: (context) {
-            return FutureProgressDialog(
+            return AsyncProgressDialog(
               signInFuture,
               message: Text("Signing in to account"),
             );

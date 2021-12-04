@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,7 +32,7 @@ class AddToCartFAB extends StatelessWidget {
             await showDialog(
               context: context,
               builder: (context) {
-                return FutureProgressDialog(
+                return AsyncProgressDialog(
                   future,
                   message: Text("Resending verification email"),
                 );

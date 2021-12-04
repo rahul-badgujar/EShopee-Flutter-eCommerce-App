@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/exceptions/local_files_handling/image_picking_exceptions.dart';
 import 'package:e_commerce_app_flutter/exceptions/local_files_handling/local_file_handling_exception.dart';
@@ -546,7 +547,7 @@ class _EditProductFormState extends State<EditProductForm> {
       await showDialog(
         context: context,
         builder: (context) {
-          return FutureProgressDialog(
+          return AsyncProgressDialog(
             productUploadFuture,
             message:
                 Text(newProduct ? "Uploading Product" : "Updating Product"),
@@ -605,7 +606,7 @@ class _EditProductFormState extends State<EditProductForm> {
       productFinalizeUpdate = await showDialog(
         context: context,
         builder: (context) {
-          return FutureProgressDialog(
+          return AsyncProgressDialog(
             updateProductFuture,
             message: Text("Saving Product"),
           );
@@ -647,7 +648,7 @@ class _EditProductFormState extends State<EditProductForm> {
           downloadUrl = await showDialog(
             context: context,
             builder: (context) {
-              return FutureProgressDialog(
+              return AsyncProgressDialog(
                 imgUploadFuture,
                 message: Text(
                     "Uploading Images ${i + 1}/${productDetails.selectedImages.length}"),

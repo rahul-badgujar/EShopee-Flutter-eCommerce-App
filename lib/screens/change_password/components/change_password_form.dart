@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
@@ -52,7 +53,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return FutureProgressDialog(
+                    return AsyncProgressDialog(
                       updateFuture,
                       message: Text("Updating Password"),
                     );

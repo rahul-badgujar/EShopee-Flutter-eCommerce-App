@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/components/nothingtoshow_container.dart';
 import 'package:e_commerce_app_flutter/components/product_short_detail_card.dart';
@@ -400,7 +401,7 @@ class _BodyState extends State<Body> {
       await showDialog(
         context: context,
         builder: (context) {
-          return FutureProgressDialog(
+          return AsyncProgressDialog(
             orderFuture,
             message: Text("Placing the Order"),
           );
@@ -417,7 +418,7 @@ class _BodyState extends State<Body> {
     await showDialog(
       context: context,
       builder: (context) {
-        return FutureProgressDialog(
+        return AsyncProgressDialog(
           orderFuture,
           message: Text("Placing the Order"),
         );
@@ -450,7 +451,7 @@ class _BodyState extends State<Body> {
     await showDialog(
       context: context,
       builder: (context) {
-        return FutureProgressDialog(
+        return AsyncProgressDialog(
           future,
           message: Text("Please wait"),
         );
@@ -476,7 +477,7 @@ class _BodyState extends State<Body> {
     await showDialog(
       context: context,
       builder: (context) {
-        return FutureProgressDialog(
+        return AsyncProgressDialog(
           future,
           message: Text("Please wait"),
         );

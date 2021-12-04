@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/services/database/user_database_helper.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,7 @@ class _ChangePhoneNumberFormState extends State<ChangePhoneNumberForm> {
               showDialog(
                 context: context,
                 builder: (context) {
-                  return FutureProgressDialog(
+                  return AsyncProgressDialog(
                     updateFuture,
                     message: Text("Updating Phone Number"),
                   );

@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/services/authentification/authentification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,7 +50,7 @@ class _ChangeDisplayNameFormState extends State<ChangeDisplayNameForm> {
               showDialog(
                 context: context,
                 builder: (context) {
-                  return FutureProgressDialog(
+                  return AsyncProgressDialog(
                     uploadFuture,
                     message: Text("Updating Display Name"),
                   );

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/exceptions/local_files_handling/image_picking_exceptions.dart';
@@ -133,7 +134,7 @@ class Body extends StatelessWidget {
         showDialog(
           context: context,
           builder: (context) {
-            return FutureProgressDialog(
+            return AsyncProgressDialog(
               uploadFuture,
               message: Text("Updating Display Picture"),
             );
@@ -186,7 +187,7 @@ class Body extends StatelessWidget {
         await showDialog(
           context: context,
           builder: (context) {
-            return FutureProgressDialog(
+            return AsyncProgressDialog(
               uploadFuture,
               message: Text("Deleting Display Picture"),
             );

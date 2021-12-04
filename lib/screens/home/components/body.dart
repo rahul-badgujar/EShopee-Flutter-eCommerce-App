@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/constants.dart';
 import 'package:e_commerce_app_flutter/models/Product.dart';
 import 'package:e_commerce_app_flutter/screens/cart/cart_screen.dart';
@@ -140,7 +141,7 @@ class _BodyState extends State<Body> {
                         await showDialog(
                           context: context,
                           builder: (context) {
-                            return FutureProgressDialog(
+                            return AsyncProgressDialog(
                               future,
                               message: Text("Resending verification email"),
                             );

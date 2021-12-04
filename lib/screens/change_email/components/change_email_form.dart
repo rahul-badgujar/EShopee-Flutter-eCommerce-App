@@ -1,3 +1,4 @@
+import 'package:e_commerce_app_flutter/components/async_progress_dialog.dart';
 import 'package:e_commerce_app_flutter/components/custom_suffix_icon.dart';
 import 'package:e_commerce_app_flutter/components/default_button.dart';
 import 'package:e_commerce_app_flutter/exceptions/firebaseauth/credential_actions_exceptions.dart';
@@ -53,7 +54,7 @@ class _ChangeEmailFormState extends State<ChangeEmailForm> {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return FutureProgressDialog(
+                    return AsyncProgressDialog(
                       updateFuture,
                       message: Text("Updating Email"),
                     );
