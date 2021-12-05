@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// This code is an extension to the package flutter_progress_dialog (https://pub.dev/packages/future_progress_dialog)
+
 const _DefaultDecoration = BoxDecoration(
   color: Colors.white,
   shape: BoxShape.rectangle,
@@ -41,7 +43,7 @@ class AsyncProgressDialog extends StatefulWidget {
 
 class _AsyncProgressDialogState extends State<AsyncProgressDialog> {
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     widget.future.then((val) {
       Navigator.of(context).pop(val);
     }).catchError((e) {
@@ -53,6 +55,11 @@ class _AsyncProgressDialogState extends State<AsyncProgressDialog> {
       }
     });
 
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return WillPopScope(
       child: _buildDialog(context),
       onWillPop: () {
