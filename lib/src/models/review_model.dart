@@ -1,45 +1,36 @@
 import 'model.dart';
 
 class Review extends Model {
-  static const String REVIEWER_UID_KEY = "reviewer_uid";
-  static const String RATING_KEY = "rating";
-  static const String FEEDBACK_KEY = "review";
+  static const String KEY_REVIEWER_UID = "reviewer_uid";
+  static const String KEY_RATING = "rating";
+  static const String KEY_FEEDBACK = "review";
 
-  String? reviewerUid;
-  int rating;
-  String? feedback;
-  Review(
-    String? id, {
-    this.reviewerUid,
-    this.rating = 3,
-    this.feedback,
-  }) : super(id);
+  static const DEFAULT_RATING = 3;
+
+  Review({
+    Map<String, dynamic>? data,
+  }) : super(data: data);
 
   factory Review.fromMap(Map<String, dynamic> map, {String? id}) {
+    if (id != null) map[Model.KEY_ID] = id;
     return Review(
-      id,
-      reviewerUid: map[REVIEWER_UID_KEY],
-      rating: map[RATING_KEY],
-      feedback: map[FEEDBACK_KEY],
+      data: map,
     );
   }
 
-  @override
-  Map<String, dynamic> toMap() {
-    final map = <String, dynamic>{
-      REVIEWER_UID_KEY: reviewerUid,
-      RATING_KEY: rating,
-      FEEDBACK_KEY: feedback,
-    };
-    return map;
+  int get rating {
+    final rawVal = data[KEY_RATING];
+    if (rawVal is! int) {
+      return rawVal;
+    }
+    return DEFAULT_RATING;
   }
 
-  @override
-  Map<String, dynamic> toUpdateMap() {
-    final map = <String, dynamic>{};
-    if (reviewerUid != null) map[REVIEWER_UID_KEY] = reviewerUid;
-    if (rating != null) map[RATING_KEY] = rating;
-    if (feedback != null) map[FEEDBACK_KEY] = feedback;
-    return map;
+  String get reviewerUid {
+    final rawVal = data[KEY_REVIEWER_UID];
+    if (rawVal == null) {
+      throw Exception('Reviewer UID found null');
+    }
+    return rawVal;
   }
 }

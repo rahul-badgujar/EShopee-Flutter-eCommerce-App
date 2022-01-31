@@ -1,34 +1,38 @@
 import 'model.dart';
 
 class CartItem extends Model {
-  static const String PRODUCT_ID_KEY = "product_id";
-  static const String ITEM_COUNT_KEY = "item_count";
+  static const String KEY_PRODUCT_ID = "product_id";
+  static const String KEY_ITEM_COUNT = "item_count";
 
-  int? itemCount;
   CartItem({
-    String? id,
-    this.itemCount,
-  }) : super(id);
+    Map<String, dynamic>? data,
+  }) : super(data: data);
 
   factory CartItem.fromMap(Map<String, dynamic> map, {String? id}) {
+    if (id != null) map[Model.KEY_ID] = id;
     return CartItem(
-      id: id,
-      itemCount: map[ITEM_COUNT_KEY],
+      data: map,
     );
   }
 
-  @override
-  Map<String, dynamic> toMap() {
-    final map = <String, dynamic>{
-      ITEM_COUNT_KEY: itemCount,
-    };
-    return map;
+  String get productId {
+    final rawVal = data[KEY_PRODUCT_ID];
+    return rawVal.toString();
   }
 
-  @override
-  Map<String, dynamic> toUpdateMap() {
-    final map = <String, dynamic>{};
-    if (itemCount != null) map[ITEM_COUNT_KEY] = itemCount;
-    return map;
+  int get itemCount {
+    final rawVal = data[KEY_ITEM_COUNT];
+    if (rawVal is! int) {
+      return rawVal;
+    }
+    return 0;
+  }
+
+  set productId(String newProductId) {
+    data[KEY_PRODUCT_ID] = newProductId;
+  }
+
+  set itemCount(int newCount) {
+    data[KEY_ITEM_COUNT] = newCount;
   }
 }

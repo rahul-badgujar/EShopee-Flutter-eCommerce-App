@@ -16,14 +16,14 @@ class AppReviewDatabaseHelper {
     return FirebaseFirestore.instance;
   }
 
-  Future<void> editAppReview(AppReview appReview) async {
+  Future<void> editAppReview(AppReview updatedAppReview) async {
     final uid = AuthService().currentLoggedInUser.uid;
     final docRef = firestore.collection(APP_REVIEW_COLLECTION_NAME).doc(uid);
     final docData = await docRef.get();
     if (docData.exists) {
-      docRef.update(appReview.toUpdateMap());
+      docRef.update(updatedAppReview.toMap());
     } else {
-      docRef.set(appReview.toMap());
+      docRef.set(updatedAppReview.toMap());
     }
   }
 
@@ -31,12 +31,14 @@ class AppReviewDatabaseHelper {
     final uid = AuthService().currentLoggedInUser.uid;
     final docRef = firestore.collection(APP_REVIEW_COLLECTION_NAME).doc(uid);
     final doc = await docRef.get();
-    final docData = doc.data() ?? <String, dynamic>{};
+    final docData = doc.data()!;
     if (doc.exists) {
       final appReview = AppReview.fromMap(docData, id: doc.id);
       return appReview;
     } else {
-      final appReview = AppReview(uid, liked: true, feedback: "");
+      final appReview = AppReview()
+        ..liked = true
+        ..feedback = '';
       await docRef.set(appReview.toMap());
       return appReview;
     }

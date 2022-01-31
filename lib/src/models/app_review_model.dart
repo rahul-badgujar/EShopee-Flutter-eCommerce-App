@@ -1,40 +1,33 @@
 import 'model.dart';
 
 class AppReview extends Model {
-  static const String LIKED_KEY = "liked";
-  static const String FEEDBACK_KEY = "feedback";
+  static const String KEY_LIKED = "liked";
+  static const String KEY_FEEDBACK = "feedback";
 
-  bool? liked;
-  String? feedback;
-
-  AppReview(
-    String? id, {
-    this.liked,
-    this.feedback,
-  }) : super(id);
+  AppReview({Map<String, dynamic>? data}) : super(data: data);
 
   factory AppReview.fromMap(Map<String, dynamic> map, {String? id}) {
+    if (id != null) map[Model.KEY_ID] = id;
     return AppReview(
-      id,
-      liked: map[LIKED_KEY],
-      feedback: map[FEEDBACK_KEY],
+      data: map,
     );
   }
 
-  @override
-  Map<String, dynamic> toMap() {
-    final map = <String, dynamic>{
-      LIKED_KEY: liked,
-      FEEDBACK_KEY: feedback,
-    };
-    return map;
+  bool get liked {
+    final rawValue = data[KEY_LIKED];
+    return rawValue == true;
   }
 
-  @override
-  Map<String, dynamic> toUpdateMap() {
-    final map = <String, dynamic>{};
-    if (liked != null) map[LIKED_KEY] = liked;
-    if (feedback != null) map[FEEDBACK_KEY] = feedback;
-    return map;
+  set liked(bool likedUpdate) {
+    data[KEY_LIKED] = likedUpdate;
+  }
+
+  String get feedback {
+    final rawValue = data[KEY_FEEDBACK];
+    return rawValue.toString();
+  }
+
+  set feedback(String feedbackUpdate) {
+    data[KEY_FEEDBACK] = feedbackUpdate;
   }
 }

@@ -29,7 +29,12 @@ class UserDatabaseHelper {
   }
 
   Future<void> createNewUser(String uid) async {
-    await firestore.collection(USERS_COLLECTION_NAME).doc(uid).set({
+    final docRef = firestore.collection(USERS_COLLECTION_NAME).doc(uid);
+    final doc = await docRef.get();
+    if (doc.exists) {
+      throw Exception('User already exists.');
+    }
+    await docRef.set({
       DP_KEY: null,
       PHONE_KEY: null,
       FAV_PRODUCTS_KEY: <String>[],
@@ -56,7 +61,6 @@ class UserDatabaseHelper {
     for (final orderDoc in ordersDoc.docs) {
       await ordersCollectionRef.doc(orderDoc.id).delete();
     }
-
     await docRef.delete();
   }
 
@@ -65,21 +69,23 @@ class UserDatabaseHelper {
     final userDocSnapshot =
         firestore.collection(USERS_COLLECTION_NAME).doc(uid);
     final userDoc = await userDocSnapshot.get();
-    final userDocData = userDoc.data() ?? <String, dynamic>{};
-    final favList = userDocData[FAV_PRODUCTS_KEY].cast<String>();
-    if (favList.contains(productId)) {
-      return true;
-    } else {
-      return false;
+    if (!userDoc.exists) {
+      throw Exception('No user doc exists for current user.');
     }
+    final userDocData = userDoc.data()!;
+    final favList = userDocData[FAV_PRODUCTS_KEY].cast<String>();
+    return favList.contains(productId);
   }
 
-  Future<List> get usersFavouriteProductsList async {
+  Future<List<String>> get usersFavouriteProductsList async {
     String uid = AuthService().currentLoggedInUser.uid;
     final userDoc =
         await firestore.collection(USERS_COLLECTION_NAME).doc(uid).get();
-    final userDocData = userDoc.data() ?? <String, dynamic>{};
-    final favList = userDocData[FAV_PRODUCTS_KEY] ?? [];
+    if (!userDoc.exists) {
+      throw Exception('No user doc exists for current user.');
+    }
+    final userDocData = userDoc.data()!;
+    final favList = userDocData[FAV_PRODUCTS_KEY].cast<String>();
     return favList;
   }
 
@@ -88,16 +94,11 @@ class UserDatabaseHelper {
     String uid = AuthService().currentLoggedInUser.uid;
     final userDocSnapshot =
         firestore.collection(USERS_COLLECTION_NAME).doc(uid);
-
-    if (newState == true) {
-      userDocSnapshot.update({
-        FAV_PRODUCTS_KEY: FieldValue.arrayUnion([productId])
-      });
-    } else {
-      userDocSnapshot.update({
-        FAV_PRODUCTS_KEY: FieldValue.arrayRemove([productId])
-      });
-    }
+    await userDocSnapshot.update({
+      FAV_PRODUCTS_KEY: newState
+          ? FieldValue.arrayUnion([productId])
+          : FieldValue.arrayRemove([productId]),
+    });
   }
 
   Future<List<String>> get addressesList async {
@@ -107,15 +108,14 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(ADDRESSES_COLLECTION_NAME)
         .get();
-    final addresses = <String>[];
+    final addresses = <String>{};
     for (final doc in snapshot.docs) {
       addresses.add(doc.id);
     }
-
-    return addresses;
+    return addresses.toList();
   }
 
-  Future<Address> getAddressFromId(String id) async {
+  Future<Address?> getAddressFromId(String id) async {
     final uid = AuthService().currentLoggedInUser.uid;
     final doc = await firestore
         .collection(USERS_COLLECTION_NAME)
@@ -123,9 +123,11 @@ class UserDatabaseHelper {
         .collection(ADDRESSES_COLLECTION_NAME)
         .doc(id)
         .get();
-    final docData = doc.data() ?? <String, dynamic>{};
-    final address = Address.fromMap(docData, id: doc.id);
-    return address;
+    if (doc.exists) {
+      final docData = doc.data()!;
+      final address = Address.fromMap(docData, id: doc.id);
+      return address;
+    }
   }
 
   Future<void> addAddressForCurrentUser(Address address) async {
@@ -165,10 +167,9 @@ class UserDatabaseHelper {
         .collection(CART_COLLECTION_NAME)
         .doc(id);
     final doc = await docRef.get();
-    final docExists = doc.exists;
 
-    if (docExists) {
-      final docData = doc.data() ?? <String, dynamic>{};
+    if (doc.exists) {
+      final docData = doc.data()!;
       final cartItem = CartItem.fromMap(docData, id: doc.id);
       return cartItem;
     }
@@ -182,11 +183,14 @@ class UserDatabaseHelper {
         .collection(CART_COLLECTION_NAME);
     final docRef = cartCollectionRef.doc(productId);
     final doc = await docRef.get();
-    bool alreadyPresent = doc.exists;
-    if (alreadyPresent == false) {
-      docRef.set(CartItem(itemCount: 1).toMap());
+    final productAlreadyExists = doc.exists;
+    if (productAlreadyExists) {
+      docRef.update({CartItem.KEY_ITEM_COUNT: FieldValue.increment(1)});
     } else {
-      docRef.update({CartItem.ITEM_COUNT_KEY: FieldValue.increment(1)});
+      final cartItem = CartItem()
+        ..productId = productId
+        ..itemCount = 1;
+      docRef.set(cartItem.toMap());
     }
   }
 
@@ -197,12 +201,12 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(CART_COLLECTION_NAME)
         .get();
-    final orderedProductsUid = <String>[];
+    final orderedProductsUid = <String>{};
     for (final doc in cartItems.docs) {
       orderedProductsUid.add(doc.id);
       await doc.reference.delete();
     }
-    return orderedProductsUid;
+    return orderedProductsUid.toList();
   }
 
   Future<double> get cartTotal async {
@@ -215,10 +219,12 @@ class UserDatabaseHelper {
     double total = 0.0;
     for (final doc in cartItems.docs) {
       final docData = doc.data();
-      final itemsCount = docData[CartItem.ITEM_COUNT_KEY];
-      final product = await ProductDatabaseHelper().getProductWithID(doc.id);
+      final cartItem = CartItem.fromMap(docData);
+      final product =
+          await ProductDatabaseHelper().getProductWithID(cartItem.productId);
       if (product != null) {
-        total += (itemsCount * product.discountPrice);
+        total += (cartItem.itemCount *
+            (product.discountPrice ?? product.originalPrice));
       }
     }
     return total;
@@ -240,7 +246,7 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(CART_COLLECTION_NAME);
     final docRef = cartCollectionRef.doc(cartItemID);
-    docRef.update({CartItem.ITEM_COUNT_KEY: FieldValue.increment(1)});
+    await docRef.update({CartItem.KEY_ITEM_COUNT: FieldValue.increment(1)});
   }
 
   Future<void> decreaseCartItemCount(String cartItemID) async {
@@ -250,13 +256,17 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(CART_COLLECTION_NAME);
     final docRef = cartCollectionRef.doc(cartItemID);
-    final docSnapshot = await docRef.get();
-    final docData = docSnapshot.data() ?? <String, dynamic>{};
-    final currentCount = docData[CartItem.ITEM_COUNT_KEY];
-    if (currentCount <= 1) {
+    final doc = await docRef.get();
+    if (!doc.exists) {
+      throw Exception('No cart item found for given id: $cartItemID');
+    }
+    final docData = doc.data()!;
+    final cartItem = CartItem.fromMap(docData, id: doc.id);
+    final currentItemCount = cartItem.itemCount;
+    if (currentItemCount <= 1) {
       await removeProductFromCart(cartItemID);
     } else {
-      await docRef.update({CartItem.ITEM_COUNT_KEY: FieldValue.increment(-1)});
+      await docRef.update({CartItem.KEY_ITEM_COUNT: FieldValue.increment(-1)});
     }
   }
 
@@ -267,11 +277,11 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(CART_COLLECTION_NAME)
         .get();
-    final itemsId = <String>[];
+    final itemsId = <String>{};
     for (final item in querySnapshot.docs) {
       itemsId.add(item.id);
     }
-    return itemsId;
+    return itemsId.toList();
   }
 
   Future<List<String>> get orderedProductsList async {
@@ -281,11 +291,11 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(ORDERED_PRODUCTS_COLLECTION_NAME)
         .get();
-    final orderedProductsId = <String>[];
+    final orderedProductsId = <String>{};
     for (final doc in orderedProductsSnapshot.docs) {
       orderedProductsId.add(doc.id);
     }
-    return orderedProductsId;
+    return orderedProductsId.toList();
   }
 
   Future<void> addToMyOrders(List<OrderedProduct> orders) async {
@@ -299,7 +309,7 @@ class UserDatabaseHelper {
     }
   }
 
-  Future<OrderedProduct> getOrderedProductFromId(String id) async {
+  Future<OrderedProduct?> getOrderedProductFromId(String id) async {
     final uid = AuthService().currentLoggedInUser.uid;
     final doc = await firestore
         .collection(USERS_COLLECTION_NAME)
@@ -307,9 +317,11 @@ class UserDatabaseHelper {
         .collection(ORDERED_PRODUCTS_COLLECTION_NAME)
         .doc(id)
         .get();
-    final docData = doc.data() ?? <String, dynamic>{};
-    final orderedProduct = OrderedProduct.fromMap(docData, id: doc.id);
-    return orderedProduct;
+    if (doc.exists) {
+      final docData = doc.data()!;
+      final orderedProduct = OrderedProduct.fromMap(docData, id: doc.id);
+      return orderedProduct;
+    }
   }
 
   Stream<DocumentSnapshot> get currentUserDataStream {
@@ -355,9 +367,12 @@ class UserDatabaseHelper {
 
   Future<String?> get displayPictureForCurrentUser async {
     final uid = AuthService().currentLoggedInUser.uid;
-    final userDocSnapshot =
+    final userDoc =
         await firestore.collection(USERS_COLLECTION_NAME).doc(uid).get();
-    final userData = userDocSnapshot.data() ?? <String, dynamic>{};
+    if (!userDoc.exists) {
+      throw Exception('Doc not found for current user (uid: $uid)');
+    }
+    final userData = userDoc.data()!;
     return userData[DP_KEY];
   }
 }
