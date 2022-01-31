@@ -3,7 +3,7 @@ import '../values/dimens.dart';
 import 'package:flutter/material.dart';
 
 class UiPalette {
-  static Color primaryColor = Colors.red;
+  static Color primaryColor = const Color(0xFFFF7643);
   static MaterialColor primarySwatch = generateMaterialColor(primaryColor);
 
   static const Color scaffoldBgColor = Color.fromARGB(255, 252, 252, 252);

@@ -3,14 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Themes {
-  static ThemeData get primaryLightTheme {
+  static ThemeData get primaryThemeLight {
     return ThemeData(
+      brightness: Brightness.light,
       primarySwatch: UiPalette.primarySwatch,
       primaryColor: UiPalette.primaryColor,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       scaffoldBackgroundColor: UiPalette.scaffoldBgColor,
       textTheme: GoogleFonts.latoTextTheme().copyWith(),
       appBarTheme: defaultAppBarTheme,
+    );
+  }
+
+  static ThemeData get primaryThemeDark {
+    return ThemeData(
+      brightness: Brightness.dark,
+      primarySwatch: UiPalette.primarySwatch,
+      primaryColor: UiPalette.primaryColor,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+      textTheme: GoogleFonts.latoTextTheme().copyWith(),
     );
   }
 
