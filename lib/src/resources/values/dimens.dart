@@ -57,8 +57,6 @@ class Dimens {
     return percentageScreenHeight(10);
   }
 
-  static const ScrollPhysics appWideScrollablePhysics = BouncingScrollPhysics();
-
   static const double appBarIconSize = 19;
   static const double defaultIconSize = 17;
   static const double largeIconSize = 24;

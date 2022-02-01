@@ -1,5 +1,3 @@
-import 'package:enum_to_string/enum_to_string.dart';
-
 import 'model.dart';
 
 enum ProductType {
