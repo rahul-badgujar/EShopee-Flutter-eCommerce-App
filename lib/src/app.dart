@@ -1,6 +1,8 @@
 import 'package:eshopee/src/resources/themes/primary_light/primary_light_theme.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
 import 'package:eshopee/src/screens/sign_in/sign_in_screen.dart';
+import 'package:eshopee/src/screens/sign_up/components/sign_up_form.dart';
+import 'package:eshopee/src/screens/sign_up/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'settings/settings_controller.dart';
 
@@ -65,7 +67,7 @@ class MyApp extends StatelessWidget {
               builder: (BuildContext context) {
                 Dimens.instance.init(context);
 
-                return const SignInScreen();
+                return const SignUpScreen();
               },
             );
           },

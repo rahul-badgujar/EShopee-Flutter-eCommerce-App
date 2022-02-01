@@ -25,9 +25,11 @@ class Body extends StatelessWidget {
                   style:
                       PrimaryLightTheme.instance.textTheme.getHeaderTextStyle(),
                 ),
-                const Text(
+                Text(
                   "Sign in with your email and password",
                   textAlign: TextAlign.center,
+                  style: PrimaryLightTheme.instance.textTheme
+                      .getSubHeaderTextStyle(),
                 ),
                 SizedBox(height: Dimens.instance.percentageScreenHeight(8)),
                 const SignInForm(),

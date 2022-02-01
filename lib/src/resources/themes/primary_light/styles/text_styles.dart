@@ -10,8 +10,16 @@ class UiTextTheme {
     final existingStyle = defaultTextTheme.headline4 ?? const TextStyle();
     return existingStyle.copyWith(
       fontSize: 36,
-      color: UiPalette.textDarkShade(4),
+      color: UiPalette.textDarkShade(3),
       fontWeight: FontWeight.bold,
+    );
+  }
+
+  TextStyle getSubHeaderTextStyle() {
+    final existingStyle = defaultTextTheme.subtitle1 ?? const TextStyle();
+    return existingStyle.copyWith(
+      fontSize: 14,
+      color: UiPalette.textDarkShade(5),
     );
   }
 }
