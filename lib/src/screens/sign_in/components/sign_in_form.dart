@@ -7,7 +7,6 @@ import 'package:eshopee/src/services/auth/auth_service.dart';
 import 'package:eshopee/src/utils/util_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:eshopee/src/resources/values/dimens.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({Key? key}) : super(key: key);

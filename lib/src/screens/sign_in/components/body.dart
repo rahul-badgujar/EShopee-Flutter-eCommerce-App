@@ -1,4 +1,3 @@
-import 'package:eshopee/src/resources/themes/primary_light/styles/text_styles.dart';
 import 'package:eshopee/src/resources/themes/primary_light/primary_light_theme.dart';
 import 'package:eshopee/src/resources/values/constants.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
