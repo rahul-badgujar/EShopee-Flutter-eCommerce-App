@@ -27,7 +27,7 @@
 ## Status
 
 <h4 align="center">
-	🚧  EShopee App 🚀 Under testing...  🚧
+	🚧  EShopee App 🚀 Migrating to V2 (Flutter 2.0)  🚧
 </h4>
 
 <hr>
