@@ -19,9 +19,9 @@ class DefaultButton extends StatelessWidget {
     final primaryColorOfApp = Theme.of(context).primaryColor;
     return SizedBox(
       width: double.infinity,
-      height: Dimens.instance.percentageScreenHeight(5),
+      height: Dimens.instance.percentageScreenHeight(6),
       child: TextButton(
-        child: _buildLabel(),
+        child: _buildLabel(context),
         onPressed: onPressed,
         style: ButtonStyle(
           backgroundColor:
@@ -36,13 +36,13 @@ class DefaultButton extends StatelessWidget {
     );
   }
 
-  Widget _buildLabel() {
+  Widget _buildLabel(BuildContext context) {
     return Text(
       label,
-      style: TextStyle(
-        fontSize: Dimens.instance.percentageScreenWidth(2),
-        color: Colors.white,
-      ),
+      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
     );
   }
 }
