@@ -3,6 +3,7 @@ import 'package:eshopee/src/components/custom_suffix_icon.dart';
 import 'package:eshopee/src/components/default_button.dart';
 import 'package:eshopee/src/resources/values/constants.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
+import 'package:eshopee/src/screens/forgot_password/forgot_password_screen.dart';
 import 'package:eshopee/src/services/auth/auth_service.dart';
 import 'package:eshopee/src/utils/util_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -55,12 +56,8 @@ class _SignInFormState extends State<SignInForm> {
         const Spacer(),
         GestureDetector(
           onTap: () {
-            // TODO: go to forgot password screen
-            /* Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ForgotPasswordScreen(),
-                )); */
+            Navigator.restorablePushNamed(
+                context, ForgotPasswordScreen.ROUTE_NAME);
           },
           child: const Text(
             "Forgot Password",

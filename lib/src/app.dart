@@ -1,7 +1,7 @@
 import 'package:eshopee/src/resources/themes/primary_light/primary_light_theme.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
+import 'package:eshopee/src/screens/forgot_password/forgot_password_screen.dart';
 import 'package:eshopee/src/screens/sign_in/sign_in_screen.dart';
-import 'package:eshopee/src/screens/sign_up/components/sign_up_form.dart';
 import 'package:eshopee/src/screens/sign_up/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'settings/settings_controller.dart';
@@ -73,6 +73,8 @@ class MyApp extends StatelessWidget {
                     return const SignInScreen();
                   case SignUpScreen.ROUTE_NAME:
                     return const SignUpScreen();
+                  case ForgotPasswordScreen.ROUTE_NAME:
+                    return const ForgotPasswordScreen();
                   default:
                     // TODO: should return depending on auth
                     return const SignUpScreen();
