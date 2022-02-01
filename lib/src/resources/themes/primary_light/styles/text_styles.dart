@@ -9,7 +9,8 @@ class UiTextTheme {
   TextStyle getHeaderTextStyle() {
     final existingStyle = defaultTextTheme.headline4 ?? const TextStyle();
     return existingStyle.copyWith(
-      color: UiPalette.textDarkShade(3),
+      fontSize: 36,
+      color: UiPalette.textDarkShade(4),
       fontWeight: FontWeight.bold,
     );
   }

@@ -1,4 +1,5 @@
 import 'package:eshopee/src/resources/themes/primary_light/styles/text_styles.dart';
+import 'package:eshopee/src/resources/values/dimens.dart';
 
 import '../../colors/color_palette.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,14 @@ class PrimaryLightTheme {
         scaffoldBackgroundColor: UiPalette.scaffoldBgColor,
         textTheme: GoogleFonts.latoTextTheme(),
         appBarTheme: defaultTheme.appBarTheme.copyWith(),
+        inputDecorationTheme:
+            _generateInputDecorationTheme(defaultTheme.inputDecorationTheme),
+        snackBarTheme: const SnackBarThemeData(
+          backgroundColor: Colors.black,
+          contentTextStyle: TextStyle(
+            color: Colors.white,
+          ),
+        ),
       );
 
       textTheme = UiTextTheme(defaultTextTheme: theme.textTheme);
@@ -33,6 +42,10 @@ class PrimaryLightTheme {
       // set initialized
       _isInitialized = true;
     }
+  }
+
+  InputDecorationTheme get inputDecorationTheme {
+    return theme.inputDecorationTheme;
   }
 
   AppBarTheme get appBarTheme {
@@ -49,6 +62,24 @@ class PrimaryLightTheme {
     return appBarNoElevationTheme.copyWith(
       backgroundColor: UiPalette.scaffoldBgColor,
       foregroundColor: UiPalette.textDarkShade(3),
+    );
+  }
+
+  InputDecorationTheme _generateInputDecorationTheme(
+      InputDecorationTheme referenceInputDecorationTheme) {
+    OutlineInputBorder outlineInputBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(Dimens.inputFieldCornerRadius),
+      borderSide: BorderSide(color: UiPalette.textDarkShade(5)),
+      gapPadding: 10,
+    );
+    return referenceInputDecorationTheme.copyWith(
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+      contentPadding: Dimens.inputFieldContentPadding,
+      enabledBorder: outlineInputBorder,
+      focusedBorder: outlineInputBorder.copyWith(
+        borderSide: BorderSide(color: UiPalette.primaryColor),
+      ),
+      border: outlineInputBorder,
     );
   }
 }
