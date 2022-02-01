@@ -59,6 +59,8 @@ class MyApp extends StatelessWidget {
           theme: PrimaryLightTheme.instance.theme,
           // themeMode: settingsController.themeMode,
 
+          initialRoute: SignInScreen.ROUTE_NAME,
+
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
           onGenerateRoute: (RouteSettings routeSettings) {
@@ -66,8 +68,15 @@ class MyApp extends StatelessWidget {
               settings: routeSettings,
               builder: (BuildContext context) {
                 Dimens.instance.init(context);
-
-                return const SignUpScreen();
+                switch (routeSettings.name) {
+                  case SignInScreen.ROUTE_NAME:
+                    return const SignInScreen();
+                  case SignUpScreen.ROUTE_NAME:
+                    return const SignUpScreen();
+                  default:
+                    // TODO: should return depending on auth
+                    return const SignUpScreen();
+                }
               },
             );
           },

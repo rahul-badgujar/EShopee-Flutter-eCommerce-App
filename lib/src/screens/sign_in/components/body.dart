@@ -1,6 +1,7 @@
 import 'package:eshopee/src/resources/themes/primary_light/primary_light_theme.dart';
 import 'package:eshopee/src/resources/values/constants.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
+import 'package:eshopee/src/screens/sign_up/sign_up_screen.dart';
 
 import 'sign_in_form.dart';
 import 'package:flutter/material.dart';
@@ -56,8 +57,7 @@ class Body extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            // TODO: goto sign up screen
-            // Navigator.restorablePopAndPushNamed(context, '');
+            Navigator.restorablePushNamed(context, SignUpScreen.ROUTE_NAME);
           },
           child: Text(
             "Sign Up",
