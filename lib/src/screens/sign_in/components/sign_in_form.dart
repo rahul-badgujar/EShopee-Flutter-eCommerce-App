@@ -7,6 +7,7 @@ import 'package:eshopee/src/services/auth/auth_service.dart';
 import 'package:eshopee/src/utils/util_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:eshopee/src/resources/values/dimens.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({Key? key}) : super(key: key);
@@ -55,6 +56,7 @@ class _SignInFormState extends State<SignInForm> {
         const Spacer(),
         GestureDetector(
           onTap: () {
+            // TODO: go to forgot password screen
             /* Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -76,12 +78,18 @@ class _SignInFormState extends State<SignInForm> {
     return TextFormField(
       controller: passwordFieldController,
       obscureText: true,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         hintText: "Enter your password",
         labelText: "Password",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: CustomSuffixIcon(
           svgIcon: "assets/icons/Lock.svg",
+          padding: EdgeInsets.fromLTRB(
+            0,
+            Dimens.instance.percentageScreenWidth(2.8),
+            Dimens.instance.percentageScreenWidth(1),
+            Dimens.instance.percentageScreenWidth(2.8),
+          ),
         ),
       ),
       validator: (value) {
@@ -100,12 +108,18 @@ class _SignInFormState extends State<SignInForm> {
     return TextFormField(
       controller: emailFieldController,
       keyboardType: TextInputType.emailAddress,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         hintText: "Enter your email",
         labelText: "Email",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: CustomSuffixIcon(
           svgIcon: "assets/icons/Mail.svg",
+          padding: EdgeInsets.fromLTRB(
+            0,
+            Dimens.instance.percentageScreenWidth(3.8),
+            Dimens.instance.percentageScreenWidth(1),
+            Dimens.instance.percentageScreenWidth(3.8),
+          ),
         ),
       ),
       validator: (value) {

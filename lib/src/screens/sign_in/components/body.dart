@@ -1,3 +1,5 @@
+import 'package:eshopee/src/resources/themes/primary_light/styles/text_styles.dart';
+import 'package:eshopee/src/resources/themes/primary_light/primary_light_theme.dart';
 import 'package:eshopee/src/resources/values/constants.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
 
@@ -18,10 +20,11 @@ class Body extends StatelessWidget {
             physics: Constants.appWideScrollablePhysics,
             child: Column(
               children: [
-                SizedBox(height: Dimens.instance.percentageScreenHeight(1)),
+                SizedBox(height: Dimens.instance.percentageScreenHeight(8)),
                 Text(
                   "Welcome Back",
-                  style: Theme.of(context).textTheme.headline4,
+                  style:
+                      PrimaryLightTheme.instance.textTheme.getHeaderTextStyle(),
                 ),
                 const Text(
                   "Sign in with your email and password",
@@ -52,7 +55,8 @@ class Body extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.restorablePopAndPushNamed(context, '');
+            // TODO: goto sign up screen
+            // Navigator.restorablePopAndPushNamed(context, '');
           },
           child: Text(
             "Sign Up",

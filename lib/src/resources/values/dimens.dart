@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
 class Dimens {
+  bool _isInitialized = false;
+
   Dimens._();
   static final Dimens instance = Dimens._();
 
@@ -20,7 +22,11 @@ class Dimens {
   late MediaQueryData mediaQueryData;
 
   void init(BuildContext context) {
-    mediaQueryData = MediaQuery.of(context);
+    if (!_isInitialized) {
+      mediaQueryData = MediaQuery.of(context);
+      // set initialized
+      _isInitialized = true;
+    }
   }
 
   Size get size {

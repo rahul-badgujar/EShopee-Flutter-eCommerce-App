@@ -1,4 +1,4 @@
-import 'package:eshopee/src/resources/themes/ui_themes.dart';
+import 'package:eshopee/src/resources/themes/primary_light/primary_light_theme.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
 import 'package:eshopee/src/screens/sign_in/sign_in_screen.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
     return AnimatedBuilder(
       animation: settingsController,
       builder: (BuildContext context, Widget? child) {
+        PrimaryLightTheme.instance.init(context);
         return MaterialApp(
           // Providing a restorationScopeId allows the Navigator built by the
           // MaterialApp to restore the navigation stack when a user leaves and
@@ -53,9 +54,8 @@ class MyApp extends StatelessWidget {
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
           // SettingsController to display the correct theme.
-          theme: Themes.primaryThemeLight(context),
-          darkTheme: Themes.primaryThemeDark(context),
-          themeMode: settingsController.themeMode,
+          theme: PrimaryLightTheme.instance.theme,
+          // themeMode: settingsController.themeMode,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
@@ -64,6 +64,7 @@ class MyApp extends StatelessWidget {
               settings: routeSettings,
               builder: (BuildContext context) {
                 Dimens.instance.init(context);
+
                 return const SignInScreen();
               },
             );
