@@ -26,7 +26,10 @@ class PrimaryLightTheme {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         scaffoldBackgroundColor: UiPalette.scaffoldBgColor,
         textTheme: GoogleFonts.latoTextTheme(),
-        appBarTheme: defaultTheme.appBarTheme.copyWith(),
+        appBarTheme: defaultTheme.appBarTheme.copyWith(
+          elevation: 0,
+          color: UiPalette.scaffoldBgColor,
+        ),
         inputDecorationTheme:
             _generateInputDecorationTheme(defaultTheme.inputDecorationTheme),
         snackBarTheme: const SnackBarThemeData(
@@ -52,14 +55,8 @@ class PrimaryLightTheme {
     return theme.appBarTheme;
   }
 
-  AppBarTheme get appBarNoElevationTheme {
-    return appBarTheme.copyWith(
-      elevation: 0,
-    );
-  }
-
   AppBarTheme get lightAppBarNoElevationTheme {
-    return appBarNoElevationTheme.copyWith(
+    return appBarTheme.copyWith(
       backgroundColor: UiPalette.scaffoldBgColor,
       foregroundColor: UiPalette.textDarkShade(3),
     );

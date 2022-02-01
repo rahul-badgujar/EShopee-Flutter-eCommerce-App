@@ -3,7 +3,6 @@ import 'package:eshopee/src/resources/themes/primary_light/primary_light_theme.d
 import 'package:eshopee/src/resources/values/constants.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
 import 'package:eshopee/src/services/database/app_review_database_helper.dart';
-import 'package:eshopee/src/services/firestore_files_access/firestore_files_access_service.dart';
 import 'package:eshopee/src/utils/util_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +26,7 @@ class Body extends StatelessWidget {
             width: double.infinity,
             child: Column(
               children: [
-                SizedBox(height: Dimens.instance.percentageScreenHeight(8)),
+                SizedBox(height: Dimens.instance.percentageScreenHeight(2)),
                 Text(
                   "About Developer",
                   style:
@@ -42,7 +41,7 @@ class Body extends StatelessWidget {
                   },
                   child: buildDeveloperAvatar(),
                 ),
-                SizedBox(height: Dimens.instance.percentageScreenHeight(8)),
+                SizedBox(height: Dimens.instance.percentageScreenHeight(2)),
                 const Text(
                   '" Rahul Badgujar "',
                   style: TextStyle(
@@ -57,7 +56,7 @@ class Body extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: Dimens.instance.percentageScreenHeight(8)),
+                SizedBox(height: Dimens.instance.percentageScreenHeight(2)),
                 Row(
                   children: [
                     const Spacer(),
