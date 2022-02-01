@@ -1,5 +1,6 @@
 import 'package:eshopee/src/resources/themes/primary_light/primary_light_theme.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
+import 'package:eshopee/src/screens/about_developer/about_developer_screen.dart';
 import 'package:eshopee/src/screens/forgot_password/forgot_password_screen.dart';
 import 'package:eshopee/src/screens/sign_in/sign_in_screen.dart';
 import 'package:eshopee/src/screens/sign_up/sign_up_screen.dart';
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
           theme: PrimaryLightTheme.instance.theme,
           // themeMode: settingsController.themeMode,
 
-          initialRoute: SignInScreen.ROUTE_NAME,
+          initialRoute: AboutDeveloperScreen.ROUTE_NAME,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
@@ -75,6 +76,8 @@ class MyApp extends StatelessWidget {
                     return const SignUpScreen();
                   case ForgotPasswordScreen.ROUTE_NAME:
                     return const ForgotPasswordScreen();
+                  case AboutDeveloperScreen.ROUTE_NAME:
+                    return const AboutDeveloperScreen();
                   default:
                     // TODO: should return depending on auth
                     return const SignUpScreen();
