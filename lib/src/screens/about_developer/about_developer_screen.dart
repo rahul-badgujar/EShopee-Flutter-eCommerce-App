@@ -5,7 +5,7 @@ import 'components/body.dart';
 class AboutDeveloperScreen extends StatelessWidget {
   const AboutDeveloperScreen({Key? key}) : super(key: key);
 
-  static const ROUTE_NAME = 'about-developer';
+  static const ROUTE_NAME = '/about-developer-screen';
 
   @override
   Widget build(BuildContext context) {
