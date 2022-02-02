@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class UiPalette {
   static Color primaryColor = const Color(0xFFFF7643);
+  static const secondaryColor = Color(0xFF979797);
   static MaterialColor primarySwatch = generateMaterialColor(primaryColor);
 
   static const Color scaffoldBgColor = Color.fromARGB(255, 252, 252, 252);

@@ -20,7 +20,7 @@ class Body extends StatelessWidget {
             physics: Constants.appWideScrollablePhysics,
             child: Column(
               children: [
-                SizedBox(height: Dimens.instance.percentageScreenHeight(8)),
+                SizedBox(height: Dimens.instance.percentageScreenHeight(2)),
                 Text(
                   "Welcome Back",
                   style:

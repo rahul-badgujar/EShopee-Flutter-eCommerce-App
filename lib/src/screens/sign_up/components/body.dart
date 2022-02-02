@@ -17,7 +17,7 @@ class Body extends StatelessWidget {
           width: double.infinity,
           child: Column(
             children: [
-              SizedBox(height: Dimens.instance.percentageScreenHeight(8)),
+              SizedBox(height: Dimens.instance.percentageScreenHeight(2)),
               Text(
                 "Register Account",
                 style:
