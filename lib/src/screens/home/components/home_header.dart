@@ -18,10 +18,12 @@ class HomeHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         RoundedIconButton(
-            iconData: Icons.menu,
-            press: () {
-              Scaffold.of(context).openDrawer();
-            }),
+          iconData: Icons.menu,
+          press: () {
+            Scaffold.of(context).openDrawer();
+          },
+        ),
+        const SizedBox(width: 5),
         Expanded(
           child: SearchField(
             onSubmit: onSearchSubmitted,

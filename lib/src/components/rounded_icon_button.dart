@@ -14,8 +14,8 @@ class RoundedIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: Dimens.instance.percentageScreenWidth(4),
-      width: Dimens.instance.percentageScreenWidth(4),
+      height: Dimens.instance.percentageScreenWidth(8),
+      width: Dimens.instance.percentageScreenWidth(8),
       child: TextButton(
         onPressed: press,
         child: Icon(

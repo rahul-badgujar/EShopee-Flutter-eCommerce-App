@@ -24,22 +24,22 @@ class IconButtonWithCounter extends StatelessWidget {
             Clip.none, // makes the stack clip over the overlapping widget
         children: [
           Container(
-            padding: EdgeInsets.all(Dimens.instance.percentageScreenWidth(2)),
-            width: Dimens.instance.percentageScreenWidth(5),
-            height: Dimens.instance.percentageScreenWidth(5),
+            padding: EdgeInsets.all(Dimens.instance.percentageScreenWidth(2.8)),
+            width: Dimens.instance.percentageScreenWidth(12),
+            height: Dimens.instance.percentageScreenWidth(12),
             decoration: BoxDecoration(
               color: UiPalette.secondaryColor.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: SvgPicture.asset(svgSrc),
           ),
-          if (numOfItems > 0)
+          if (numOfItems >= 0)
             Positioned(
               right: 0,
               top: -3,
               child: Container(
-                width: Dimens.instance.percentageScreenWidth(2),
-                height: Dimens.instance.percentageScreenWidth(2),
+                width: Dimens.instance.percentageScreenWidth(5),
+                height: Dimens.instance.percentageScreenWidth(5),
                 decoration: const BoxDecoration(
                   color: Color(0xFFFF4848),
                   shape: BoxShape.circle,

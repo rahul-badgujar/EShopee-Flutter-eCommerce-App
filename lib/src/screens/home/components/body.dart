@@ -95,12 +95,13 @@ class _BodyState extends State<Body> {
                   onSearchSubmitted: (value) async {
                     final query = value.toString();
                     if (query.isEmpty) return;
-                    List<String> searchedProductsId;
+
                     try {
-                      searchedProductsId = await ProductDatabaseHelper()
-                          .searchInProducts(query: query.toLowerCase());
                       // TODO: add navigation
-                      /* await Navigator.push(
+                      /* 
+                      final searchedProductsId = await ProductDatabaseHelper()
+                          .searchInProducts(query: query.toLowerCase());
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => SearchResultScreen(

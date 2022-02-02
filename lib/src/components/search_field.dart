@@ -21,11 +21,11 @@ class SearchField extends StatelessWidget {
         decoration: InputDecoration(
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
-          hintText: "Search Product",
+          hintText: "Search Products",
           prefixIcon: const Icon(Icons.search),
           contentPadding: EdgeInsets.symmetric(
               horizontal: Dimens.instance.percentageScreenWidth(2),
-              vertical: Dimens.instance.percentageScreenWidth(2)),
+              vertical: Dimens.instance.percentageScreenWidth(3.4)),
         ),
         onSubmitted: onSubmit,
       ),
