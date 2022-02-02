@@ -58,20 +58,21 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-  Column buildProductCardItems(Product product) {
+  Widget buildProductCardItems(Product product) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Flexible(
-          flex: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.network(
-              product.images[0],
-              fit: BoxFit.contain,
+        if (product.images.isNotEmpty)
+          Flexible(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.network(
+                product.images[0],
+                fit: BoxFit.contain,
+              ),
             ),
           ),
-        ),
         const SizedBox(height: 10),
         Flexible(
           flex: 2,

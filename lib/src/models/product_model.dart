@@ -122,7 +122,7 @@ class Product extends Model {
   double? get discountPrice {
     final rawVal = data[KEY_DISCOUNT_PRICE];
     if (rawVal != null) {
-      final parsedValue = num.tryParse(rawVal);
+      final parsedValue = num.tryParse(rawVal.toString());
       if (parsedValue == null) {
         throw Exception('Cannot parse Discount Price from $rawVal');
       }

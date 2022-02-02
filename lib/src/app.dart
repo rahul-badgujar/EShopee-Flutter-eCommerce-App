@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
           theme: PrimaryLightTheme.instance.theme,
           // themeMode: settingsController.themeMode,
 
-          initialRoute: '/',
+          initialRoute: HomeScreen.ROUTE_NAME,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
