@@ -33,7 +33,7 @@ class IconButtonWithCounter extends StatelessWidget {
             ),
             child: SvgPicture.asset(svgSrc),
           ),
-          if (numOfItems >= 0)
+          if (numOfItems > 0)
             Positioned(
               right: 0,
               top: -3,

@@ -155,9 +155,9 @@ class _BodyState extends State<Body> {
                     await refreshPage();
                   },
                 ),
-                SizedBox(height: Dimens.instance.percentageScreenHeight(2)),
+                SizedBox(height: Dimens.instance.percentageScreenHeight(1)),
                 SizedBox(
-                  height: Dimens.instance.percentageScreenHeight(1),
+                  height: Dimens.instance.percentageScreenHeight(10),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: ListView(
@@ -192,7 +192,7 @@ class _BodyState extends State<Body> {
                 ),
                 SizedBox(height: Dimens.instance.percentageScreenHeight(2)),
                 SizedBox(
-                  height: Dimens.instance.percentageScreenHeight(5),
+                  height: Dimens.instance.percentageScreenHeight(50),
                   child: ProductsSection(
                     sectionTitle: "Products You Like",
                     productsStreamController: favouriteProductsStream,
@@ -202,7 +202,7 @@ class _BodyState extends State<Body> {
                 ),
                 SizedBox(height: Dimens.instance.percentageScreenHeight(2)),
                 SizedBox(
-                  height: Dimens.instance.percentageScreenHeight(8),
+                  height: Dimens.instance.percentageScreenHeight(50),
                   child: ProductsSection(
                     sectionTitle: "Explore All Products",
                     productsStreamController: allProductsStream,
@@ -210,7 +210,7 @@ class _BodyState extends State<Body> {
                     onProductCardTapped: onProductCardTapped,
                   ),
                 ),
-                SizedBox(height: Dimens.instance.percentageScreenHeight(8)),
+                SizedBox(height: Dimens.instance.percentageScreenHeight(4)),
               ],
             ),
           ),

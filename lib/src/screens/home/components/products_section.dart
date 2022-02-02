@@ -38,7 +38,7 @@ class ProductsSection extends StatelessWidget {
             title: sectionTitle,
             press: () {},
           ),
-          // SizedBox(height: Dimens.instance.percentageScreenHeight(1)),
+          SizedBox(height: Dimens.instance.percentageScreenHeight(1)),
           Expanded(
             child: buildProductsList(),
           ),

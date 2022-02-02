@@ -18,7 +18,7 @@ class SectionTile extends StatelessWidget {
         title,
         style: TextStyle(
           color: Colors.black,
-          fontSize: Dimens.instance.percentageScreenWidth(2),
+          fontSize: Dimens.instance.percentageScreenWidth(5),
           fontWeight: FontWeight.bold,
         ),
       ),
