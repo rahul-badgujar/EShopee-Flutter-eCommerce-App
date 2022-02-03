@@ -9,6 +9,8 @@ class Categories extends StatelessWidget {
     {"icon": "assets/icons/Gift Icon.svg", "text": "Daily Gift"},
     {"icon": "assets/icons/Discover.svg", "text": "More"},
   ];
+
+  Categories({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Row(

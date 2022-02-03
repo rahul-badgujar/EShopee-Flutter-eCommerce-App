@@ -1,6 +1,7 @@
 import 'package:eshopee/src/resources/themes/primary_light/primary_light_theme.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
 import 'package:eshopee/src/screens/about_developer/about_developer_screen.dart';
+import 'package:eshopee/src/screens/cart/cart_screen.dart';
 import 'package:eshopee/src/screens/forgot_password/forgot_password_screen.dart';
 import 'package:eshopee/src/screens/home/home_screen.dart';
 import 'package:eshopee/src/screens/sign_in/sign_in_screen.dart';
@@ -81,6 +82,8 @@ class MyApp extends StatelessWidget {
                     return const AboutDeveloperScreen();
                   case HomeScreen.ROUTE_NAME:
                     return const HomeScreen();
+                  case CartScreen.ROUTE_NAME:
+                    return const CartScreen();
                   default:
                     // TODO: should return depending on auth
                     return const SignInScreen();

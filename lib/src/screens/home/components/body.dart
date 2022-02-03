@@ -2,10 +2,10 @@ import 'package:eshopee/src/components/async_progress_dialog.dart';
 import 'package:eshopee/src/models/product_model.dart';
 import 'package:eshopee/src/resources/values/constants.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
+import 'package:eshopee/src/screens/cart/cart_screen.dart';
 import 'package:eshopee/src/services/auth/auth_service.dart';
 import 'package:eshopee/src/services/data_streams/all_products_stream.dart';
 import 'package:eshopee/src/services/data_streams/favourite_products_stream.dart';
-import 'package:eshopee/src/services/database/product_database_helper.dart';
 import 'package:eshopee/src/utils/ui_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -145,13 +145,8 @@ class _BodyState extends State<Body> {
                       }
                       return;
                     }
-                    // TODO: add routing
-                    /*  await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CartScreen(),
-                      ),
-                    ); */
+                    Navigator.restorablePushNamed(
+                        context, CartScreen.ROUTE_NAME);
                     await refreshPage();
                   },
                 ),

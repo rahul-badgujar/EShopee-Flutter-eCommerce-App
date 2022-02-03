@@ -1,11 +1,9 @@
 import 'package:eshopee/src/resources/values/dimens.dart';
 import 'package:flutter/material.dart';
 
-typedef DefaultButtonOnPressCallback = Future<void> Function();
-
 class DefaultButton extends StatelessWidget {
   final String label;
-  final DefaultButtonOnPressCallback onPressed;
+  final Future<void> Function() onPressed;
   final Color? color;
   const DefaultButton({
     Key? key,

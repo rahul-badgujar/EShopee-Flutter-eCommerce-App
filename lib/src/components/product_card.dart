@@ -102,7 +102,7 @@ class ProductCard extends StatelessWidget {
                       flex: 5,
                       child: Text.rich(
                         TextSpan(
-                          text: "\₹${product.discountPrice}\n",
+                          text: "₹${product.discountPrice}\n",
                           style: TextStyle(
                             color:
                                 PrimaryLightTheme.instance.theme.primaryColor,
@@ -111,7 +111,7 @@ class ProductCard extends StatelessWidget {
                           ),
                           children: [
                             TextSpan(
-                              text: "\₹${product.originalPrice}",
+                              text: "₹${product.originalPrice}",
                               style: TextStyle(
                                 color: UiPalette.textDarkShade(3),
                                 decoration: TextDecoration.lineThrough,
