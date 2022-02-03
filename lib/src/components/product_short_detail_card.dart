@@ -26,7 +26,7 @@ class ProductShortDetailCard extends StatelessWidget {
             return Row(
               children: [
                 SizedBox(
-                  width: Dimens.instance.percentageScreenWidth(8),
+                  width: Dimens.instance.percentageScreenWidth(22),
                   child: AspectRatio(
                     aspectRatio: 0.88,
                     child: Padding(

@@ -78,7 +78,7 @@ class Product extends Model {
 
   double get rating {
     final rawVal = data[KEY_RATING];
-    if (rawVal is! double) {
+    if (rawVal is double) {
       return rawVal;
     }
     return 0.0;
@@ -90,7 +90,7 @@ class Product extends Model {
 
   List<String> get images {
     final rawVal = data[KEY_IMAGES];
-    if (rawVal is! List) {
+    if (rawVal is List) {
       return rawVal.cast<String>();
     }
     return <String>[];
