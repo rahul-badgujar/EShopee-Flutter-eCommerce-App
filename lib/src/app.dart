@@ -1,7 +1,9 @@
+import 'package:eshopee/src/models/product_model.dart';
 import 'package:eshopee/src/resources/themes/primary_light/primary_light_theme.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
 import 'package:eshopee/src/screens/about_developer/about_developer_screen.dart';
 import 'package:eshopee/src/screens/cart/cart_screen.dart';
+import 'package:eshopee/src/screens/category_products/category_products_screen.dart';
 import 'package:eshopee/src/screens/forgot_password/forgot_password_screen.dart';
 import 'package:eshopee/src/screens/home/home_screen.dart';
 import 'package:eshopee/src/screens/sign_in/sign_in_screen.dart';
@@ -67,6 +69,9 @@ class MyApp extends StatelessWidget {
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
           onGenerateRoute: (RouteSettings routeSettings) {
+            // this app enforce route args to be map<String,dynamic>? only.
+            final args = routeSettings.arguments as Map<String, dynamic>? ??
+                <String, dynamic>{};
             return MaterialPageRoute<void>(
               settings: routeSettings,
               builder: (BuildContext context) {
@@ -84,6 +89,19 @@ class MyApp extends StatelessWidget {
                     return const HomeScreen();
                   case CartScreen.ROUTE_NAME:
                     return const CartScreen();
+                  case CategoryProductsScreen.ROUTE_NAME:
+                    // TODO: product type arg extraction here
+                    final productNameFromArgs =
+                        args[CategoryProductsScreen.KEY_PRODUCT_TYPE]
+                            .toString();
+                    final productType =
+                        productTypeFromName(productNameFromArgs);
+                    if (productType == null) {
+                      throw Exception(
+                          "Product Type not provided to Route: ${routeSettings.name}, found null.");
+                    }
+                    return CategoryProductsScreen(productType: productType);
+
                   default:
                     // TODO: should return depending on auth
                     return const SignInScreen();

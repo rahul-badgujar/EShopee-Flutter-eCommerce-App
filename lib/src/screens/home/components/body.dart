@@ -3,6 +3,7 @@ import 'package:eshopee/src/models/product_model.dart';
 import 'package:eshopee/src/resources/values/constants.dart';
 import 'package:eshopee/src/resources/values/dimens.dart';
 import 'package:eshopee/src/screens/cart/cart_screen.dart';
+import 'package:eshopee/src/screens/category_products/category_products_screen.dart';
 import 'package:eshopee/src/services/auth/auth_service.dart';
 import 'package:eshopee/src/services/data_streams/all_products_stream.dart';
 import 'package:eshopee/src/services/data_streams/favourite_products_stream.dart';
@@ -166,17 +167,16 @@ class _BodyState extends State<Body> {
                               icon: productCategories[index][ICON_KEY],
                               title: productCategories[index][TITLE_KEY],
                               onPress: () {
-                                // TODO: add routing
-                                /*  Navigator.push(
+                                final productCategorie =
+                                    productCategories[index][PRODUCT_TYPE_KEY];
+                                Navigator.restorablePushNamed(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        CategoryProductsScreen(
-                                      productType: productCategories[index]
-                                          [PRODUCT_TYPE_KEY],
-                                    ),
-                                  ),
-                                ); */
+                                  CategoryProductsScreen.ROUTE_NAME,
+                                  arguments: <String, dynamic>{
+                                    CategoryProductsScreen.KEY_PRODUCT_TYPE:
+                                        nameFromProductType(productCategorie),
+                                  },
+                                );
                               },
                             );
                           },

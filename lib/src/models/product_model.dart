@@ -9,6 +9,16 @@ enum ProductType {
   Others,
 }
 
+final _productTypeFromString = ProductType.values.asNameMap();
+
+ProductType? productTypeFromName(String name) {
+  return _productTypeFromString[name];
+}
+
+String nameFromProductType(ProductType productType) {
+  return productType.name;
+}
+
 class Product extends Model {
   static const String KEY_IMAGES = "images";
   static const String KEY_TITLE = "title";
