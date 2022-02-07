@@ -72,7 +72,7 @@ class _BodyState extends State<Body> {
                             return Center(
                               child: NothingToShowContainer(
                                 secondaryMessage:
-                                    "No Products in ${EnumToString.convertToString(widget.productType)}",
+                                    "No Products in ${nameFromProductType(widget.productType)}",
                               ),
                             );
                           }
