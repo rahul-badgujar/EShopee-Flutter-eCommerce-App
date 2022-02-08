@@ -20,9 +20,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_svg: ^1.0.3
+  future_progress_dialog: ^0.2.0
   google_fonts: ^2.2.0
+  image_picker: ^0.8.4+6
   logger: ^1.1.0
   path_provider: ^2.0.8
+  permission_handler: ^8.3.0
+  provider: ^6.0.2
   url_launcher: ^6.0.18
 
 dev_dependencies:

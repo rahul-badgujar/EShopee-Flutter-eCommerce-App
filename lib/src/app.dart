@@ -5,6 +5,7 @@ import 'package:eshopee/src/screens/about_developer/about_developer_screen.dart'
 import 'package:eshopee/src/screens/cart/cart_screen.dart';
 import 'package:eshopee/src/screens/category_products/category_products_screen.dart';
 import 'package:eshopee/src/screens/change_display_name/change_display_name_screen.dart';
+import 'package:eshopee/src/screens/change_display_picture/change_display_picture_screen.dart';
 import 'package:eshopee/src/screens/forgot_password/forgot_password_screen.dart';
 import 'package:eshopee/src/screens/home/home_screen.dart';
 import 'package:eshopee/src/screens/sign_in/sign_in_screen.dart';
@@ -92,6 +93,8 @@ class MyApp extends StatelessWidget {
                     return const CartScreen();
                   case ChangeDisplayNameScreen.ROUTE_NAME:
                     return const ChangeDisplayNameScreen();
+                  case ChangeDisplayPictureScreen.ROUTE_NAME:
+                    return const ChangeDisplayPictureScreen();
                   case CategoryProductsScreen.ROUTE_NAME:
                     // TODO: product type arg extraction here
                     final productNameFromArgs =

@@ -2,6 +2,7 @@ import 'package:eshopee/src/components/async_progress_dialog.dart';
 import 'package:eshopee/src/resources/colors/color_palette.dart';
 import 'package:eshopee/src/resources/values/constants.dart';
 import 'package:eshopee/src/screens/change_display_name/change_display_name_screen.dart';
+import 'package:eshopee/src/screens/change_display_picture/change_display_picture_screen.dart';
 import 'package:eshopee/src/services/auth/auth_service.dart';
 import 'package:eshopee/src/services/database/user_database_helper.dart';
 import 'package:eshopee/src/utils/ui_utils.dart';
@@ -209,12 +210,8 @@ class HomeScreenDrawer extends StatelessWidget {
             ),
           ),
           onTap: () {
-            // TODO: add routing
-            /* Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChangeDisplayPictureScreen(),
-                )); */
+            Navigator.restorablePushNamed(
+                context, ChangeDisplayPictureScreen.ROUTE_NAME);
           },
         ),
         ListTile(
