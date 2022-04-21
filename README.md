@@ -53,7 +53,7 @@ This is an eCommerce Application developed using FlutterFire (Flutter+Firebase).
 
 NOTE: Its tries to stimulate a mock buy-sell cycle as their is no any Payment Gateway added in this app.
 
-<p float="center" style="text-align:center">
+<p float="center" style="text-align:center; width=500px">
     <a href="https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App" title="Source Code">
         <img src="illustrations\source_code_icon.png" alt="Source Code" width="80" height="80" style="padding: 8px 16px 2px 16px"/>
     </a>
