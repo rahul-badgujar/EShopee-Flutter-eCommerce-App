@@ -53,10 +53,16 @@ This is an eCommerce Application developed using FlutterFire (Flutter+Firebase).
 
 NOTE: Its tries to stimulate a mock buy-sell cycle as their is no any Payment Gateway added in this app.
 
-<div style="text-align:center">
-    <img src="illustrations\source_code_icon.png" alt="Source Code" width="100" height="100" style="padding: 16px"/>
-    <img src="illustrations\youtube_icon.png" alt="Source Code" width="100" height="100"style="padding: 16px"/>
-    <img src="illustrations\application_icon.png" alt="Source Code" width="100" height="100"style="padding: 16px"/>
+<div style="text-align:center; width=100%">
+    <a href="https://github.com/rahul-badgujar/EShopee-Flutter-eCommerce-App" title="Source Code">
+        <img src="illustrations\source_code_icon.png" alt="Source Code" width="80" height="80" style="padding: 8px 16px 2px 16px"/>
+    </a>
+   <a href="https://youtu.be/JX8Cf5qr_hE" target="_blank" title="Demo Video">
+        <img src="illustrations\youtube_icon.png" alt="Source Code" width="80" height="80" style="padding: 8px 16px 2px 16px"/>
+    </a>
+    <a href="https://drive.google.com/file/d/1b_vqGg9DN3_0vJAL6erI9n4D7xhBkL8_/view?usp=sharing" target="_blank" title="Download Application">
+        <img src="illustrations\application_icon.png" alt="Source Code" width="80" height="80" style="padding: 8px 16px 2px 16px"/>
+    </a>
 </div>
 
 ## :sparkles: Features
@@ -104,10 +110,6 @@ Here are some Illustration of App Screens
 
 And all rest at [more screens](illustrations/)
 
-## :white_check_mark: Installation
-
-Download the APK File from GDrive Link: [EShopee](https://drive.google.com/file/d/1b_vqGg9DN3_0vJAL6erI9n4D7xhBkL8_/view?usp=sharing)\
-Sign up, Sign in and Explore the App. And do not forget to add your own products
 
 ## :rocket: Resources
 
