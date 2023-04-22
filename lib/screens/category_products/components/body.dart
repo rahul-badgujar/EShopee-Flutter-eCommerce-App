@@ -11,7 +11,6 @@ import 'package:e_commerce_app_flutter/services/database/product_database_helper
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:logger/logger.dart';
 
 class Body extends StatefulWidget {
