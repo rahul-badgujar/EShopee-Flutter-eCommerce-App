@@ -121,7 +121,7 @@ class ProductDatabaseHelper {
         .get()
         .asStream();
     await for (final querySnapshot in reviewesQuerySnapshot) {
-      List<Review> reviews = List<Review>();
+      List<Review> reviews = [];
       for (final reviewDoc in querySnapshot.docs) {
         Review review = Review.fromMap(reviewDoc.data(), id: reviewDoc.id);
         reviews.add(review);
@@ -185,7 +185,7 @@ class ProductDatabaseHelper {
         .where(Product.PRODUCT_TYPE_KEY,
             isEqualTo: EnumToString.convertToString(productType))
         .get();
-    List productsId = List<String>();
+    List productsId = [];
     for (final product in queryResult.docs) {
       final id = product.id;
       productsId.add(id);
@@ -200,7 +200,7 @@ class ProductDatabaseHelper {
     final querySnapshot = await productsCollectionReference
         .where(Product.OWNER_KEY, isEqualTo: uid)
         .get();
-    List usersProducts = List<String>();
+    List usersProducts = [];
     querySnapshot.docs.forEach((doc) {
       usersProducts.add(doc.id);
     });
@@ -209,7 +209,7 @@ class ProductDatabaseHelper {
 
   Future<List<String>> get allProductsList async {
     final products = await firestore.collection(PRODUCTS_COLLECTION_NAME).get();
-    List productsId = List<String>();
+    List productsId = [];
     for (final product in products.docs) {
       final id = product.id;
       productsId.add(id);
