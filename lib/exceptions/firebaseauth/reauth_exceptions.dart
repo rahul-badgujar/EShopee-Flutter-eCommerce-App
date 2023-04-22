@@ -2,13 +2,13 @@ import 'package:e_commerce_app_flutter/exceptions/firebaseauth/messeged_firebase
 
 class FirebaseReauthException extends MessagedFirebaseAuthException {
   FirebaseReauthException(
-      {String message: "Instance of FirebaseReauthException"})
+      {String message = "Instance of FirebaseReauthException"})
       : super(message);
 }
 
 class FirebaseReauthUserMismatchException extends FirebaseReauthException {
   FirebaseReauthUserMismatchException(
-      {String message: "User not matching with current user"})
+      {String message = "User not matching with current user"})
       : super(message: message);
 }
 

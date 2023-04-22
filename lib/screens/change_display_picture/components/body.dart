@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import '../provider_models/body_model.dart';
-import 'package:future_progress_dialog/future_progress_dialog.dart';
 
 class Body extends StatelessWidget {
   @override

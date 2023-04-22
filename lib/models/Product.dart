@@ -62,7 +62,8 @@ class Product extends Model {
 
   factory Product.fromMap(Map<String, dynamic> map, {String id}) {
     if (map[SEARCH_TAGS_KEY] == null) {
-      map[SEARCH_TAGS_KEY] = List<String>();
+      map[SEARCH_TAGS_KEY] = [];
+      
     }
     return Product(
       id,

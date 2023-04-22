@@ -10,24 +10,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class AuthentificationService {
-  static const String USER_NOT_FOUND_EXCEPTION_CODE = "user-not-found";
-  static const String WRONG_PASSWORD_EXCEPTION_CODE = "wrong-password";
-  static const String TOO_MANY_REQUESTS_EXCEPTION_CODE = 'too-many-requests';
-  static const String EMAIL_ALREADY_IN_USE_EXCEPTION_CODE =
-      "email-already-in-use";
-  static const String OPERATION_NOT_ALLOWED_EXCEPTION_CODE =
-      "operation-not-allowed";
-  static const String WEAK_PASSWORD_EXCEPTION_CODE = "weak-password";
-  static const String USER_MISMATCH_EXCEPTION_CODE = "user-mismatch";
-  static const String INVALID_CREDENTIALS_EXCEPTION_CODE = "invalid-credential";
-  static const String INVALID_EMAIL_EXCEPTION_CODE = "invalid-email";
-  static const String USER_DISABLED_EXCEPTION_CODE = "user-disabled";
-  static const String INVALID_VERIFICATION_CODE_EXCEPTION_CODE =
+  static const String USER_NOT_FOUND_EXCEPTION = "user-not-found";
+  static const String WRONG_PASSWORD_EXCEPTION = "wrong-password";
+  static const String TOO_MANY_REQUESTS_EXCEPTION = 'too-many-requests';
+  static const String EMAIL_ALREADY_IN_USE_EXCEPTION = "email-already-in-use";
+  static const String OPERATION_NOT_ALLOWED_EXCEPTION = "operation-not-allowed";
+  static const String WEAK_PASSWORD_EXCEPTION = "weak-password";
+  static const String USER_MISMATCH_EXCEPTION = "user-mismatch";
+  static const String INVALID_CREDENTIALS_EXCEPTION = "invalid-credential";
+  static const String INVALID_EMAIL_EXCEPTION = "invalid-email";
+  static const String USER_DISABLED_EXCEPTION = "user-disabled";
+  static const String INVALID_VERIFICATION_CODE_EXCEPTION =
       "invalid-verification-code";
-  static const String INVALID_VERIFICATION_ID_EXCEPTION_CODE =
+  static const String INVALID_VERIFICATION_ID_EXCEPTION =
       "invalid-verification-id";
-  static const String REQUIRES_RECENT_LOGIN_EXCEPTION_CODE =
-      "requires-recent-login";
+  static const String REQUIRES_RECENT_LOGIN_EXCEPTION = "requires-recent-login";
 
   FirebaseAuth _firebaseAuth;
 
@@ -63,7 +60,7 @@ class AuthentificationService {
       userCredential = await currentUser
           .reauthenticateWithCredential(userCredential.credential);
     } on FirebaseAuthException catch (e) {
-      if (e.code == WRONG_PASSWORD_EXCEPTION_CODE) {
+      if (e.code == WRONG_PASSWORD_EXCEPTION) {
         throw FirebaseSignInAuthWrongPasswordException();
       } else {
         throw FirebaseSignInAuthException(message: e.code);
@@ -88,19 +85,19 @@ class AuthentificationService {
       rethrow;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
-        case INVALID_EMAIL_EXCEPTION_CODE:
+        case INVALID_EMAIL_EXCEPTION:
           throw FirebaseSignInAuthInvalidEmailException();
 
-        case USER_DISABLED_EXCEPTION_CODE:
+        case USER_DISABLED_EXCEPTION:
           throw FirebaseSignInAuthUserDisabledException();
 
-        case USER_NOT_FOUND_EXCEPTION_CODE:
+        case USER_NOT_FOUND_EXCEPTION:
           throw FirebaseSignInAuthUserNotFoundException();
 
-        case WRONG_PASSWORD_EXCEPTION_CODE:
+        case WRONG_PASSWORD_EXCEPTION:
           throw FirebaseSignInAuthWrongPasswordException();
 
-        case TOO_MANY_REQUESTS_EXCEPTION_CODE:
+        case TOO_MANY_REQUESTS_EXCEPTION:
           throw FirebaseTooManyRequestsException();
 
         default:
@@ -125,13 +122,13 @@ class AuthentificationService {
       rethrow;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
-        case EMAIL_ALREADY_IN_USE_EXCEPTION_CODE:
+        case EMAIL_ALREADY_IN_USE_EXCEPTION:
           throw FirebaseSignUpAuthEmailAlreadyInUseException();
-        case INVALID_EMAIL_EXCEPTION_CODE:
+        case INVALID_EMAIL_EXCEPTION:
           throw FirebaseSignUpAuthInvalidEmailException();
-        case OPERATION_NOT_ALLOWED_EXCEPTION_CODE:
+        case OPERATION_NOT_ALLOWED_EXCEPTION:
           throw FirebaseSignUpAuthOperationNotAllowedException();
-        case WEAK_PASSWORD_EXCEPTION_CODE:
+        case WEAK_PASSWORD_EXCEPTION:
           throw FirebaseSignUpAuthWeakPasswordException();
         default:
           throw FirebaseSignInAuthException(message: e.code);
@@ -169,7 +166,7 @@ class AuthentificationService {
     } on MessagedFirebaseAuthException {
       rethrow;
     } on FirebaseAuthException catch (e) {
-      if (e.code == USER_NOT_FOUND_EXCEPTION_CODE) {
+      if (e.code == USER_NOT_FOUND_EXCEPTION) {
         throw FirebaseCredentialActionAuthUserNotFoundException();
       } else {
         throw FirebaseCredentialActionAuthException(message: e.code);
@@ -198,9 +195,9 @@ class AuthentificationService {
       rethrow;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
-        case WEAK_PASSWORD_EXCEPTION_CODE:
+        case WEAK_PASSWORD_EXCEPTION:
           throw FirebaseCredentialActionAuthWeakPasswordException();
-        case REQUIRES_RECENT_LOGIN_EXCEPTION_CODE:
+        case REQUIRES_RECENT_LOGIN_EXCEPTION:
           throw FirebaseCredentialActionAuthRequiresRecentLoginException();
         default:
           throw FirebaseCredentialActionAuthException(message: e.code);
@@ -247,19 +244,19 @@ class AuthentificationService {
       rethrow;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
-        case USER_MISMATCH_EXCEPTION_CODE:
+        case USER_MISMATCH_EXCEPTION:
           throw FirebaseReauthUserMismatchException();
-        case USER_NOT_FOUND_EXCEPTION_CODE:
+        case USER_NOT_FOUND_EXCEPTION:
           throw FirebaseReauthUserNotFoundException();
-        case INVALID_CREDENTIALS_EXCEPTION_CODE:
+        case INVALID_CREDENTIALS_EXCEPTION:
           throw FirebaseReauthInvalidCredentialException();
-        case INVALID_EMAIL_EXCEPTION_CODE:
+        case INVALID_EMAIL_EXCEPTION:
           throw FirebaseReauthInvalidEmailException();
-        case WRONG_PASSWORD_EXCEPTION_CODE:
+        case WRONG_PASSWORD_EXCEPTION:
           throw FirebaseReauthWrongPasswordException();
-        case INVALID_VERIFICATION_CODE_EXCEPTION_CODE:
+        case INVALID_VERIFICATION_CODE_EXCEPTION:
           throw FirebaseReauthInvalidVerificationCodeException();
-        case INVALID_VERIFICATION_ID_EXCEPTION_CODE:
+        case INVALID_VERIFICATION_ID_EXCEPTION:
           throw FirebaseReauthInvalidVerificationIdException();
         default:
           throw FirebaseReauthException(message: e.code);

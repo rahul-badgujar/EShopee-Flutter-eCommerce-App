@@ -33,7 +33,7 @@ class UserDatabaseHelper {
     await firestore.collection(USERS_COLLECTION_NAME).doc(uid).set({
       DP_KEY: null,
       PHONE_KEY: null,
-      FAV_PRODUCTS_KEY: List<String>(),
+      FAV_PRODUCTS_KEY: [],
     });
   }
 
@@ -108,7 +108,7 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(ADDRESSES_COLLECTION_NAME)
         .get();
-    final addresses = List<String>();
+    final addresses = [];
     snapshot.docs.forEach((doc) {
       addresses.add(doc.id);
     });
@@ -196,7 +196,7 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(CART_COLLECTION_NAME)
         .get();
-    List orderedProductsUid = List<String>();
+    List orderedProductsUid = [];
     for (final doc in cartItems.docs) {
       orderedProductsUid.add(doc.id);
       await doc.reference.delete();
@@ -265,7 +265,7 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(CART_COLLECTION_NAME)
         .get();
-    List itemsId = List<String>();
+    List itemsId = [];
     for (final item in querySnapshot.docs) {
       itemsId.add(item.id);
     }
@@ -279,7 +279,7 @@ class UserDatabaseHelper {
         .doc(uid)
         .collection(ORDERED_PRODUCTS_COLLECTION_NAME)
         .get();
-    List orderedProductsId = List<String>();
+    List orderedProductsId = [];
     for (final doc in orderedProductsSnapshot.docs) {
       orderedProductsId.add(doc.id);
     }

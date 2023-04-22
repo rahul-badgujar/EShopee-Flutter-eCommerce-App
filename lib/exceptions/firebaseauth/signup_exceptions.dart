@@ -2,7 +2,7 @@ import 'package:e_commerce_app_flutter/exceptions/firebaseauth/messeged_firebase
 
 class FirebaseSignUpAuthException extends MessagedFirebaseAuthException {
   FirebaseSignUpAuthException(
-      {String message: "Instance of FirebaseSignUpAuthException"})
+      {String message = "Instance of FirebaseSignUpAuthException"})
       : super(message);
 }
 
