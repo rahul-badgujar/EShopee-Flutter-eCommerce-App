@@ -17,9 +17,9 @@ class CustomImage {
 }
 
 class ProductDetails extends ChangeNotifier {
-  List<CustomImage> _selectedImages = List<CustomImage>();
+  List<CustomImage> _selectedImages = [];
   ProductType _productType;
-  List<String> _searchTags = List<String>();
+  List<String> _searchTags = [];
 
   List<CustomImage> get selectedImages {
     return _selectedImages;
