@@ -13,7 +13,6 @@ import 'package:e_commerce_app_flutter/services/local_files_access/local_files_a
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
-import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
@@ -169,7 +168,7 @@ class _EditProductFormState extends State<EditProductForm> {
         maintainState: true,
         title: Text(
           "Basic Details",
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         leading: Icon(
           Icons.shop,
@@ -212,7 +211,7 @@ class _EditProductFormState extends State<EditProductForm> {
         maintainState: true,
         title: Text(
           "Describe Product",
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         leading: Icon(
           Icons.description,
@@ -285,7 +284,7 @@ class _EditProductFormState extends State<EditProductForm> {
     return ExpansionTile(
       title: Text(
         "Search Tags",
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.titleLarge,
       ),
       leading: Icon(Icons.check_circle_sharp),
       childrenPadding:
@@ -302,7 +301,7 @@ class _EditProductFormState extends State<EditProductForm> {
     return ExpansionTile(
       title: Text(
         "Upload Images",
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.titleLarge,
       ),
       leading: Icon(Icons.image),
       childrenPadding:
