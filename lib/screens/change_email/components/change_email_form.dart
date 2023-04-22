@@ -8,7 +8,6 @@ import 'package:e_commerce_app_flutter/services/authentification/authentificatio
 import 'package:e_commerce_app_flutter/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:logger/logger.dart';
 
 import '../../../constants.dart';
